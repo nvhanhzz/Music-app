@@ -5,6 +5,7 @@ block addCss
 
 block main 
     .container
+        h1(style="margin-top: 20px") Chủ đề bài hát
         .topics
             each topic in topics 
                 .topic.card(style='width: 18rem;')
@@ -12,4 +13,4 @@ block main
                     .card-body
                         h5.card-title #{topic.title}
                         p.card-text #{topic.description}
-                        a.btn.btn-primary(href=`/topic/${topic.slug}`) Xem chi tiết
+                        a.btn.btn-primary(href=`/songs/${topic.slug}`) Xem chi tiết

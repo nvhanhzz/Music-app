@@ -24,6 +24,11 @@ app.use(express.static("public"));
 app.locals.moment = moment;
 
 clientRoutes(app);
+app.get("*", (req, res) => {
+    res.render("client/pages/errors/404", {
+        pageTitle: "404 Not Found"
+    });
+})
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
