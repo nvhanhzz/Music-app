@@ -1,0 +1,15 @@
+extends ../../layouts/default.pug
+
+block addCss
+    link(rel="stylesheet", href="/css/topics.css")
+
+block main 
+    .container
+        .topics
+            each topic in topics 
+                .topic.card(style='width: 18rem;')
+                    img.card-img-top(src=topic.avatar alt=topic.title)
+                    .card-body
+                        h5.card-title #{topic.title}
+                        p.card-text #{topic.description}
+                        a.btn.btn-primary(href=`/topic/${topic.slug}`) Xem chi tiết
