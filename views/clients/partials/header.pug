@@ -1,0 +1,19 @@
+header.header 
+    .container 
+        .row.align-items-center
+            .col-3 
+                .inner-logo 
+                    a(href="/")
+                        if generalSetting && generalSetting.logo
+                            img(src=generalSetting.logo, alt="Logo")
+                        else 
+                            span LOGO
+            
+            .col-6
+
+            .col-3.menu
+                ul
+                    li 
+                        a(href="/") Trang chủ
+                    li
+                        a(href="/topics") Chủ đề
