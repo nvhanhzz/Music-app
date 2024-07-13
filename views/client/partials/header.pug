@@ -9,11 +9,23 @@ header.header
                         else 
                             span LOGO
             
-            .col-6
+            .col-5
 
-            .col-3.menu
+            .col-4.menu
                 ul
                     li 
                         a(href="/") Trang chủ
                     li
                         a(href="/topics") Chủ đề
+
+                    li
+                        if currentUser
+                            .btn-group
+                                button.btn.btn-primary.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false')
+                                .dropdown-menu
+                                    a.dropdown-item(href='/user/information') Thông tin cá nhân
+                                    a.dropdown-item(href='/user/change-password') Đổi mật khẩu
+                                    form(action="/user/logout" method="POST")
+                                        button(class="dropdown-item") Đăng xuất 
+                        else 
+                            a(href='/user/login') Đăng nhập

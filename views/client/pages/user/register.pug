@@ -1,0 +1,41 @@
+extends ../../layouts/default.pug
+
+block main 
+    .container
+        div(style="height: 30px")
+        form(action="/user/register" method="POST")
+            h2(style="text-align: center") Đăng ký
+            .row
+                .col-3 
+                .col-6
+                    .form-group
+                        label(for='fullname') Họ và tên
+                        input#fullname.form-control(type='text' name="fullName")
+            .row
+                .col-3 
+                .col-6
+                    .form-group
+                        label(for='phone') Số điện thoại
+                        input#phone.form-control(type='text' name="phone")
+            .row
+                .col-3 
+                .col-6
+                    .form-group
+                        label(for='email') Email
+                        input#email.form-control(type='email' name="email")
+            .row
+                .col-3 
+                .col-6
+                    .form-group
+                        label(for='password') Mật khẩu
+                        input#password.form-control(type='password' name="password")
+            .row
+                .col-3 
+                .col-6
+                    .form-group
+                        label(for='confirm-password') Nhập lại mật khẩu
+                        input#confirm-password.form-control(type='password' name="confirmPassword")
+            .row
+                .col-3 
+                .col-6
+                    button.btn.btn-primary(type='submit' style="width: 100%; margin-top: 20px;") Đăng ký

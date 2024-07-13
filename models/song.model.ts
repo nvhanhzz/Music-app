@@ -12,7 +12,7 @@ const songSchema = new mongoose.Schema(
         description: { type: String, required: true },
         singerId: { type: mongoose.Schema.Types.ObjectId, ref: Singer, required: true },
         topicId: { type: mongoose.Schema.Types.ObjectId, ref: Topic },
-        like: { type: Number, required: true },
+        like: { type: Number, required: true }, // sau sửa thành 1 mảng userId
         lyrics: { type: String, required: true },
         audio: { type: String, required: true },
         status: { type: String, required: true },

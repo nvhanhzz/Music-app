@@ -1,3 +1,5 @@
+include ../mixins/notification.pug
+
 doctype html
 html(lang="en")
     head
@@ -14,6 +16,11 @@ html(lang="en")
         block addCss
 
     body 
+        - if (messages.success)
+            +notf-success()
+        - if (messages.fail)
+            +notf-fail()
+            
         include ../partials/header.pug
 
         .content-box
