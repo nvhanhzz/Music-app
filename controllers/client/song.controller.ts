@@ -25,10 +25,32 @@ export const getSongByTopic = async (req: Request, res: Response): Promise<void>
         deleted: false,
         status: ListStatus.ACTIVE,
         topicId: topic._id
-    }).populate("singerId", "fullName").select("avatar title singerId like "); // sau thêm createdAt
+    }).populate("singerId", "fullName").select("avatar title singerId like slug"); // sau thêm createdAt
 
     res.render("client/pages/song/songByTopic", {
         pageTitle: topic.title,
         songs: songs
+    });
+}
+
+// [GET] /songs/detail/:slug
+export const getSongDetail = async (req: Request, res: Response): Promise<void> => {
+    const slug = req.params.slug;
+    const song = await Song.findOne({
+        slug: slug,
+        deleted: false,
+        status: ListStatus.ACTIVE
+    })
+        .populate("topicId", "title")
+        .populate("singerId", "fullName");
+
+    if (!song) {
+        res.redirect("/404-not-found");
+        return;
+    }
+
+    res.render("client/pages/song/detail", {
+        pageTitle: song.title,
+        song: song
     });
 }

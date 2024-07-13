@@ -1,0 +1,63 @@
+extends ../../layouts/default.pug
+
+block addCss
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css")
+    link(rel="stylesheet", href="/css/song/song-detail.css")
+
+block main 
+    .container 
+        div(style="margin-top: 20px")
+        h1 #{song.title}
+        div(style="margin-top: 20px")
+        .row    
+            .col-3.time 
+                i(class="fa-regular fa-clock") 
+                //- fix cứng, sửa sau
+                span Hôm nay
+
+            .col-3.singer
+                i(class="fa-solid fa-microphone-lines") 
+                span #{song.singerId.fullName}
+
+            .col-3.topic 
+                i(class="fa-solid fa-music")
+                span #{song.topicId.title}
+
+            .col-3.like
+                i(class="fa-regular fa-thumbs-up") 
+                span #{song.like.length} thích
+        
+        div(style="margin-top: 20px")
+        .song-love 
+            i(class="fa-regular fa-heart")
+            span Bài hát yêu thích
+        
+        div(style="margin-top: 20px")
+        div(id="aplayer" song-data=song)
+
+        div(style="margin-top: 20px")
+        .description
+            table.table.table-bordered 
+                thead 
+                    tr  
+                        th Mô tả bài hát
+                tbody 
+                    tr 
+                        td #{song.description}
+        
+        .lyric 
+            table.table.table-bordered 
+                thead 
+                    tr  
+                        th Lời bài hát
+                tbody 
+                    tr 
+                        td 
+                            | !{song.lyrics}
+
+
+    //- play audio
+    script(src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js")
+
+    //- script
+    script(src="/js/song/detail.js")
