@@ -8,11 +8,16 @@
     width: 100%;
 }
 
+.singer,
+.like,
+.time {
+    margin-bottom: 10px;
+}
+
 .singer i,
 .like i,
 .time i {
     margin-right: 10px;
-    margin-bottom: 10px;
 }
 
 .singer {

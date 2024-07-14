@@ -1,7 +1,7 @@
 header.header 
     .container 
         .row.align-items-center
-            .col-3 
+            .col-2 
                 .inner-logo 
                     a(href="/")
                         if generalSetting && generalSetting.logo
@@ -9,7 +9,10 @@ header.header
                         else 
                             span LOGO
             
-            .col-4
+            .col-5
+                form(action="/search/result" class="search-form" method="GET")
+                    input(type="text" name="keyword" class="search-input" placeholder="Bạn muốn tìm kiếm gì?" value=keyword)
+                    button(class="search-button") Tìm
 
             .col-5.menu
                 ul
@@ -31,7 +34,7 @@ header.header
                     li
                         if currentUser
                             .btn-group
-                                button.btn.btn-primary.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false')
+                                button.btn.btn-primary.dropdown-toggle.header-color(type='button', data-toggle='dropdown', aria-expanded='false')
                                 .dropdown-menu
                                     a.dropdown-item(href='/user/information') Thông tin cá nhân
                                     a.dropdown-item(href='/user/change-password') Đổi mật khẩu

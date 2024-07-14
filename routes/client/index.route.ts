@@ -3,6 +3,7 @@ import topicRoutes from "./topic.route";
 import songRoutes from "./song.route";
 import userRoutes from "./user.route";
 import homeRoutes from "./home.route";
+import searchRoutes from "./search.route";
 import { checkToken } from "../../middlewares/auth";
 
 const clientRoutes = (app: Application): void => {
@@ -10,6 +11,7 @@ const clientRoutes = (app: Application): void => {
 
     app.use("/topics", topicRoutes);
     app.use("/songs", songRoutes);
+    app.use("/search", searchRoutes);
     app.use("/user", userRoutes);
     app.use("/", homeRoutes);
 }

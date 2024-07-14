@@ -1,6 +1,5 @@
 i {
     margin-right: 10px;
-    margin-bottom: 10px;
 }
 
 .singer {
@@ -25,4 +24,10 @@ i {
 
 .loved {
     font-weight: 900;
+}
+
+.love,
+.singer,
+.time {
+    margin-bottom: 10px;
 }

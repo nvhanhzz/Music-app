@@ -1,0 +1,29 @@
+extends ../../layouts/default.pug
+
+block addCss
+    link(rel="stylesheet", href="/css/song/songs.css")
+
+block main 
+    .container
+        h1(style="margin-top: 20px; margin-bottom: 20px") #{`Kết quả cho "${keyword}"`}
+        .songs
+            each song in songs 
+                .card.mb-3(style='max-width: 540px;')
+                    .row.no-gutters
+                        .col-md-4.outer-img
+                            a(href=`/songs/detail/${song.slug}`)
+                                img(src=song.avatar, alt=song.title)
+                        .col-md-8
+                            .card-body
+                                a(href=`/songs/detail/${song.slug}`)
+                                    h5.card-title #{song.title}
+                                .singer
+                                    i(class="fa-solid fa-microphone-lines") 
+                                    span #{song.singerId.fullName}
+                                .like
+                                    i(class="fa-solid fa-thumbs-up") 
+                                    span #{song.like.length} thích
+                                .time
+                                    i(class="fa-regular fa-clock") 
+                                    //- fix cứng, sửa sau
+                                    span Hôm nay
