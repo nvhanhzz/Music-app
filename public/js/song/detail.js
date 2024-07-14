@@ -30,8 +30,7 @@ if (likeButton) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    songId: songData._id,
-                    userId: currentUser.getAttribute("currentUser")
+                    songId: songData._id
                 })
             })
                 .then(response => {

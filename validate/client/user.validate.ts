@@ -34,3 +34,11 @@ export const validatePostRegister = (req: Request, res: Response, next: NextFunc
 
     next();
 }
+
+export const addFavoriteSong = (req: Request, res: Response, next: NextFunction): Response => {
+    if (!req.body.songId) {
+        return res.status(400).json({ "message": "Please provide songId" });
+    }
+
+    next();
+}

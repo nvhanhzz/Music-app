@@ -7,7 +7,7 @@ i {
     font-weight: 600;
 }
 
-.like {
+.like-button {
     color: rgb(73, 73, 255);
 }
 
@@ -17,4 +17,12 @@ i {
 
 .logged-in {
     cursor: pointer;
+}
+
+.love-button {
+    color: rgb(226, 53, 53);
+}
+
+.loved {
+    font-weight: 900;
 }

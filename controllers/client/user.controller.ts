@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import User from "../../models/user.model";
 import { hashPassword, comparePassword } from "../../helper/hashPassword";
 import generateToken from '../../helper/generateToken';
+import Song from '../../models/song.model';
 
 enum ListStatus {
     ACTIVE = "active",
@@ -30,6 +31,7 @@ export const postRegister = async (req: Request, res: Response): Promise<void> =
     req.body.password = await hashPassword(req.body.password);
     req.body.status = ListStatus.ACTIVE;
     req.body.avatar = "https://th.bing.com/th/id/OIP.VImWjbk4meO4actlY89hAAHaGj?w=1099&h=973&rs=1&pid=ImgDetMain";
+    req.body.favoriteSong = [];
     const newUser = new User(req.body);
     await newUser.save();
 
@@ -75,4 +77,34 @@ export const postLogout = (req: Request, res: Response): void => {
     res.clearCookie("token");
     req.flash("success", "Đăng xuât thành công.");
     return res.redirect("/");
+}
+
+// [PATCH] /user/addFavoriteSong
+export const addFavoriteSong = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const songId = req.body.songId;
+        const user = res.locals.currentUser;
+        const song = await Song.findOne({
+            _id: songId,
+            deleted: false,
+            status: ListStatus.ACTIVE
+        });
+        if (!song) {
+            return res.status(404).json({ message: "Song not found." });
+        }
+
+        let update;
+        if (user.favoriteSong.includes(song._id)) {
+            update = { $pull: { favoriteSong: song._id } };
+        } else {
+            update = { $push: { favoriteSong: song._id } };
+        }
+
+        // Cập nhật bài hát
+        const updateUser = await User.findByIdAndUpdate(user._id, update, { new: true }).select("-password");
+        return res.status(200).json({ song: updateUser });
+
+    } catch (error) {
+        return res.status(404).json({ message: "Song not found or user not found." });
+    }
 }

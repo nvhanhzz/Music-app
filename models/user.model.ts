@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Song from "./song.model";
 
 const userSchema: mongoose.Schema = new mongoose.Schema(
     {
@@ -7,6 +8,7 @@ const userSchema: mongoose.Schema = new mongoose.Schema(
         password: { type: String, required: true },
         phone: { type: String, required: true },
         avatar: { type: String, required: true },
+        favoriteSong: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: Song }], required: true },
         status: { type: String, required: true },
         deleted: { type: Boolean, default: false },
     },

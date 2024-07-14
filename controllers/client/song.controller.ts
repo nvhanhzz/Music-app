@@ -59,7 +59,7 @@ export const getSongDetail = async (req: Request, res: Response): Promise<void> 
 export const patchLike = async (req: Request, res: Response): Promise<Response> => {
     try {
         const songId = req.body.songId;
-        const userId = req.body.userId;
+        const userId = res.locals.currentUser.id;
         const song = await Song.findOne({
             _id: songId,
             deleted: false,
@@ -78,7 +78,6 @@ export const patchLike = async (req: Request, res: Response): Promise<Response> 
 
         // Cập nhật bài hát
         const updatedSong = await Song.findByIdAndUpdate(songId, update, { new: true });
-
         return res.status(200).json({ song: updatedSong });
 
     } catch (error) {

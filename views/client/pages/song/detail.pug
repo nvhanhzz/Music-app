@@ -6,8 +6,9 @@ block addCss
 
 block main 
     .container 
+        - const hasLoggedIn = currentUser ? true : false
         div(song-data=song class="d-none")
-        if currentUser
+        if hasLoggedIn
             div(currentUser=currentUser.id class="d-none")
         div(style="margin-top: 20px")
         h1 #{song.title}
@@ -27,7 +28,6 @@ block main
                 span #{song.topicId.title}
 
             .col-3.like
-                - const hasLoggedIn = currentUser ? true : false
                 - const hasLiked = hasLoggedIn && song.like.includes(currentUser.id)
 
                 i(class= hasLoggedIn ? (hasLiked ? 'fa-regular fa-thumbs-up like-button liked logged-in' : 'fa-regular fa-thumbs-up like-button logged-in') : 'fa-regular fa-thumbs-up like-button')
@@ -35,7 +35,9 @@ block main
         
         div(style="margin-top: 20px")
         .song-love 
-            i(class="fa-regular fa-heart")
+            - const hasLove = hasLoggedIn && currentUser.favoriteSong.includes(song.id)
+
+            i(class= hasLoggedIn ? (hasLove ? 'fa-regular fa-heart love-button loved logged-in' : 'fa-regular fa-heart love-button logged-in') : 'fa-regular fa-heart love-button')
             span Bài hát yêu thích
         
         div(style="margin-top: 20px")
