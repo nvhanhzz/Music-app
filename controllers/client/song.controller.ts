@@ -100,3 +100,25 @@ export const getFavoriteSong = async (req: Request, res: Response): Promise<void
         songs: songs
     });
 }
+
+// [PATCH] /songs/increaseListenCount
+export const increaseListenCount = async (req: Request, res: Response): Promise<Response> => {
+    const songId = req.body.songId;
+    const song = await Song.findOne({
+        _id: songId,
+        deleted: false,
+        status: ListStatus.ACTIVE
+    });
+    if (!song) {
+        return res.status(404).json({ message: "Song not found." });
+    }
+    if (!song.listenCount) { // trường hợp đổ data cứng vào db mà không có trường listenCount
+        song.listenCount = 1;
+    } else {
+        ++song.listenCount;
+    }
+
+    await song.save();
+
+    return res.status(200).json({ listenCount: song.listenCount });
+}

@@ -27,13 +27,18 @@ block main
                 i(class="fa-solid fa-music")
                 span #{song.topicId.title}
 
-            .col-3.like
-                - const hasLiked = hasLoggedIn && song.like.includes(currentUser.id)
-
-                i(class= hasLoggedIn ? (hasLiked ? 'fa-regular fa-thumbs-up like-button liked logged-in' : 'fa-regular fa-thumbs-up like-button logged-in') : 'fa-regular fa-thumbs-up like-button')
-                span(like-count) #{song.like.length} thích
+            .col-3.listen-count 
+                i(class="fa-solid fa-headphones")
+                span(listen-count) #{song.listenCount || 0} lượt nghe
         
-        div(style="margin-top: 20px")
+        div(style="margin-top: 5px")
+        .like
+            - const hasLiked = hasLoggedIn && song.like.includes(currentUser.id)
+
+            i(class= hasLoggedIn ? (hasLiked ? 'fa-regular fa-thumbs-up like-button liked logged-in' : 'fa-regular fa-thumbs-up like-button logged-in') : 'fa-regular fa-thumbs-up like-button')
+            span(like-count) #{song.like.length} thích
+        
+        div(style="margin-top: 15px")
         .song-love 
             - const hasLove = hasLoggedIn && currentUser.favoriteSong.includes(song.id)
 

@@ -13,4 +13,6 @@ router.get("/:topicSlug", controller.getSongByTopic);
 
 router.patch("/like", isLoggedIn, validate.validatePatchLike, controller.patchLike);
 
+router.patch("/increaseListenCount", controller.increaseListenCount);
+
 export default router;
