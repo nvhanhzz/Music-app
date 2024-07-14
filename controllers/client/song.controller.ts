@@ -54,3 +54,34 @@ export const getSongDetail = async (req: Request, res: Response): Promise<void> 
         song: song
     });
 }
+
+// [PATCH] /songs/like
+export const patchLike = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const songId = req.body.songId;
+        const userId = req.body.userId;
+        const song = await Song.findOne({
+            _id: songId,
+            deleted: false,
+            status: ListStatus.ACTIVE
+        });
+        if (!song) {
+            return res.status(404).json({ message: "Song not found." });
+        }
+
+        let update;
+        if (song.like.includes(userId)) {
+            update = { $pull: { like: userId } };
+        } else {
+            update = { $push: { like: userId } };
+        }
+
+        // Cập nhật bài hát
+        const updatedSong = await Song.findByIdAndUpdate(songId, update, { new: true });
+
+        return res.status(200).json({ song: updatedSong });
+
+    } catch (error) {
+        return res.status(404).json({ message: "Song not found or user not found." });
+    }
+}

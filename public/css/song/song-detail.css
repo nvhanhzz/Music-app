@@ -10,3 +10,11 @@ i {
 .like {
     color: rgb(73, 73, 255);
 }
+
+.liked {
+    font-weight: 900;
+}
+
+.logged-in {
+    cursor: pointer;
+}

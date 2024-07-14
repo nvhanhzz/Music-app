@@ -57,7 +57,7 @@ export const checkToken = (options: CheckTokenOptions = { tokenName: '' }) => {
 };
 
 export const isLoggedIn = (req: Request & { currentUser?: object }, res: Response, next: NextFunction) => {
-    if (!req.currentUser) {
+    if (!res.locals.currentUser) {
         req.flash('fail', 'Bạn cần đăng nhập trước.');
         return res.redirect("back");
     }
@@ -65,7 +65,7 @@ export const isLoggedIn = (req: Request & { currentUser?: object }, res: Respons
 }
 
 export const isLoggedOut = (req: Request & { currentUser?: object }, res: Response, next: NextFunction) => {
-    if (req.currentUser) {
+    if (res.locals.currentUser) {
         req.flash('fail', 'Bạn đã đăng nhập rồi.');
         return res.redirect("back");
     }
