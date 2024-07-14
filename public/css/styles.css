@@ -73,6 +73,61 @@ header.header {
     outline: none;
 }
 
+/* CSS for inner-suggest section */
+.inner-suggest {
+    position: absolute;
+    width: 93%;
+    background-color: #fff;
+    border: 1px solid #d2d1ec;
+}
+
+.inner-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.inner-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #d2d1ec;
+    text-decoration: none;
+    color: #333;
+}
+
+.inner-item:hover {
+    background-color: #f0f0f0;
+}
+
+.inner-image img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.inner-info {
+    flex: 1;
+}
+
+.inner-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.inner-singer {
+    display: flex;
+    align-items: center;
+    color: #666;
+}
+
+.inner-singer i {
+    margin-right: 5px;
+}
+
+
 /* Style for the footer */
 footer.footer {
     height: 64px;

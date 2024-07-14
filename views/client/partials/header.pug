@@ -13,6 +13,8 @@ header.header
                 form(action="/search/result" class="search-form" method="GET")
                     input(type="text" name="keyword" class="search-input" placeholder="Bạn muốn tìm kiếm gì?" value=keyword)
                     button(class="search-button") Tìm
+                .inner-suggest.d-none 
+                    .inner-list
 
             .col-5.menu
                 ul

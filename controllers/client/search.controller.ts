@@ -19,7 +19,7 @@ export const index = async (req: Request, res: Response): Promise<void | Respons
         slug: regex,
         deleted: false,
         status: ListStatus.ACTIVE
-    }).populate("singerId", "fullName");
+    }).limit(5).populate("singerId", "fullName"); // sort theo luợt nghe nữa
 
     switch (type) {
         case "result":
@@ -30,8 +30,7 @@ export const index = async (req: Request, res: Response): Promise<void | Respons
             });
 
         case "suggest":
-
-            break;
+            return res.status(200).json({ songs: songs });
 
         default:
             break;

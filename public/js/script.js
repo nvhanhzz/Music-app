@@ -73,19 +73,38 @@ if (searchForm) {
     if (input) {
         input.addEventListener("keyup", () => {
             const keyword = input.value;
-            fetch(`/search/suggest/keyword=${keyword}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+            if (keyword) {
+                const url = `/search/suggest/?keyword=${encodeURIComponent(keyword)}`;
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.querySelector(".inner-suggest").classList.remove("d-none");
+                        const songs = data.songs;
+                        const suggestList = songs.map(song => {
+                            return `
+                                        <a class="inner-item" href="/songs/detail/${song.slug}">
+                                            <div class="inner-image"> <img src=${song.avatar} /></div>
+                                            <div class="inner-info">
+                                                <div class="inner-title">${song.title}</div>
+                                                <div class="inner-singer"> <i class="fa-solid fa-microphone-lines"> </i><span>${song.singerId.fullName}</span></div>
+                                            </div>
+                                        </a>
+                                    `;
+                        });
+
+                        document.querySelector(".inner-suggest .inner-list").innerHTML = suggestList.join("");
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            } else {
+                document.querySelector(".inner-suggest").classList.add("d-none");
+            }
         })
     }
 }
