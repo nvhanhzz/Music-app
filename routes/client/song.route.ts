@@ -5,6 +5,8 @@ import { isLoggedIn } from "../../middlewares/auth";
 
 const router: Router = express.Router();
 
+router.get("/favorite", isLoggedIn, controller.getFavoriteSong);
+
 router.get("/detail/:slug", controller.getSongDetail);
 
 router.get("/:topicSlug", controller.getSongByTopic);

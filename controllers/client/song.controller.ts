@@ -84,3 +84,19 @@ export const patchLike = async (req: Request, res: Response): Promise<Response> 
         return res.status(404).json({ message: "Song not found or user not found." });
     }
 }
+
+// [GET] /songs/favorite
+export const getFavoriteSong = async (req: Request, res: Response): Promise<void> => {
+    const user = res.locals.currentUser;
+
+    const songs = await Song.find({
+        _id: { $in: user.favoriteSong },
+        deleted: false,
+        status: ListStatus.ACTIVE,
+    }).populate("singerId", "fullName").select("avatar title singerId like slug"); // sau thêm createdAt
+
+    res.render("client/pages/song/favorite", {
+        pageTitle: "Bài hát yêu thích",
+        songs: songs
+    });
+}

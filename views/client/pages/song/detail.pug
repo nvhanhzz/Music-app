@@ -37,7 +37,7 @@ block main
         .song-love 
             - const hasLove = hasLoggedIn && currentUser.favoriteSong.includes(song.id)
 
-            i(class= hasLoggedIn ? (hasLove ? 'fa-regular fa-heart love-button loved logged-in' : 'fa-regular fa-heart love-button logged-in') : 'fa-regular fa-heart love-button')
+            i(songId=song.id class= hasLoggedIn ? (hasLove ? 'fa-regular fa-heart love-button loved logged-in' : 'fa-regular fa-heart love-button logged-in') : 'fa-regular fa-heart love-button')
             span Bài hát yêu thích
         
         div(style="margin-top: 20px")

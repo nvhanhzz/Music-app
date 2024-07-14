@@ -2,9 +2,11 @@ extends ../../layouts/default.pug
 
 block addCss
     link(rel="stylesheet", href="/css/song/songs.css")
+    link(rel="stylesheet", href="/css/song/song-detail.css")
 
 block main 
     .container
+        div(currentUser=currentUser.id class="d-none")
         h1(style="margin-top: 20px; margin-bottom: 20px") #{pageTitle}
         .songs
             each song in songs 
@@ -20,9 +22,9 @@ block main
                                 .singer
                                     i(class="fa-solid fa-microphone-lines") 
                                     span #{song.singerId.fullName}
-                                .like
-                                    i(class="fa-solid fa-thumbs-up") 
-                                    span #{song.like.length} thích
+                                .love
+                                    i(songId=song.id class='fa-regular fa-heart love-button loved logged-in')
+                                    span Bài hát yêu thích
                                 .time
                                     i(class="fa-regular fa-clock") 
                                     //- fix cứng, sửa sau

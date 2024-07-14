@@ -9,14 +9,24 @@ header.header
                         else 
                             span LOGO
             
-            .col-5
+            .col-4
 
-            .col-4.menu
+            .col-5.menu
                 ul
                     li 
-                        a(href="/") Trang chủ
+                        a(href="/")
+                            i(class="fa-solid fa-house") 
+                            span Trang chủ
                     li
-                        a(href="/topics") Chủ đề
+                        a(href="/topics")
+                            i(class="fa-solid fa-music") 
+                            span Chủ đề
+                    
+                    if currentUser
+                        li
+                            a(href="/songs/favorite")
+                                i(class="fa-solid fa-heart") 
+                                span Yêu thích
 
                     li
                         if currentUser

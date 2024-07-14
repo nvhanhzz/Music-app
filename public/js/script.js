@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
 const loveButton = document.querySelector(".love-button");
 if (loveButton) {
     loveButton.addEventListener("click", () => {
+        const songId = loveButton.getAttribute("songId");
         const currentUser = document.querySelector("div[currentUser]");
         if (currentUser) {
             fetch('/user/addFavoriteSong', {
@@ -28,7 +29,7 @@ if (loveButton) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    songId: songData._id
+                    songId: songId
                 })
             })
                 .then(response => {

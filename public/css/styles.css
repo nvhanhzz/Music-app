@@ -29,6 +29,10 @@ header.header {
     margin-left: 15px;
 }
 
+.header .menu ul li i {
+    margin-right: 5px;
+}
+
 .header a:hover {
     text-decoration: none;
 }
