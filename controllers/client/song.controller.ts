@@ -88,12 +88,14 @@ export const patchLike = async (req: Request, res: Response): Promise<Response> 
 // [GET] /songs/favorite
 export const getFavoriteSong = async (req: Request, res: Response): Promise<void> => {
     const user = res.locals.currentUser;
-
-    const songs = await Song.find({
-        _id: { $in: user.favoriteSong },
-        deleted: false,
-        status: ListStatus.ACTIVE,
-    }).populate("singerId", "fullName").select("avatar title singerId like slug"); // sau thêm createdAt
+    await user.populate("favoriteSong.songId", "avatar title singerId like slug status deleted");
+    await user.populate("favoriteSong.songId.singerId", "fullName");
+    user.favoriteSong.sort((a, b) => {
+        const dateA = new Date(a.addedAt) as Date;
+        const dateB = new Date(b.addedAt) as Date;
+        return dateA.getTime() - dateB.getTime();
+    });
+    const songs = user.favoriteSong.filter(item => item.songId.deleted === false && item.songId.status === ListStatus.ACTIVE);
 
     res.render("client/pages/song/favorite", {
         pageTitle: "Bài hát yêu thích",

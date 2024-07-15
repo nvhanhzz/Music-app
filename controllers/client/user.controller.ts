@@ -93,17 +93,15 @@ export const addFavoriteSong = async (req: Request, res: Response): Promise<Resp
             return res.status(404).json({ message: "Song not found." });
         }
 
-        let update;
-        if (user.favoriteSong.includes(song._id)) {
-            update = { $pull: { favoriteSong: song._id } };
+        const favoriteSongs = user.favoriteSong.map(item => item.songId.toString());
+        if (favoriteSongs.includes(song._id.toString())) {
+            user.favoriteSong = user.favoriteSong.filter(item => item.songId.toString() !== song._id.toString());
         } else {
-            update = { $push: { favoriteSong: song._id } };
+            user.favoriteSong.push({ songId: song._id });
         }
 
-        // Cập nhật bài hát
-        const updateUser = await User.findByIdAndUpdate(user._id, update, { new: true }).select("-password");
-        return res.status(200).json({ song: updateUser });
-
+        await user.save();
+        return res.status(200).json({ song: user });
     } catch (error) {
         return res.status(404).json({ message: "Song not found or user not found." });
     }

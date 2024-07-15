@@ -40,7 +40,7 @@ block main
         
         div(style="margin-top: 15px")
         .song-love 
-            - const hasLove = hasLoggedIn && currentUser.favoriteSong.includes(song.id)
+            - const hasLove = hasLoggedIn && currentUser.favoriteSong.some(item => item.songId.toString() === song.id.toString())
 
             i(songId=song.id class= hasLoggedIn ? (hasLove ? 'fa-regular fa-heart love-button loved logged-in' : 'fa-regular fa-heart love-button logged-in') : 'fa-regular fa-heart love-button')
             span Bài hát yêu thích

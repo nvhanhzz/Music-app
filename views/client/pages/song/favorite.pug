@@ -9,7 +9,8 @@ block main
         div(currentUser=currentUser.id class="d-none")
         h1(style="margin-top: 20px; margin-bottom: 20px") #{pageTitle}
         .songs
-            each song in songs 
+            each songData in songs 
+                -const song = songData.songId
                 .card.mb-3(style='max-width: 540px;')
                     .row.no-gutters
                         .col-md-4.outer-img

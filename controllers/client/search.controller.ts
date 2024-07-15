@@ -19,7 +19,7 @@ export const index = async (req: Request, res: Response): Promise<void | Respons
         slug: regex,
         deleted: false,
         status: ListStatus.ACTIVE
-    }).limit(5).populate("singerId", "fullName"); // sort theo luợt nghe nữa
+    }).limit(5).populate("singerId", "fullName").sort({ "listenCount": "desc" });
 
     switch (type) {
         case "result":
