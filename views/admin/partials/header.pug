@@ -1,0 +1,13 @@
+header.header 
+    .container-fluid 
+        .row.align-items-center 
+            .col-2
+                .inner-logo 
+                    a(href="/admin/dashboard") ADMIN 
+
+            .col-8
+
+            .col-2.auth-button
+                a(href=`${prefixAdmin}/my-profile` class="btn btn-primary" my-profile) My Profile
+                form(class="logout-form" action=`${prefixAdmin}/auth/logout` method="POST")
+                    button(type="submit" class="logout-button btn btn-danger") Logout

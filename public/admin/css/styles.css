@@ -1,0 +1,282 @@
+/* reset */
+.row {
+    margin-right: 0px;
+}
+
+th,
+td {
+    text-align: center;
+}
+
+body {
+    margin-top: 70px;
+    /* Khoảng trống có chiều cao bằng với chiều cao của header */
+}
+
+/* Header styles */
+
+.container-fluid {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    background-color: #212023;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.inner-logo a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.auth-button {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+
+.auth-button a {
+    margin-top: 3px;
+    width: 100px;
+    display: flex;
+    align-items: center;
+}
+
+.auth-button .btn {
+    margin-left: 10px;
+    height: 38px;
+}
+
+/* Body styles */
+
+.sider {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    background-color: #343134;
+    padding: 0px;
+    min-height: calc(100vh - 70px);
+    overflow-y: auto;
+}
+
+.sider ul {
+    list-style-type: none;
+    padding: 0px;
+}
+
+.sider ul li {
+    border-bottom: #4b4949 1px solid;
+    height: 50px;
+}
+
+.sider ul li a {
+    color: #fff;
+    font-size: 17px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 30px;
+}
+
+.sider ul li a:hover {
+    text-decoration: none;
+}
+
+.main {
+    margin-left: calc(100vw / 6);
+    padding-top: 10px;
+    padding-left: 30px;
+}
+
+.item td {
+    vertical-align: middle;
+}
+
+.item:hover {
+    background-color: #f0f0f0;
+}
+
+.item .position-product {
+    width: 60px;
+    text-align: center;
+}
+
+.badge {
+    border: none;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sort-title {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.card-sort {
+    display: flex;
+}
+
+.card-sort * {
+    margin-left: 20px;
+}
+
+.card-sort .sort-product {
+    width: 150px;
+    height: 35px;
+    text-align: center;
+    border: #ccc1c1 1px solid;
+}
+
+.card-sort .clear-button {
+    background-color: #28a745;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    padding: 0px 10px;
+}
+
+.notfAlert {
+    width: 300px;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 17px;
+    align-items: center;
+    margin-bottom: 0px;
+    position: absolute;
+    right: 10px;
+    top: 75px;
+    z-index: 1000;
+}
+
+.close-alert-btn {
+    border: none;
+    font-size: 25px;
+    background-color: transparent;
+}
+
+.create-product {
+    border: #ced4da 1px solid;
+    padding: 10px;
+    border-radius: 5px;
+    color: #28a745;
+}
+
+.create-product:hover {
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+}
+
+#change-product-form .select-group {
+    display: flex;
+    margin-right: 15px;
+}
+
+#change-product-form select {
+    width: 200px;
+    text-align: center;
+    border: 0.5px solid #ddd;
+    border-radius: .25rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#change-product-form select:active {
+    border: 0.5px solid #ddd;
+    border-radius: .25rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#change-product-form .btn-change-product-form {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    width: 73px;
+}
+
+/* pagination style */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination ul {
+    display: flex;
+    list-style-type: none;
+    position: relative;
+}
+
+.pagination li {
+    display: flex;
+    align-items: center;
+}
+
+.pagination .pagination-button {
+    width: 25px;
+    height: 25px;
+    border: none;
+    background-color: white;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.pagination .active {
+    font-size: 17px;
+    font-weight: 500;
+    margin: 1px;
+}
+
+.pagination .etc {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.pagination .arrow1,
+.pagination .arrow2 {
+    position: absolute;
+    top: -12px;
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    font-family: 'Roboto Light', sans-serif;
+}
+
+.pagination .arrow1 {
+    left: -10px;
+}
+
+.pagination .arrow2 {
+    right: -60px;
+}
+
+.pagination .arrow-inactive {
+    text-align: center;
+    vertical-align: middle;
+    top: -6px;
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    font-family: 'Roboto Light', sans-serif;
+    opacity: 0.5;
+}
