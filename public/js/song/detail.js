@@ -56,15 +56,19 @@ if (likeButton) {
 let listenedTime = 0;
 let lastUpdateTime = 0;
 let apiCalled = false;
+let isSeeking = false;
 
 ap.on("timeupdate", () => {
     const currentTime = ap.audio.currentTime;
-    if (lastUpdateTime) {
+
+    // Chỉ cập nhật listenedTime nếu không đang tua
+    if (lastUpdateTime && !isSeeking) {
         listenedTime += currentTime - lastUpdateTime;
     }
+
     lastUpdateTime = currentTime;
 
-    if (listenedTime >= 10 && !apiCalled) {
+    if (listenedTime >= 30 && !apiCalled) {
         apiCalled = true;
         fetch('/songs/increaseListenCount', {
             method: 'PATCH',
@@ -90,7 +94,6 @@ ap.on("timeupdate", () => {
             })
             .catch(error => {
                 console.error('Error:', error);
-                // Reset apiCalled to false if there was an error, so we can retry
                 apiCalled = false;
             });
     }
@@ -110,7 +113,12 @@ ap.on('ended', () => {
     apiCalled = false;
 });
 
+ap.on('seeking', () => {
+    isSeeking = true;
+});
+
 ap.on('seeked', () => {
+    isSeeking = false;
     lastUpdateTime = ap.audio.currentTime;
 });
 // end increase listen count
