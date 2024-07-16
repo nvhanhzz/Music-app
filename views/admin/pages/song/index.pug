@@ -43,6 +43,7 @@ block main
                         th Lượt nghe
                         th Vị trí
                         th Người tạo
+                        th Nổi bật
                         th Trạng thái
                         th Hành động 
 
@@ -71,6 +72,12 @@ block main
                                 //- +date(item.createdBy.createdAt)
                             td 
                                 //- if currentUser.role.permission.includes("update-product")
+                                if(item.featured)
+                                    button(class="badge badge-success" itemId=item._id val="true" update-featured) Nổi bật
+                                else 
+                                    button(class="badge badge-danger" itemId=item._id val="false" update-featured) Không
+                            td 
+                                //- if currentUser.role.permission.includes("update-product")
                                 if(item.status === "active")
                                     button(class="badge badge-success" itemId=item._id val="active" update-status) Hoạt động 
                                 else 
@@ -92,6 +99,10 @@ block main
 
     form(action=`${prefixAdmin}/songs/change-status` 
     class="change-status-form"
+    method="POST")
+
+    form(action=`${prefixAdmin}/songs/change-featured` 
+    class="change-featured-form"
     method="POST")
 
     form(action=`${prefixAdmin}/songs/delete` 

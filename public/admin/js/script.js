@@ -12,6 +12,8 @@ const positionInput = document.querySelector('input[name="inputChangePosition"]'
 const selectChangeMultiple = document.querySelector('.select-change-multiple'); // select change multiple
 const statusButtons = document.querySelectorAll("button[update-status]"); // list status button
 const changeStatusForm = document.querySelector(".change-status-form"); // form change status of 1 item
+const featuredButtons = document.querySelectorAll("button[update-featured]"); // list featured button
+const changeFeaturedForm = document.querySelector(".change-featured-form"); // form change featured of 1 item
 const deleteButtons = document.querySelectorAll('button[delete-button]'); // list delete button
 const deleteForm = document.querySelector('.delete-form'); // delete form
 
@@ -173,6 +175,19 @@ for (let btn of statusButtons) {
     })
 }
 // end solve change status
+
+// solve change featured
+for (let btn of featuredButtons) {
+    btn.addEventListener("click", () => {
+        const featured = btn.getAttribute("val") === "true" ? "false" : "true";
+        const itemId = btn.getAttribute("itemId");
+        const oldAction = changeFeaturedForm.getAttribute("action");
+        const changeFeaturedPath = `${oldAction}/${featured}/${itemId}?_method=PATCH`;
+        changeFeaturedForm.setAttribute("action", changeFeaturedPath);
+        changeFeaturedForm.submit();
+    })
+}
+// end solve change featured
 
 // solve delete 1 item
 deleteButtons.forEach(item => {

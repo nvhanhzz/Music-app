@@ -7,7 +7,7 @@ import pagination from "../../helper/pagination";
 import sort from "../../helper/sort";
 const PATH_ADMIN = process.env.PATH_ADMIN;
 
-// [GET] /admin/songs/
+// [GET] /admin/songs
 export const index = async (req: Request, res: Response): Promise<void> => {
     const query = req.query;
 
@@ -65,7 +65,7 @@ export const index = async (req: Request, res: Response): Promise<void> => {
         .sort(sortObject)
         .populate("singerId", "fullName")
         .populate("topicId", "title")
-        .select("title avatar singerId topicId status listenCount slug position");
+        .select("title avatar singerId topicId status listenCount slug position featured");
 
     res.render("admin/pages/song/index", {
         pageTitle: "Quản lý bài hát",
@@ -95,6 +95,41 @@ export const patchChangeStatus = async (req: Request, res: Response): Promise<vo
             {
                 $set: {
                     status: status
+                },
+                // $push: {
+                //     updatedBy: {
+                //         accountId: res.locals.currentUser.id,
+                //         updatedAt: new Date()
+                //     }
+                // }
+            }
+        );
+        if (result.modifiedCount === 1) {
+            req.flash('success', 'Cập nhật thành công.');
+        } else {
+            req.flash('fail', 'Cập nhật thất bại.');
+        }
+    } catch (error) {
+        req.flash('fail', 'Cập nhật thất bại.');
+    }
+
+    res.redirect("back");
+}
+
+// [PATCH] /admin/songs/change-featured/:featured/:id
+export const patchChangeFeatured = async (req: Request, res: Response): Promise<void> => {
+    const featured = req.params.featured === "true";
+    const itemId = req.params.id;
+
+    try {
+        const result = await Song.updateOne(
+            {
+                _id: itemId,
+                deleted: false
+            },
+            {
+                $set: {
+                    featured: featured
                 },
                 // $push: {
                 //     updatedBy: {
@@ -257,17 +292,6 @@ export const getSongDetail = async (req: Request, res: Response): Promise<void> 
             .populate("topicId", "title");
 
         if (song) {
-            // await logSupportHelper.createdBy(product);
-            // if (product.categoryId) {
-            //     const category = await ProductCategory.findOne({
-            //         _id: product.categoryId,
-            //         deleted: false
-            //     });
-            //     if (category) {
-            //         product.category = category.title
-            //     }
-            // }
-
             res.render('admin/pages/song/detail', {
                 pageTitle: "Chi tiết bài hát",
                 song: song
