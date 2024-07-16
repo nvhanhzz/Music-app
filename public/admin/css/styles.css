@@ -155,26 +155,6 @@ body {
     padding: 0px 10px;
 }
 
-.notfAlert {
-    width: 300px;
-    height: 50px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 17px;
-    align-items: center;
-    margin-bottom: 0px;
-    position: absolute;
-    right: 10px;
-    top: 75px;
-    z-index: 1000;
-}
-
-.close-alert-btn {
-    border: none;
-    font-size: 25px;
-    background-color: transparent;
-}
-
 .create-product {
     border: #ced4da 1px solid;
     padding: 10px;
@@ -284,4 +264,37 @@ body {
     font-size: 25px;
     font-family: 'Roboto Light', sans-serif;
     opacity: 0.5;
+}
+
+/* Style for the notification alert */
+.notfAlert {
+    width: 300px;
+    min-height: 50px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 17px;
+    align-items: center;
+    margin-bottom: 0px;
+    position: fixed;
+    right: 10px;
+    top: 80px;
+    z-index: 1001;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 10px;
+    padding-right: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+    flex-wrap: wrap;
+    white-space: normal;
+}
+
+.close-alert-btn {
+    border: none;
+    font-size: 25px;
+    background-color: transparent;
+
+    position: absolute;
+    right: 5px;
+    top: 0px;
 }

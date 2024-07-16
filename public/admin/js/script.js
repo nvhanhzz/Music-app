@@ -7,8 +7,8 @@ const clearSortButton = document.querySelector('button[clear]'); // clear button
 const checkAll = document.querySelector('input[name="checkall"]'); // input checkbox check all
 const checkItems = document.querySelectorAll('input[name="checkitem"]'); // input checkbox 1 product
 // const formChangeListProduct = document.querySelector('#change-product-form'); // form change list product
-// const statusButtons = document.querySelectorAll("button[update-status]"); // list status button
-// const changeStatusForm = document.querySelector(".change-status-form"); // form change status of 1 product
+const statusButtons = document.querySelectorAll("button[update-status]"); // list status button
+const changeStatusForm = document.querySelector(".change-status-form"); // form change status of 1 item
 // const inputChangeListProduct = document.querySelector('input[name="inputChangeListProduct"]'); // input text change list product
 // const selectChangeProduct = document.querySelector('.select-change-product'); // select change product
 // const deleteButtons = document.querySelectorAll('button[delete-button]'); // list delete button
@@ -17,6 +17,24 @@ const checkItems = document.querySelectorAll('input[name="checkitem"]'); // inpu
 // const positionProducts = document.querySelectorAll('.position-product'); // list poition
 // const updateButtons = document.querySelectorAll('button[update-button]'); // list update button
 // const detailButtons = document.querySelectorAll('button[detail-button]'); // list detail button
+
+// solve alert notification
+document.addEventListener('DOMContentLoaded', function () {
+    const alert = document.querySelector('.notfAlert');
+    if (alert) {
+        setTimeout(function () {
+            alert.style.display = 'none';
+        }, 5000);
+
+        const closeAlertBtn = document.querySelector('.close-alert-btn');
+        if (closeAlertBtn) {
+            closeAlertBtn.addEventListener('click', function () {
+                alert.style.display = 'none';
+            });
+        }
+    }
+});
+// end solve alert notification
 
 // solve filter
 if (activeButtons) {
@@ -85,7 +103,7 @@ if (clearSortButton) {
 }
 // end solve sort
 
-// solve change list product
+// solve change multiple
 if (checkAll) {
     checkAll.addEventListener("click", () => {
         if (checkAll.checked) {
@@ -147,22 +165,21 @@ if (checkItems) {
 //         }
 //     });
 // }
-// end solve change list product
+// end solve change multiple
 
-// // solve change status of product
-
-// for (let btn of statusButtons) {
-//     btn.addEventListener("click", () => {
-//         const status = btn.getAttribute("val") === "active" ? "inactive" : "active";
-//         const itemId = btn.getAttribute("itemId");
-//         const oldAction = changeStatusForm.getAttribute("action");
-//         // console.log(oldAction);
-//         const changStatusPath = `${oldAction}/${status}/${itemId}?_method=PATCH`;
-//         changeStatusForm.setAttribute("action", changStatusPath);
-//         console.log(changeStatusForm);
-//         changeStatusForm.submit();
-//     })
-// }
+// solve change status
+for (let btn of statusButtons) {
+    btn.addEventListener("click", () => {
+        const status = btn.getAttribute("val") === "active" ? "inactive" : "active";
+        const itemId = btn.getAttribute("itemId");
+        const oldAction = changeStatusForm.getAttribute("action");
+        const changStatusPath = `${oldAction}/${status}/${itemId}?_method=PATCH`;
+        changeStatusForm.setAttribute("action", changStatusPath);
+        console.log(changeStatusForm);
+        changeStatusForm.submit();
+    })
+}
+// solve change status
 
 // // solve delete 1 product
 // deleteButtons.forEach(item => {

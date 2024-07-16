@@ -21,7 +21,10 @@ export const getSongByTopic = async (req: Request, res: Response): Promise<void>
         deleted: false,
         status: ListStatus.ACTIVE,
         topicId: topic._id
-    }).populate("singerId", "fullName").select("avatar title singerId like slug"); // sau thêm createdAt
+    })
+        .sort({ position: "desc" })
+        .populate("singerId", "fullName")
+        .select("avatar title singerId like slug"); // sau thêm createdAt
 
     res.render("client/pages/song/songByTopic", {
         pageTitle: topic.title,

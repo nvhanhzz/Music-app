@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import session from 'express-session';
 import flash from 'express-flash';
+import methodOverride from "method-override";
 import connectDB from "./config/database";
 import clientRoutes from "./routes/client/index.route";
 import adminRoutes from "./routes/admin/index.route";
@@ -17,6 +18,9 @@ connectDB();
 
 const app: Application = express();
 const port: number | string = parseInt(process.env.PORT as string, 10) || 5678;
+
+// method override
+app.use(methodOverride("_method"));
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))

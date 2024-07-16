@@ -6,6 +6,7 @@ import search from "../../helper/search";
 import pagination from "../../helper/pagination";
 import sort from "../../helper/sort";
 
+// [GET] /admin/songs/
 export const index = async (req: Request, res: Response): Promise<void> => {
     const query = req.query;
 
@@ -73,4 +74,43 @@ export const index = async (req: Request, res: Response): Promise<void> => {
         pagination: paginationObject,
         sortArray: sortArray
     });
+}
+
+// [PATCH] /admin/songs/change-status/:status/:id
+export const patchChangeStatus = async (req: Request, res: Response): Promise<void> => {
+    const status = req.params.status;
+    const itemId = req.params.id;
+
+    if (!Object.values(ListStatus).includes(status as ListStatus)) {
+        req.flash('fail', 'Cập nhật thất bại.');
+    }
+
+    try {
+        const result = await Song.updateOne(
+            {
+                _id: itemId,
+                deleted: false
+            },
+            {
+                $set: {
+                    status: status
+                },
+                // $push: {
+                //     updatedBy: {
+                //         accountId: res.locals.currentUser.id,
+                //         updatedAt: new Date()
+                //     }
+                // }
+            }
+        );
+        if (result.modifiedCount === 1) {
+            req.flash('success', 'Cập nhật thành công.');
+        } else {
+            req.flash('fail', 'Cập nhật thất bại.');
+        }
+    } catch (error) {
+        req.flash('fail', 'Cập nhật thất bại.');
+    }
+
+    res.redirect("back");
 }
