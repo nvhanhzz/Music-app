@@ -1,0 +1,25 @@
+mixin change-multiple-form(action)
+    form(id="change-multiple-form" action=action method="POST")
+        input(
+            type="text"
+            style="display: none"
+            name="inputChangeListProduct"
+        )
+        input(
+            type="text"
+            style="display: none"
+            name="inputProductPosition"
+        )
+        .select-group 
+            select.select-change-product
+                option(value="" disabled selected) --Chọn hành động--
+                option(value="active") Hoạt động
+                option(value="inactive") Dừng hoạt động
+                option(value="delete") Xóa
+                option(value="change position") Thay đổi vị trí
+            .input-group-append 
+                button(
+                    name="btn-change-multiple"
+                    class="btn btn-success btn-change-multiple"
+                    type="submit"
+                ) Cập nhật

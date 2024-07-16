@@ -1,0 +1,39 @@
+mixin pagination(pagination)
+    ul 
+        if (pagination.page === 1)
+            li 
+                span.arrow1.arrow-inactive ←
+        else 
+            li
+                button(class="pagination-button arrow1", pageNum=pagination.page - 1) ←
+
+        if (pagination.page > 3) 
+            li 
+                button(class= pagination.page === 1 ? "pagination-button active" : "pagination-button", pageNum=1) 1
+        if (pagination.page > 4) 
+            li 
+                button(class= pagination.page === 2 ? "pagination-button active" : "pagination-button", pageNum=2) 2
+        if (pagination.page > 5)
+            li 
+                span(class="etc") ...
+
+        -   for (let i = Math.max(1, pagination.page - 2); i <= Math.min(pagination.final, pagination.page + 2); ++i)
+            li 
+                button(class= pagination.page === i ? "pagination-button active" : "pagination-button", pageNum=i) #{i}
+
+        if (pagination.page + 2 < pagination.final - 2)
+            li 
+                span(class="etc") ...
+        if (pagination.page + 2 < pagination.final - 1) 
+            li 
+                button(class= pagination.page === pagination.final - 1 ? "pagination-button active" : "pagination-button", pageNum=pagination.final - 1) #{pagination.final - 1}
+        if (pagination.page + 2 < pagination.final) 
+            li
+                button(class= pagination.page === pagination.final ? "pagination-button active" : "pagination-button", pageNum=pagination.final) #{pagination.final}
+        
+        if (pagination.page === pagination.final)
+            li 
+                span.arrow2.arrow-inactive →
+        else 
+            li 
+                button(class="pagination-button arrow2", pageNum=pagination.page + 1) →

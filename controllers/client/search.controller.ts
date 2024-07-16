@@ -1,11 +1,7 @@
 import { Request, Response } from "express";
 import Song from "../../models/song.model";
 import searchHelper from "../../helper/search";
-
-enum ListStatus {
-    ACTIVE = "active",
-    INACTIVE = "inactive"
-}
+import ListStatus from "../../enums/status.enum";
 
 // [GET] /search/:type
 export const index = async (req: Request, res: Response): Promise<void | Response> => {

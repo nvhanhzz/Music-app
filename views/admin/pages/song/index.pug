@@ -1,0 +1,99 @@
+extends ../../layouts/default.pug
+include ../../mixins/filterStatus.pug
+include ../../mixins/searchForm.pug
+include ../../mixins/sort.pug
+include ../../mixins/pagination.pug
+include ../../mixins/changeMultipleForm.pug
+include ../../mixins/notification.pug
+include ../../mixins/time.pug
+
+block main
+    h1 Quản lý bài hát
+    .card.mb-3 
+        .card-header Bộ lọc và tìm kiếm
+        .card-body 
+            .row 
+                .col-6
+                    +filter-status(filterStatus)
+                .col-6 
+                    +search-form(keyword)
+
+    .card.mb-3 
+        .card-header
+            //- if currentUser.role.permission.includes("create-product") 
+            a(href=`${prefixAdmin}/products/create-product` class="create-product") + Tạo mới
+            //- if currentUser.role.permission.includes("update-product")
+            +change-multiple-form(`${prefixAdmin}/products/change-list-product`)
+        
+        h4.sort-title Sắp xếp
+        .card-sort
+            +sort(sortArray)
+        .card-body 
+            table.table.table-hober.table-sm
+                thead 
+                    tr 
+                        //- if currentUser.role.permission.includes("update-product")
+                        th 
+                            input(type="checkbox" name="checkall")
+                        th STT
+                        th Ảnh   
+                        th Tên 
+                        th Chủ đề 
+                        th Ca sĩ 
+                        th Lượt nghe
+                        th Vị trí
+                        th Người tạo
+                        th Trạng thái
+                        th Hành động 
+
+                tbody 
+                    each item, index in songs
+                        tr.item 
+                            //- if currentUser.role.permission.includes("update-product")
+                            td
+                                input(type="checkbox" name="checkitem" val=item._id)
+                            td #{(pagination.page - 1) * pagination.limit + index + 1}
+                            td 
+                                img(
+                                    src=item.avatar
+                                    alt=item.title
+                                    width="100px"
+                                    height="auto"
+                                )
+                            td #{item.title} 
+                            td #{item.topicId.title} 
+                            td #{item.singerId.fullName}
+                            td #{item.listenCount}
+                            td 
+                                input(type="number" value=item.position class="position")
+                            td Admin
+                                //- div #{item.creatorName}
+                                //- +date(item.createdBy.createdAt)
+                            td 
+                                //- if currentUser.role.permission.includes("update-product")
+                                if(item.status === "active")
+                                    button(class="badge badge-success" itemId=item._id val="active" update-status) Hoạt động 
+                                else 
+                                    button(class="badge badge-danger" itemId=item._id val="inactive" update-status) Dừng hoạt động 
+                                //- else
+                                //-     if(item.status === "active")
+                                //-         span(class="badge badge-success" itemId=item._id val="active") Active 
+                                //-     else 
+                                //-         span(class="badge badge-danger" itemId=item._id val="inactive") Inactive 
+                            td 
+                                button(class="btn  btn-secondary btn-sm" detail-button linkTo=`${prefixAdmin}/products/${item.id}`) Chi tiết
+                                //- if currentUser.role.permission.includes("update-product")
+                                button(class="btn btn-warning btn-sm ml-1" update-button linkTo=`${prefixAdmin}/products/update-product/${item.id}`) Cập nhật 
+                                //- if currentUser.role.permission.includes("delete-product")
+                                button(class="btn btn-danger btn-sm ml-1" delete-button item_id=item._id) Xóa
+                    
+    .pagination
+        +pagination(pagination)
+
+    //- form(action=`${prefixAdmin}/products/change-status` 
+    //- class="change-status-form"
+    //- method="POST")
+
+    //- form(action=`${prefixAdmin}/products/delete-product` 
+    //- class="delete-product-form"
+    //- method="POST")

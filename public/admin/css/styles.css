@@ -33,6 +33,7 @@ body {
     height: 70px;
     display: flex;
     align-items: center;
+    padding-left: 20px;
     background-color: #212023;
     color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -111,7 +112,7 @@ body {
     background-color: #f0f0f0;
 }
 
-.item .position-product {
+.item .position {
     width: 60px;
     text-align: center;
 }
@@ -139,8 +140,8 @@ body {
     margin-left: 20px;
 }
 
-.card-sort .sort-product {
-    width: 150px;
+.card-sort .sort {
+    width: 200px;
     height: 35px;
     text-align: center;
     border: #ccc1c1 1px solid;
@@ -187,12 +188,12 @@ body {
     text-decoration: none;
 }
 
-#change-product-form .select-group {
+#change-multiple-form .select-group {
     display: flex;
     margin-right: 15px;
 }
 
-#change-product-form select {
+#change-multiple-form select {
     width: 200px;
     text-align: center;
     border: 0.5px solid #ddd;
@@ -201,17 +202,21 @@ body {
     border-bottom-right-radius: 0;
 }
 
-#change-product-form select:active {
+#change-multiple-form select:active {
     border: 0.5px solid #ddd;
     border-radius: .25rem;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-#change-product-form .btn-change-product-form {
+#change-multiple-form select:focus {
+    outline: none;
+}
+
+#change-multiple-form .btn-change-multiple {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    width: 73px;
+    width: 90px;
 }
 
 /* pagination style */

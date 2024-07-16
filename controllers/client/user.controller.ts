@@ -1,14 +1,9 @@
-import { jwt } from 'jsonwebtoken';
 import { Request, Response } from "express";
 import User from "../../models/user.model";
 import { hashPassword, comparePassword } from "../../helper/hashPassword";
 import generateToken from '../../helper/generateToken';
 import Song from '../../models/song.model';
-
-enum ListStatus {
-    ACTIVE = "active",
-    INACTIVE = "inactive"
-}
+import ListStatus from "../../enums/status.enum";
 
 // [GET] /user/register
 export const getRegister = async (req: Request, res: Response): Promise<void> => {

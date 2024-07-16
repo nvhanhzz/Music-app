@@ -1,0 +1,6 @@
+mixin sort(sortArray)
+    select.sort
+        each sort in sortArray
+            option(value=sort.value selected=sort.selected) #{sort.name}
+
+    button(clear class="clear-button") Clear 

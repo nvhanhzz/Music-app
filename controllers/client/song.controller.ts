@@ -1,11 +1,7 @@
 import { Request, Response } from "express";
 import Song from "../../models/song.model";
 import Topic from "../../models/topic.model";
-
-enum ListStatus {
-    ACTIVE = "active",
-    INACTIVE = "inactive"
-}
+import ListStatus from "../../enums/status.enum";
 
 // [GET] /songs/:topicSlug
 export const getSongByTopic = async (req: Request, res: Response): Promise<void> => {
