@@ -81,9 +81,9 @@ block main
                                 //-     else 
                                 //-         span(class="badge badge-danger" itemId=item._id val="inactive") Inactive 
                             td 
-                                button(class="btn  btn-secondary btn-sm" detail-button linkTo=`${prefixAdmin}/products/${item.id}`) Chi tiết
+                                a(class="btn  btn-secondary btn-sm" detail-button href=`${prefixAdmin}/songs/detail/${item.id}`) Chi tiết
                                 //- if currentUser.role.permission.includes("update-product")
-                                button(class="btn btn-warning btn-sm ml-1" update-button linkTo=`${prefixAdmin}/products/update-product/${item.id}`) Cập nhật 
+                                a(class="btn btn-warning btn-sm ml-1" update-button href=`${prefixAdmin}/songs/update/${item.id}`) Cập nhật 
                                 //- if currentUser.role.permission.includes("delete-product")
                                 button(class="btn btn-danger btn-sm ml-1" delete-button item_id=item._id) Xóa
                     

@@ -5,6 +5,7 @@ import filterStatus from "../../helper/filterStatus";
 import search from "../../helper/search";
 import pagination from "../../helper/pagination";
 import sort from "../../helper/sort";
+const PATH_ADMIN = process.env.PATH_ADMIN;
 
 // [GET] /admin/songs/
 export const index = async (req: Request, res: Response): Promise<void> => {
@@ -242,4 +243,40 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
     }
 
     res.redirect("back");
+}
+
+// [GET] /admin/songs/:id
+export const getSongDetail = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = req.params.id;
+        const song = await Song.findOne({
+            _id: id,
+            deleted: false
+        })
+            .populate("singerId", "fullName")
+            .populate("topicId", "title");
+
+        if (song) {
+            // await logSupportHelper.createdBy(product);
+            // if (product.categoryId) {
+            //     const category = await ProductCategory.findOne({
+            //         _id: product.categoryId,
+            //         deleted: false
+            //     });
+            //     if (category) {
+            //         product.category = category.title
+            //     }
+            // }
+
+            res.render('admin/pages/song/detail', {
+                pageTitle: "Chi tiết bài hát",
+                song: song
+            });
+        } else {
+            res.redirect(`${PATH_ADMIN}/dashboard`);
+        }
+
+    } catch (e) {
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
 }

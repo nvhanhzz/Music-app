@@ -10,13 +10,10 @@ const formChangeMultiple = document.querySelector('#change-multiple-form'); // f
 const inputChangeMultiple = document.querySelector('input[name="inputChangeMultiple"]'); // input text change list multiple
 const positionInput = document.querySelector('input[name="inputChangePosition"]'); // input change position
 const selectChangeMultiple = document.querySelector('.select-change-multiple'); // select change multiple
-// const positions = document.querySelectorAll('.position'); // list poition
 const statusButtons = document.querySelectorAll("button[update-status]"); // list status button
 const changeStatusForm = document.querySelector(".change-status-form"); // form change status of 1 item
 const deleteButtons = document.querySelectorAll('button[delete-button]'); // list delete button
 const deleteForm = document.querySelector('.delete-form'); // delete form
-// const updateButtons = document.querySelectorAll('button[update-button]'); // list update button
-// const detailButtons = document.querySelectorAll('button[detail-button]'); // list detail button
 
 // solve alert notification
 document.addEventListener('DOMContentLoaded', function () {
@@ -191,17 +188,3 @@ deleteButtons.forEach(item => {
     });
 });
 // end solve delete 1 item
-
-// // solve update 1 product
-// updateButtons.forEach(item => {
-//     item.addEventListener("click", () => {
-//         window.location.href = item.getAttribute("linkTo");
-//     })
-// })
-
-// // solve see product detail
-// detailButtons.forEach(item => {
-//     item.addEventListener("click", () => {
-//         window.location.href = item.getAttribute("linkTo");
-//     })
-// })

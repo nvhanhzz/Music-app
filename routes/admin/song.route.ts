@@ -9,6 +9,8 @@ router.delete("/delete/:id", controller.deleteSong);
 
 router.patch("/change-multiple/:type", controller.patchMultiple);
 
+router.get("/detail/:id", controller.getSongDetail);
+
 router.get("/", controller.index);
 
 export default router;

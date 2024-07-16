@@ -18,6 +18,7 @@ const songSchema = new mongoose.Schema(
         audio: { type: String, required: true },
         listenCount: { type: Number, require: true },
         position: { type: Number, require: true },
+        featured: { type: Boolean, require: true },
         status: { type: String, required: true },
         slug: { type: String, slug: "title", unique: true },
         deleted: { type: Boolean, default: false },

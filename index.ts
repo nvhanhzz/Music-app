@@ -48,7 +48,7 @@ app.set("view engine", "pug");
 app.use(express.static("public"));
 
 // app local variables
-app.locals.prefixAdmin = process.env.PATH_ADMIN
+app.locals.prefixAdmin = process.env.PATH_ADMIN;
 app.locals.moment = moment;
 
 clientRoutes(app);
