@@ -148,3 +148,98 @@ export const deleteSong = async (req: Request, res: Response): Promise<void> => 
 
     res.redirect("back");
 }
+
+// [PATCH] /admin/songs/change-multiple/:type
+export const patchMultiple = async (req: Request, res: Response): Promise<void> => {
+    const type = req.params.type;
+    const listSongChange = req.body.inputChangeMultiple.split(", ");
+    // const accountId = res.locals.currentUser._id; // Assuming the current user's ID is stored in res.locals.currentUser._id
+
+    const updateObject: {
+        status?: string,
+        deleted?: boolean
+    } = {};
+    switch (type) {
+        case 'active':
+            updateObject.status = 'active';
+            break;
+
+        case 'inactive':
+            updateObject.status = 'inactive';
+            break;
+
+        case 'delete':
+            updateObject.deleted = true;
+            break;
+
+        case 'change_position':
+            const listPosition = req.body.inputChangePosition.split(", ");
+            let check = true;
+            for (let i = 0; i < listSongChange.length; ++i) {
+                try {
+                    const result = await Song.updateOne(
+                        { _id: listSongChange[i] },
+                        {
+                            $set: { position: parseInt(listPosition[i]) },
+                            // $push: {
+                            //     updatedBy: {
+                            //         accountId: accountId,
+                            //         updatedAt: new Date()
+                            //     }
+                            // }
+                        }
+                    );
+                } catch (error) {
+                    check = false;
+                    console.error(`Error updating product ${listSongChange[i]}:`, error);
+                }
+            }
+            if (check) {
+                req.flash('success', `Đã cập nhật vị trí của ${listSongChange.length} bài hát.`);
+            }
+            res.redirect("back");
+            return;
+
+        default:
+            break;
+    }
+
+    if (type !== "change_position") {
+        try {
+            const update = await Song.updateMany(
+                {
+                    _id: { $in: listSongChange },
+                },
+                {
+                    $set: updateObject,
+                    // $push: {
+                    //     updatedBy: {
+                    //         accountId: accountId,
+                    //         updatedAt: new Date()
+                    //     }
+                    // }
+                }
+            );
+
+            switch (type) {
+                case 'active':
+                    req.flash('success', `Đã cập nhật trạng thái ${listSongChange.length} bài hát thành hoạt động.`);
+                    break;
+
+                case 'inactive':
+                    req.flash('success', `Đã cập nhật trạng thái ${listSongChange.length} bài hát thành dừng hoạt động.`);
+                    break;
+
+                case 'delete':
+                    req.flash('success', `Đã xóa ${listSongChange.length} bài hát.`);
+                    break;
+            }
+
+        } catch (error) {
+            console.error(error);
+            req.flash('fail', 'Lỗi!!!');
+        }
+    }
+
+    res.redirect("back");
+}

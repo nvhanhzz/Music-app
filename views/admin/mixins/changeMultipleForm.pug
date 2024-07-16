@@ -3,15 +3,15 @@ mixin change-multiple-form(action)
         input(
             type="text"
             style="display: none"
-            name="inputChangeListProduct"
+            name="inputChangeMultiple"
         )
         input(
             type="text"
             style="display: none"
-            name="inputProductPosition"
+            name="inputChangePosition"
         )
         .select-group 
-            select.select-change-product
+            select.select-change-multiple
                 option(value="" disabled selected) --Chọn hành động--
                 option(value="active") Hoạt động
                 option(value="inactive") Dừng hoạt động

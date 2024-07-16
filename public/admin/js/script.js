@@ -6,11 +6,11 @@ const sortSelect = document.querySelector('.sort'); // sort select
 const clearSortButton = document.querySelector('button[clear]'); // clear button
 const checkAll = document.querySelector('input[name="checkall"]'); // input checkbox check all
 const checkItems = document.querySelectorAll('input[name="checkitem"]'); // input checkbox 1 product
-// const positionInput = document.querySelector('input[name="inputProductPosition"]'); // input position of product
-// const positionProducts = document.querySelectorAll('.position-product'); // list poition
-// const formChangeListProduct = document.querySelector('#change-product-form'); // form change list product
-// const inputChangeListProduct = document.querySelector('input[name="inputChangeListProduct"]'); // input text change list product
-// const selectChangeProduct = document.querySelector('.select-change-product'); // select change product
+const formChangeMultiple = document.querySelector('#change-multiple-form'); // form change list multiple
+const inputChangeMultiple = document.querySelector('input[name="inputChangeMultiple"]'); // input text change list multiple
+const positionInput = document.querySelector('input[name="inputChangePosition"]'); // input change position
+const selectChangeMultiple = document.querySelector('.select-change-multiple'); // select change multiple
+// const positions = document.querySelectorAll('.position'); // list poition
 const statusButtons = document.querySelectorAll("button[update-status]"); // list status button
 const changeStatusForm = document.querySelector(".change-status-form"); // form change status of 1 item
 const deleteButtons = document.querySelectorAll('button[delete-button]'); // list delete button
@@ -134,37 +134,34 @@ if (checkItems) {
     });
 }
 
-// if (formChangeListProduct) {
-//     formChangeListProduct.addEventListener("submit", (event) => {
-//         event.preventDefault();
-//         const listIdChange = Array.from(checkItems)
-//             .filter(item => item.checked)
-//             .map(item => item.getAttribute("val"));
-//         inputChangeListProduct.value = listIdChange.join(", ");
-//         const changeCase = selectChangeProduct.value.toLowerCase().replace(/\s/g, '_');;
-//         // console.log(changeCase);
+if (formChangeMultiple) {
+    formChangeMultiple.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const listIdChange = Array.from(checkItems)
+            .filter(item => item.checked)
+            .map(item => item.getAttribute("val"));
+        inputChangeMultiple.value = listIdChange.join(", ");
+        const changeCase = selectChangeMultiple.value.toLowerCase().replace(/\s/g, '_');;
 
-//         if (changeCase === 'change_position') {
-//             const listPosition = Array.from(checkItems)
-//                 .filter(item => item.checked)
-//                 .map(item => item.parentNode.parentNode.querySelector('.position-product').value)
+        if (changeCase === 'change_position') {
+            const listPosition = Array.from(checkItems)
+                .filter(item => item.checked)
+                .map(item => item.parentNode.parentNode.querySelector('.position').value)
 
-//             positionInput.value = listPosition.join(', ');
-//             console.log(positionInput.value);
-//         }
+            positionInput.value = listPosition.join(', ');
+        }
 
-//         const oldAction = formChangeListProduct.getAttribute("action");
-//         const formChangeListProductPath = `${oldAction}/${changeCase}?_method=PATCH`;
-
-//         formChangeListProduct.setAttribute("action", formChangeListProductPath);
-//         if (changeCase != "") {
-//             const confirmed = confirm("Are you sure you want to change products?");
-//             if (confirmed) {
-//                 formChangeListProduct.submit();
-//             }
-//         }
-//     });
-// }
+        const oldAction = formChangeMultiple.getAttribute("action");
+        const formChangeMultiplePath = `${oldAction}/${changeCase}?_method=PATCH`;
+        if (changeCase != "" && listIdChange.length > 0) {
+            const confirmed = confirm("Are you sure you want to change products?");
+            if (confirmed) {
+                formChangeMultiple.setAttribute("action", formChangeMultiplePath);
+                formChangeMultiple.submit();
+            }
+        }
+    });
+}
 // end solve change multiple
 
 // solve change status
@@ -175,7 +172,6 @@ for (let btn of statusButtons) {
         const oldAction = changeStatusForm.getAttribute("action");
         const changStatusPath = `${oldAction}/${status}/${itemId}?_method=PATCH`;
         changeStatusForm.setAttribute("action", changStatusPath);
-        console.log(changeStatusForm);
         changeStatusForm.submit();
     })
 }
