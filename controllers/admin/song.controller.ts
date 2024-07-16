@@ -114,3 +114,37 @@ export const patchChangeStatus = async (req: Request, res: Response): Promise<vo
 
     res.redirect("back");
 }
+
+// [DELETE] /admin/songs/delete/:id
+export const deleteSong = async (req: Request, res: Response): Promise<void> => {
+    const itemId = req.params.id;
+
+    try {
+        const result = await Song.updateOne(
+            {
+                _id: itemId,
+                deleted: false
+            },
+            {
+                $set: {
+                    deleted: true
+                },
+                // $push: {
+                //     updatedBy: {
+                //         accountId: res.locals.currentUser.id,
+                //         updatedAt: new Date()
+                //     }
+                // }
+            }
+        );
+        if (result.modifiedCount === 1) {
+            req.flash('success', 'Xóa thành công.');
+        } else {
+            req.flash('fail', 'Xóa thất bại.');
+        }
+    } catch (error) {
+        req.flash('fail', 'Xóa thất bại.');
+    }
+
+    res.redirect("back");
+}

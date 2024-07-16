@@ -6,15 +6,15 @@ const sortSelect = document.querySelector('.sort'); // sort select
 const clearSortButton = document.querySelector('button[clear]'); // clear button
 const checkAll = document.querySelector('input[name="checkall"]'); // input checkbox check all
 const checkItems = document.querySelectorAll('input[name="checkitem"]'); // input checkbox 1 product
-// const formChangeListProduct = document.querySelector('#change-product-form'); // form change list product
-const statusButtons = document.querySelectorAll("button[update-status]"); // list status button
-const changeStatusForm = document.querySelector(".change-status-form"); // form change status of 1 item
-// const inputChangeListProduct = document.querySelector('input[name="inputChangeListProduct"]'); // input text change list product
-// const selectChangeProduct = document.querySelector('.select-change-product'); // select change product
-// const deleteButtons = document.querySelectorAll('button[delete-button]'); // list delete button
-// const deleteProductForm = document.querySelector('.delete-product-form'); // delete form
 // const positionInput = document.querySelector('input[name="inputProductPosition"]'); // input position of product
 // const positionProducts = document.querySelectorAll('.position-product'); // list poition
+// const formChangeListProduct = document.querySelector('#change-product-form'); // form change list product
+// const inputChangeListProduct = document.querySelector('input[name="inputChangeListProduct"]'); // input text change list product
+// const selectChangeProduct = document.querySelector('.select-change-product'); // select change product
+const statusButtons = document.querySelectorAll("button[update-status]"); // list status button
+const changeStatusForm = document.querySelector(".change-status-form"); // form change status of 1 item
+const deleteButtons = document.querySelectorAll('button[delete-button]'); // list delete button
+const deleteForm = document.querySelector('.delete-form'); // delete form
 // const updateButtons = document.querySelectorAll('button[update-button]'); // list update button
 // const detailButtons = document.querySelectorAll('button[detail-button]'); // list detail button
 
@@ -179,21 +179,22 @@ for (let btn of statusButtons) {
         changeStatusForm.submit();
     })
 }
-// solve change status
+// end solve change status
 
-// // solve delete 1 product
-// deleteButtons.forEach(item => {
-//     item.addEventListener("click", () => {
-//         const confirmed = confirm("Are you sure you want to delete ?");
-//         if (confirmed) {
-//             const oldAction = deleteProductForm.getAttribute("action");
-//             const id = item.getAttribute("item_id");
-//             const action = `${oldAction}/${id}?_method=DELETE`;
-//             deleteProductForm.setAttribute("action", action);
-//             deleteProductForm.submit();
-//         }
-//     });
-// });
+// solve delete 1 item
+deleteButtons.forEach(item => {
+    item.addEventListener("click", () => {
+        const confirmed = confirm("Bạn có chắc chắn muốn xóa?");
+        if (confirmed) {
+            const oldAction = deleteForm.getAttribute("action");
+            const id = item.getAttribute("item_id");
+            const action = `${oldAction}/${id}?_method=DELETE`;
+            deleteForm.setAttribute("action", action);
+            deleteForm.submit();
+        }
+    });
+});
+// end solve delete 1 item
 
 // // solve update 1 product
 // updateButtons.forEach(item => {
