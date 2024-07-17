@@ -9,12 +9,13 @@ const ap = new APlayer({
         name: songData.title,
         artist: songData.singerId.fullName,
         url: songData.audio,
-        cover: songData.avatar
+        cover: songData.avatar,
+        lrc: songData.lyrics
     }],
     autoplay: true,
-    volume: 0.7
+    volume: 0.7,
+    lrcType: 1
 });
-
 // end config aplayer
 
 // like
