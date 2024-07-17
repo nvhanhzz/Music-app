@@ -1,0 +1,73 @@
+extends ../../layouts/default.pug
+include ../../mixins/notification.pug
+
+block addCss 
+    link(rel="stylesheet", href="/admin/css/createPage.css")
+
+block main
+    //- if currentUser.role.permission.includes("create-product")
+
+    h2 #{pageTitle}
+
+    form(action=`${prefixAdmin}/songs/update/${song.id}?_method=PATCH`, enctype="multipart/form-data", method="POST")
+        .form-group
+            label(for="title") Tên:
+            input#title.form-control(type="text", name="title", placeholder="Nhập tên bài hát", value=song.title)
+        
+        .form-group
+            label(for="singerId" class="label") Ca sĩ:
+            select#singerId(name="singerId")  
+                option(value="" disabled selected) --Chọn ca sĩ--
+                each singer in singers
+                    option(value=singer.id selected=singer.id.toString() === song.singerId.toString()) #{singer.fullName} 
+        .form-group
+            label(for="topicId" class="label") Chủ đề:
+            select#topicId(name="topicId")  
+                option(value="" disabled selected) --Chọn chủ đề--
+                each topic in topics
+                    option(value=topic.id selected=topic.id.toString() === song.topicId.toString()) #{topic.title} 
+        div.form-group
+            label(for="avatar") Ảnh đại diện:
+            input#avatar.form-control.img-inp(type="file", accept="image/*", name="avatar")
+            img(id="blah" src=song.avatar alt="your image")
+        
+        div.form-group
+            label(for="audio") Audio:
+            input#audio.form-control.audio-inp(type="file", accept="audio/*", name="audio")
+            audio#audio-preview.audio-preview(controls)
+                source(src=song.audio, type="audio/mp3")
+
+        div.form-group
+            label(for="lyrics") Lời bài hát:
+            textarea#lyrics.form-control(name="lyrics", rows="20", placeholder="Nhập lời bài hát") #{song.lyrics}
+
+        div.form-group
+            label(for="description") Mô tả:
+            textarea#my-expressjs-tinymce-app.form-control(name="description", rows="4", placeholder="Nhập mô tả bài hát") #{song.description}
+        div.form-group
+            label Nổi bật:
+            div
+                input#featured(type="radio", name="featured", value="true" checked=song.featured===true)
+                label(for="featured") Nổi bật
+            div
+                input#no-featured(type="radio", name="featured", value="false" checked=song.featured===false)
+                label(for="no-featured") Không
+        div.form-group
+            label Trạng thái:
+            div
+                input#status-active(type="radio", name="status", value="active" checked=song.status==="active")
+                label(for="status-active") Hoạt động
+            div
+                input#status-inactive(type="radio", name="status", value="inactive" checked=song.status==="inactive")
+                label(for="status-inactive") Dừng hoạt động
+        div.form-group
+            label(for="position") Vị trí:
+            input#position.form-control(type="number", name="position" value=song.position)
+
+        div.form-group
+            button.btn.btn-primary(type="submit") Cập nhật
+    
+    script(type="application/javascript" src= "/tinymce/tinymce.min.js")
+    script(type="application/javascript" src= "/admin/js/tinymce-config.js") 
+    //- else
+    //-     h1 No permission

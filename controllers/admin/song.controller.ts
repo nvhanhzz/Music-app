@@ -308,7 +308,7 @@ export const getSongDetail = async (req: Request, res: Response): Promise<void> 
     }
 }
 
-// [GET] /create
+// [GET] /admin/songs/create
 export const getCreate = async (req: Request, res: Response): Promise<void> => {
     const topics = await Topic.find({
         deleted: false,
@@ -332,26 +332,83 @@ export const getCreate = async (req: Request, res: Response): Promise<void> => {
     });
 }
 
-// [POST] /create
+// [POST] /admin/songs/create
 export const postCreate = async (req: Request, res: Response): Promise<void> => {
-    if (!Object.values(ListStatus).includes(req.body.status as ListStatus)) {
-        req.flash('fail', 'Trạng thái không hợp lệ.');
-        return;
-    }
-    req.body.position = parseInt(req.body.position);
-    if (!Number.isInteger(req.body.position)) {
-        const positionDefault = await Song.countDocuments({
-            deleted: false
-        }) + 1;
-        req.body.position = positionDefault;
-    }
+    try {
+        req.body.position = parseInt(req.body.position);
+        if (!Number.isInteger(req.body.position)) {
+            const positionDefault = await Song.countDocuments({
+                deleted: false
+            }) + 1;
+            req.body.position = positionDefault;
+        }
 
-    const newSong = new Song(req.body);
-    const result = await newSong.save();
-    if (result) {
-        res.redirect("/admin/songs");
-    } else {
+        const newSong = new Song(req.body);
+        const result = await newSong.save();
+        if (result) {
+            req.flash("success", "Tạo bài hát thành công.");
+            res.redirect("/admin/songs");
+        } else {
+            req.flash("fail", "Tạo bài hát thất bại.");
+            return res.redirect("back");
+        }
+    } catch (e) {
         req.flash("fail", "Tạo bài hát thất bại.");
+        return res.redirect("back");
+    }
+}
+
+// [GET] /admin/songs/update/:id
+export const getUpdate = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = req.params.id;
+        const song = await Song.findOne({
+            _id: id,
+            deleted: false
+        });
+
+        if (!song) {
+            return res.redirect("back");
+        }
+
+        const topics = await Topic.find({
+            deleted: false,
+            status: ListStatus.ACTIVE
+        }).populate("title");
+
+        const singers = await Singer.find({
+            deleted: false,
+            status: ListStatus.ACTIVE
+        }).populate("fullName");
+
+        res.render("admin/pages/song/update", {
+            pageTitle: "Cập nhật bài hát",
+            song: song,
+            topics: topics,
+            singers: singers
+        });
+    } catch (e) {
+        return res.redirect("back");
+    }
+}
+
+// [PATCH] /admin/songs/update/:id
+export const patchUpdate = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = req.params.id;
+        const result = await Song.updateOne(
+            { _id: id },
+            req.body
+        );
+        if (result) {
+            req.flash("success", "Cập nhật bài hát thành công.");
+            res.redirect("back");
+        } else {
+            req.flash("fail", "Cập nhật bài hát thất bại.");
+            return res.redirect("back");
+        }
+    } catch (e) {
+        req.flash("fail", "Cập nhật bài hát thất bại.");
         return res.redirect("back");
     }
 }
