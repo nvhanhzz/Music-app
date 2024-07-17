@@ -21,7 +21,7 @@ block main
     .card.mb-3 
         .card-header
             //- if currentUser.role.permission.includes("create-product") 
-            a(href=`${prefixAdmin}/products/create-product` class="create-product") + Tạo mới
+            a(href=`${prefixAdmin}/songs/create` class="create") + Tạo mới
             //- if currentUser.role.permission.includes("update-product")
             +change-multiple-form(`${prefixAdmin}/songs/change-multiple`)
         
@@ -62,8 +62,14 @@ block main
                                     height="auto"
                                 )
                             td #{item.title} 
-                            td #{item.topicId.title} 
-                            td #{item.singerId.fullName}
+                            if(item.topicId && item.topicId.title)
+                                td #{item.topicId.title}
+                            else 
+                                td 
+                            if(item.singerId && item.singerId.fullName)
+                                td #{item.singerId.fullName}
+                            else 
+                                td 
                             td #{item.listenCount}
                             td 
                                 input(type="number" value=item.position class="position")

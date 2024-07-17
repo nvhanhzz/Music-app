@@ -8,22 +8,21 @@ mongoose.plugin(slug);
 
 const songSchema = new mongoose.Schema(
     {
-        title: { type: String, required: true },
-        avatar: { type: String, required: true },
-        description: { type: String, required: true },
-        singerId: { type: mongoose.Schema.Types.ObjectId, ref: Singer, required: true },
+        title: { type: String },
+        avatar: { type: String },
+        description: { type: String },
+        singerId: { type: mongoose.Schema.Types.ObjectId, ref: Singer },
         topicId: { type: mongoose.Schema.Types.ObjectId, ref: Topic },
-        like: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: User }], required: true },
-        lyrics: { type: String, required: true },
-        audio: { type: String, required: true },
-        listenCount: { type: Number, require: true },
-        position: { type: Number, require: true },
-        featured: { type: Boolean, require: true },
-        status: { type: String, required: true },
+        like: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: User }] },
+        lyrics: { type: String },
+        audio: { type: String },
+        listenCount: { type: Number },
+        position: { type: Number },
+        featured: { type: Boolean },
+        status: { type: String },
         slug: { type: String, slug: "title", unique: true },
         deleted: { type: Boolean, default: false },
-        // sau sửa phần dưới, khi có model account. Và thêm phần ref
-        // "deletedBy": { "accountId": String, "deletedAt": Date },
+        // "deletedBy: { "accountId": String, "deletedAt": Date },
         // "createdBy": {
         //     "accountId": String,
         //     "createdAt": {

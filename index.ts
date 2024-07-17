@@ -9,6 +9,7 @@ import methodOverride from "method-override";
 import connectDB from "./config/database";
 import clientRoutes from "./routes/client/index.route";
 import adminRoutes from "./routes/admin/index.route";
+import path from "path";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -50,6 +51,8 @@ app.use(express.static("public"));
 // app local variables
 app.locals.prefixAdmin = process.env.PATH_ADMIN;
 app.locals.moment = moment;
+
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
 clientRoutes(app);
 adminRoutes(app);

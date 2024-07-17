@@ -5,6 +5,8 @@ import filterStatus from "../../helper/filterStatus";
 import search from "../../helper/search";
 import pagination from "../../helper/pagination";
 import sort from "../../helper/sort";
+import Topic from "../../models/topic.model";
+import Singer from "../../models/singer.model";
 const PATH_ADMIN = process.env.PATH_ADMIN;
 
 // [GET] /admin/songs
@@ -84,6 +86,7 @@ export const patchChangeStatus = async (req: Request, res: Response): Promise<vo
 
     if (!Object.values(ListStatus).includes(status as ListStatus)) {
         req.flash('fail', 'Cập nhật thất bại.');
+        return;
     }
 
     try {
@@ -302,5 +305,53 @@ export const getSongDetail = async (req: Request, res: Response): Promise<void> 
 
     } catch (e) {
         res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [GET] /create
+export const getCreate = async (req: Request, res: Response): Promise<void> => {
+    const topics = await Topic.find({
+        deleted: false,
+        status: ListStatus.ACTIVE
+    }).populate("title");
+
+    const singers = await Singer.find({
+        deleted: false,
+        status: ListStatus.ACTIVE
+    }).populate("fullName");
+
+    const positionDefault = await Song.countDocuments({
+        deleted: false
+    }) + 1;
+
+    res.render("admin/pages/song/create", {
+        pageTitle: "Tạo mới bài hát",
+        topics: topics,
+        singers: singers,
+        positionDefault: positionDefault
+    });
+}
+
+// [POST] /create
+export const postCreate = async (req: Request, res: Response): Promise<void> => {
+    if (!Object.values(ListStatus).includes(req.body.status as ListStatus)) {
+        req.flash('fail', 'Trạng thái không hợp lệ.');
+        return;
+    }
+    req.body.position = parseInt(req.body.position);
+    if (!Number.isInteger(req.body.position)) {
+        const positionDefault = await Song.countDocuments({
+            deleted: false
+        }) + 1;
+        req.body.position = positionDefault;
+    }
+
+    const newSong = new Song(req.body);
+    const result = await newSong.save();
+    if (result) {
+        res.redirect("/admin/songs");
+    } else {
+        req.flash("fail", "Tạo bài hát thất bại.");
+        return res.redirect("back");
     }
 }

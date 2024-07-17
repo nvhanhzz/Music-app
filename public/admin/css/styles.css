@@ -155,14 +155,14 @@ body {
     padding: 0px 10px;
 }
 
-.create-product {
+.create {
     border: #ced4da 1px solid;
     padding: 10px;
     border-radius: 5px;
     color: #28a745;
 }
 
-.create-product:hover {
+.create:hover {
     background-color: #28a745;
     color: white;
     text-decoration: none;

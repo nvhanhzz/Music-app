@@ -1,5 +1,7 @@
 import express, { Router } from "express";
 import * as controller from "../../controllers/admin/song.controller";
+import { upload, uploadMultipleFile } from "../../middlewares/admin/upload";
+import { validateSong } from "../../validate/admin/song.validate";
 
 const router: Router = express.Router();
 
@@ -10,6 +12,19 @@ router.patch("/change-featured/:featured/:id", controller.patchChangeFeatured);
 router.delete("/delete/:id", controller.deleteSong);
 
 router.patch("/change-multiple/:type", controller.patchMultiple);
+
+router.get("/create", controller.getCreate);
+
+router.post(
+    "/create",
+    upload.fields([
+        { name: "avatar", maxCount: 1 },
+        { name: "audio", maxCount: 1 }
+    ]),
+    uploadMultipleFile,
+    validateSong,
+    controller.postCreate
+);
 
 router.get("/detail/:id", controller.getSongDetail);
 

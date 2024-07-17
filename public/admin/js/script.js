@@ -16,6 +16,41 @@ const featuredButtons = document.querySelectorAll("button[update-featured]"); //
 const changeFeaturedForm = document.querySelector(".change-featured-form"); // form change featured of 1 item
 const deleteButtons = document.querySelectorAll('button[delete-button]'); // list delete button
 const deleteForm = document.querySelector('.delete-form'); // delete form
+const imgInput = document.querySelector(".img-inp"); // preview image
+const blah = document.querySelector("#blah"); // preview image
+const audioInput = document.querySelector(".audio-inp"); // preview audio
+const previewAudio = document.querySelector("#audio-preview"); // preview audio
+
+// solve image upload preview
+if (imgInput) {
+    imgInput.addEventListener("change", (e) => {
+        const [file] = e.target.files;
+        if (file) {
+            blah.src = URL.createObjectURL(file);
+            blah.style.display = "block";
+        }
+    });
+    if (blah && blah.getAttribute("src") !== "#" && blah.getAttribute("src") !== "https://media.istockphoto.com/vectors/no-image-available-icon-vector-id1216251206?k=6&m=1216251206&s=612x612&w=0&h=G8kmMKxZlh7WyeYtlIHJDxP5XRGm9ZXyLprtVJKxd-o=") {
+        blah.style.display = "block";
+    }
+}
+// end solve image upload preview
+
+// solve audio upload preview
+if (audioInput) {
+    audioInput.addEventListener("change", (e) => {
+        const [file] = e.target.files;
+        console.log(file);
+        if (file) {
+            previewAudio.src = URL.createObjectURL(file);
+            previewAudio.style.display = "block";
+        }
+    });
+    if (previewAudio && previewAudio.querySelector("source").getAttribute("src") !== "") {
+        previewAudio.style.display = "block";
+    }
+}
+// end solve audio upload preview
 
 // solve alert notification
 document.addEventListener('DOMContentLoaded', function () {

@@ -4,6 +4,7 @@
         "module": "commonjs",
         "removeComments": true,
         "esModuleInterop": true,
-        "outDir": "dist"
+        "outDir": "dist",
+        "moduleResolution": "node"
     }
 }
