@@ -27,6 +27,8 @@ router.get("/password/reset", isLoggedOut, checkToken({ tokenName: 'reset-passwo
 
 router.patch("/password/reset", isLoggedOut, checkToken({ tokenName: 'reset-password-token', type: 'userResetPassword' }), validate.resetPassword, controller.patchResetPassword);
 
+router.get("/information", isLoggedIn, controller.getInformation);
+
 router.patch("/addFavoriteSong", isLoggedIn, validate.addFavoriteSong, controller.addFavoriteSong);
 
 export default router;

@@ -264,3 +264,10 @@ export const patchResetPassword = async (req: Request, res: Response): Promise<v
     req.flash("success", `Đặt lại mật khẩu thành công, xin chào ${userResetPassword.fullName}.`);
     res.redirect(`/`);
 }
+
+// [GET] /user/information
+export const getInformation = (req: Request, res: Response): void => {
+    res.render("client/pages/user/information", {
+        pageTitle: "Thông tin cá nhân"
+    })
+}
