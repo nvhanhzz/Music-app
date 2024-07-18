@@ -1,6 +1,4 @@
-import { Sort } from "../enums/songs.enum";
-
-const sort = (query) => {
+const sort = (query, Sort) => {
     const sortKey = query.sortKey;
     const sortValue = query.sortValue;
 

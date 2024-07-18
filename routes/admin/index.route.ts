@@ -4,6 +4,8 @@ import topicRoute from "./topic.route";
 import songRoute from "./song.route";
 import uploadRoute from "./upload.route";
 import authRoute from "./auth.route";
+import accountAdminRoute from "./accountAdmin.route";
+
 import { checkToken, isLoggedIn } from "../../middlewares/admin/auth";
 
 // import { checkToken } from "../../middlewares/auth";
@@ -14,6 +16,7 @@ const adminRoutes = (app: Application): void => {
     app.use(checkToken({ tokenName: 'tokenAdmin', type: 'currentAdmin' }));
 
     app.use(`${prefixAdmin}/auth`, authRoute);
+    app.use(`${prefixAdmin}/account-admin`, isLoggedIn, accountAdminRoute);
     app.use(`${prefixAdmin}/dashboard`, isLoggedIn, dashboardRoute);
     app.use(`${prefixAdmin}/topics`, isLoggedIn, topicRoute);
     app.use(`${prefixAdmin}/songs`, isLoggedIn, songRoute);

@@ -1,4 +1,8 @@
 import { default as mongoose } from "mongoose";
+import Role from "./role.model";
+import slug from "mongoose-slug-updater";
+
+mongoose.plugin(slug);
 
 const adminSchema = new mongoose.Schema(
     {
@@ -8,25 +12,26 @@ const adminSchema = new mongoose.Schema(
         "avatar": String,
         "phone": String,
         "status": String,
-        "roleId": String,
+        "roleId": { type: mongoose.Schema.Types.ObjectId, ref: Role },
+        slug: { type: String, slug: "title", unique: true },
         "deleted": {
             type: Boolean,
             default: false
         },
         "createdBy": {
-            "accountId": String,
+            "adminId": { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
             "createdAt": {
                 type: Date,
                 default: Date.now
             }
         },
         "deletedBy": {
-            "accountId": String,
+            "adminId": { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
             "deletedAt": Date
         },
         "updatedBy": [
             {
-                "accountId": String,
+                "adminId": { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
                 "updatedAt": {
                     type: Date
                 }

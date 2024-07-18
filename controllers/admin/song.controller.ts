@@ -7,6 +7,7 @@ import pagination from "../../helper/pagination";
 import sort from "../../helper/sort";
 import Topic from "../../models/topic.model";
 import Singer from "../../models/singer.model";
+import { Sort } from "../../enums/songs.enum";
 const PATH_ADMIN = process.env.PATH_ADMIN;
 
 // [GET] /admin/songs
@@ -49,7 +50,7 @@ export const index = async (req: Request, res: Response): Promise<void> => {
     //endpagination
 
     //sort
-    const sortObject = sort(query);
+    const sortObject = sort(query, Sort);
     const [sortKey, sortValue] = Object.entries(sortObject)[0];
     const sortArray = [
         { name: "Vị trí giảm dần", value: "position-desc", selected: `${sortKey}-${sortValue}` === "position-desc" },
