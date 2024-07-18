@@ -1,32 +1,36 @@
 import { default as mongoose } from "mongoose";
+import slug from "mongoose-slug-updater";
+
+mongoose.plugin(slug);
 
 const roleSchema = new mongoose.Schema(
     {
-        "title": String,
-        "description": String,
-        "permission": {
+        title: String,
+        description: String,
+        permission: {
             type: Array,
             default: []
         },
-        "deleted": {
+        slug: { type: String, slug: "title", unique: true },
+        deleted: {
             type: Boolean,
             default: false
         },
-        "createdBy": {
-            "accountId": String,
-            "createdAt": {
+        createdBy: {
+            adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+            createdAt: {
                 type: Date,
                 default: Date.now
             }
         },
-        "deletedBy": {
-            "accountId": String,
-            "deletedAt": Date
+        deletedBy: {
+            adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+            deletedAt: Date
         },
-        "updatedBy": [
+        updatedBy: [
             {
-                "accountId": String,
-                "updatedAt": {
+                adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+                updatedAt: {
                     type: Date
                 }
             }

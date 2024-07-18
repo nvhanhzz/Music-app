@@ -13,7 +13,7 @@ const adminSchema = new mongoose.Schema(
         "phone": String,
         "status": String,
         "roleId": { type: mongoose.Schema.Types.ObjectId, ref: Role },
-        slug: { type: String, slug: "title", unique: true },
+        slug: { type: String, slug: "fullName", unique: true },
         "deleted": {
             type: Boolean,
             default: false
