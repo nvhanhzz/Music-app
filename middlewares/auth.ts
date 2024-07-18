@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import User from '../models/user.model';
+import ListStatus from "../enums/status.enum";
 
 const verifyToken = (token: string, key: string): { id: string } | null => {
     try {
@@ -36,7 +37,8 @@ export const checkToken = (options: CheckTokenOptions = { tokenName: '' }) => {
         try {
             const user = await User.findOne({
                 _id: decoded.id,
-                deleted: false
+                deleted: false,
+                status: ListStatus.ACTIVE
             }).select("-password");
 
             if (!user) {

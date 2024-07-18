@@ -279,11 +279,8 @@ export const getUpdateInfor = (req: Request, res: Response): void => {
     })
 }
 
+// [PATCH] /user/update-infor
 export const patchUpdateInfor = async (req: Request, res: Response): Promise<void> => {
-    if (!res.locals.currentUser) {
-        return res.redirect("back");
-    }
-
     if (req.body.file) {
         req.body.avatar = req.body.file;
     }
@@ -300,4 +297,36 @@ export const patchUpdateInfor = async (req: Request, res: Response): Promise<voi
 
     req.flash("success", "Cập nhật thông tin thành công.");
     return res.redirect("back");
+}
+
+// [GET] /user/password/change
+export const getChangePassword = (req: Request, res: Response): void => {
+    res.render("client/pages/user/changePassword", {
+        pageTitle: "Đổi mật khẩu"
+    });
+}
+
+// [PATCH] /user/password/change
+export const patchChangePassword = async (req: Request, res: Response): Promise<void> => {
+    const password = req.body.password;
+    const oldPassword = req.body.oldPassword;
+    const user = await User.findById(res.locals.currentUser._id);
+
+    const isMatch = await comparePassword(oldPassword, user.password as string);
+    if (!isMatch) {
+        req.flash("fail", "Mật khẩu không đúng !");
+        return res.redirect("back");
+    }
+
+    if (password === oldPassword) {
+        req.flash("fail", "Mật khẩu mới và mật khẩu cũ phải khác nhau.");
+        res.redirect("back");
+        return;
+    }
+
+    user.password = await hashPassword(password);
+    await user.save();
+
+    req.flash("success", `Đổi mật khẩu thành công.`);
+    res.redirect(`/`);
 }

@@ -88,7 +88,7 @@ export const addFavoriteSong = (req: Request, res: Response, next: NextFunction)
     next();
 }
 
-export const validateUpdateInfor = (req: Request, res: Response, next: NextFunction): void => {
+export const updateInfor = (req: Request, res: Response, next: NextFunction): void => {
     if (!req.body.fullName) {
         req.flash('fail', 'Họ và tên không được bỏ trống.');
         return res.redirect("back");
@@ -99,6 +99,31 @@ export const validateUpdateInfor = (req: Request, res: Response, next: NextFunct
     }
     if (!req.body.email) {
         req.flash('fail', 'Email không được bỏ trống.');
+        return res.redirect("back");
+    }
+
+    next();
+}
+
+export const changePassword = (req: Request, res: Response, next: NextFunction): void => {
+    if (!req.body.oldPassword) {
+        req.flash('fail', 'Không được bỏ trống mật khẩu hiện tại.');
+        return res.redirect("back");
+    }
+    if (!req.body.password) {
+        req.flash('fail', 'Không được bỏ trống mật khẩu mới.');
+        return res.redirect("back");
+    }
+    if (!req.body.confirmPassword) {
+        req.flash('fail', 'Không được bỏ trống xác nhận mật khẩu mới.');
+        return res.redirect("back");
+    }
+    if (req.body.password !== req.body.confirmPassword) {
+        req.flash('fail', 'Mật khẩu mới và xác nhận không khớp.');
+        return res.redirect("back");
+    }
+    if (!regex.test(req.body.password)) {
+        req.flash('fail', 'Mật khẩu mới phải dài ít nhất 6 ký tự, bao gồm ít nhất một chữ cái in hoa, một chữ cái thường, một số và một ký tự đặc biệt (@, $, !, %, *, ?, &, #).');
         return res.redirect("back");
     }
 

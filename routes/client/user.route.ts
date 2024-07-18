@@ -6,15 +6,15 @@ import { upload, uploadSingleFile } from "../../middlewares/client/upload";
 
 const router: Router = express.Router();
 
-router.get("/register", controller.getRegister);
+router.get("/register", isLoggedOut, controller.getRegister);
 
-router.post("/register", validate.validatePostRegister, controller.postRegister);
+router.post("/register", isLoggedOut, validate.validatePostRegister, controller.postRegister);
 
-router.get("/login", controller.getLogin);
+router.get("/login", isLoggedOut, controller.getLogin);
 
-router.post("/login", controller.postLogin);
+router.post("/login", isLoggedOut, controller.postLogin);
 
-router.post("/logout", controller.postLogout);
+router.post("/logout", isLoggedIn, controller.postLogout);
 
 router.get("/password/forgot", isLoggedOut, controller.getForgotPassword);
 
@@ -32,7 +32,11 @@ router.get("/information", isLoggedIn, controller.getInformation);
 
 router.get("/update-infor", isLoggedIn, controller.getUpdateInfor);
 
-router.patch('/update-infor', upload.single('avatar'), uploadSingleFile, validate.validateUpdateInfor, controller.patchUpdateInfor);
+router.patch('/update-infor', isLoggedIn, upload.single('avatar'), uploadSingleFile, validate.updateInfor, controller.patchUpdateInfor);
+
+router.get("/password/change", isLoggedIn, controller.getChangePassword);
+
+router.patch("/password/change", isLoggedIn, validate.changePassword, controller.patchChangePassword);
 
 router.patch("/addFavoriteSong", isLoggedIn, validate.addFavoriteSong, controller.addFavoriteSong);
 
