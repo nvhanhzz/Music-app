@@ -11,7 +11,7 @@ block main
         div(style="height: 20px")
         .row 
             .col-2
-            .col-2 Full name:
+            .col-2 Họ và tên:
             .col-8 
                 b #{currentUser.fullName}
         .row 
@@ -21,11 +21,11 @@ block main
                 b #{currentUser.email}
         .row 
             .col-2
-            .col-2 Phone number:
+            .col-2 Số điện thoại:
             .col-8 
                 b #{currentUser.phone}
         div(style="height: 20px")
         .row 
             .col-2 
             .col-10 
-                a(href="/client/update-infor" class="btn btn-primary") Update
+                a(href="/user/update-infor" class="btn btn-primary") Cập nhật

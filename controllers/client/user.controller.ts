@@ -271,3 +271,33 @@ export const getInformation = (req: Request, res: Response): void => {
         pageTitle: "Thông tin cá nhân"
     })
 }
+
+// [GET] /user/update-infor
+export const getUpdateInfor = (req: Request, res: Response): void => {
+    res.render("client/pages/user/updateInformation", {
+        pageTitle: "Cập nhật thông tin"
+    })
+}
+
+export const patchUpdateInfor = async (req: Request, res: Response): Promise<void> => {
+    if (!res.locals.currentUser) {
+        return res.redirect("back");
+    }
+
+    if (req.body.file) {
+        req.body.avatar = req.body.file;
+    }
+
+    const result = await User.updateOne(
+        { _id: res.locals.currentUser._id },
+        req.body
+    );
+
+    if (!result) {
+        req.flash("fail", "Cập nhật thất bại, vui lòng thử lại.");
+        return res.redirect("back");
+    }
+
+    req.flash("success", "Cập nhật thông tin thành công.");
+    return res.redirect("back");
+}

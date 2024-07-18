@@ -1,3 +1,20 @@
+const imgInput = document.querySelector(".img-inp"); // preview image
+const blah = document.querySelector("#blah"); // preview image// solve image upload preview
+if (imgInput) {
+    imgInput.addEventListener("change", (e) => {
+        const [file] = e.target.files;
+        if (file) {
+            blah.src = URL.createObjectURL(file);
+            blah.style.display = "block";
+        }
+    });
+    if (blah && blah.getAttribute("src") !== "") {
+        blah.style.display = "block";
+    }
+}
+// end solve image upload preview
+
+
 // solve alert notification
 document.addEventListener('DOMContentLoaded', function () {
     const alert = document.querySelector('.notfAlert');

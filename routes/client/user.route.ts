@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import * as validate from "../../validate/client/user.validate";
 import * as controller from "../../controllers/client/user.controller";
 import { checkToken, isLoggedIn, isLoggedOut } from "../../middlewares/auth";
+import { upload, uploadSingleFile } from "../../middlewares/client/upload";
 
 const router: Router = express.Router();
 
@@ -28,6 +29,10 @@ router.get("/password/reset", isLoggedOut, checkToken({ tokenName: 'reset-passwo
 router.patch("/password/reset", isLoggedOut, checkToken({ tokenName: 'reset-password-token', type: 'userResetPassword' }), validate.resetPassword, controller.patchResetPassword);
 
 router.get("/information", isLoggedIn, controller.getInformation);
+
+router.get("/update-infor", isLoggedIn, controller.getUpdateInfor);
+
+router.patch('/update-infor', upload.single('avatar'), uploadSingleFile, validate.validateUpdateInfor, controller.patchUpdateInfor);
 
 router.patch("/addFavoriteSong", isLoggedIn, validate.addFavoriteSong, controller.addFavoriteSong);
 

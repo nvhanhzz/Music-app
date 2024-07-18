@@ -26,30 +26,14 @@ const uploadToCloudinary = async (buffer) => {
     return result;
 }
 
-export const uploadMultipleFile = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        if (!req["files"]) {
-            return next();
-        }
-        for (const key in req["files"]) {
-            const file = req["files"][key][0];
-            req.body[key] = await uploadToCloudinary(file.buffer);
-        }
-        next();
-    } catch (error) {
-        console.log(error);
-        next(error);
-    }
-};
-
 export const uploadSingleFile = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req["file"]) {
-            return res.status(400).json({ message: "Invalid file." });
+            return next();
         }
         const file = req["file"];
         req.body.file = await uploadToCloudinary(file.buffer);
-        next();
+        return next();
     } catch (error) {
         console.log(error);
         next(error);

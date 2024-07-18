@@ -87,3 +87,20 @@ export const addFavoriteSong = (req: Request, res: Response, next: NextFunction)
 
     next();
 }
+
+export const validateUpdateInfor = (req: Request, res: Response, next: NextFunction): void => {
+    if (!req.body.fullName) {
+        req.flash('fail', 'Họ và tên không được bỏ trống.');
+        return res.redirect("back");
+    }
+    if (!req.body.phone) {
+        req.flash('fail', 'Số điện thoại không được bỏ trống.');
+        return res.redirect("back");
+    }
+    if (!req.body.email) {
+        req.flash('fail', 'Email không được bỏ trống.');
+        return res.redirect("back");
+    }
+
+    next();
+}

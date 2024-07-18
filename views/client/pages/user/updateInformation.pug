@@ -1,0 +1,34 @@
+extends ../../layouts/default.pug
+
+block main 
+    .container
+        form(action="/user/update-infor?_method=PATCH" method="POST" enctype="multipart/form-data")
+            div(style="height: 50px")
+            .row 
+                .col-2 
+                .col-10 
+                    img(id="blah" src=currentUser.avatar ? currentUser.avatar : "https://th.bing.com/th/id/OIP.NncIgJuAPc-2QzmcDe6tdAHaEy?rs=1&pid=ImgDetMain" alt=currentUser.fullName style="width: 300px; height: auto;")
+                    input#avatar.form-control.img-inp(type="file", accept="image/*", name="avatar" style="border: none")
+            
+            div(style="height: 20px")
+            .row 
+                .col-2
+                .col-2 Họ và tên:
+                .col-3
+                    input(type="text" class="form-control" value=currentUser.fullName name="fullName" placeholder="Nhập họ và tên")
+            .row 
+                .col-2
+                .col-2 Email:
+                .col-3
+                    input(type="email" class="form-control" value=currentUser.email name="email" placeholder="Nhập email")
+            .row 
+                .col-2
+                .col-2 Số điện thoại:
+                .col-3
+                    input(type="text" class="form-control" value=currentUser.phone name="phone" placeholder="Nhập số điện thoại")
+            div(style="height: 20px")
+            .row 
+                .col-2 
+                .col-10 
+                    button(type="submit" class="btn btn-primary") Cập nhật
+            div(style="height: 20px")
