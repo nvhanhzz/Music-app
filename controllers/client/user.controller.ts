@@ -40,7 +40,7 @@ export const postRegister = async (req: Request, res: Response): Promise<void> =
 }
 
 // [GET] /user/login
-export const getLogin = async (req: Request, res: Response): Promise<void> => {
+export const getLogin = (req: Request, res: Response): void => {
     res.render('client/pages/user/login', {
         pageTitle: "Đăng nhập"
     });
@@ -51,7 +51,8 @@ export const postLogin = async (req: Request, res: Response): Promise<void> => {
     const TOKEN_EXP: number = parseInt(process.env.TOKEN_EXP, 10);
     const user = await User.findOne({
         email: req.body.email,
-        deleted: false
+        deleted: false,
+        status: ListStatus.ACTIVE
     });
     if (!user) {
         req.flash("fail", "Email hoặc mật khẩu không chính xác.");

@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import * as validate from "../../validate/client/song.validate";
 import * as controller from "../../controllers/client/song.controller";
-import { isLoggedIn } from "../../middlewares/auth";
+import { isLoggedIn } from "../../middlewares/client/auth";
 
 const router: Router = express.Router();
 

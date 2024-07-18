@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import User from '../models/user.model';
-import ListStatus from "../enums/status.enum";
+import Admin from '../../models/admin.model';
+import ListStatus from "../../enums/status.enum";
 
 const verifyToken = (token: string, key: string): { id: string } | null => {
     try {
@@ -35,7 +35,7 @@ export const checkToken = (options: CheckTokenOptions = { tokenName: '' }) => {
         }
 
         try {
-            const user = await User.findOne({
+            const user = await Admin.findOne({
                 _id: decoded.id,
                 deleted: false,
                 status: ListStatus.ACTIVE
@@ -58,18 +58,20 @@ export const checkToken = (options: CheckTokenOptions = { tokenName: '' }) => {
     };
 };
 
-export const isLoggedIn = (req: Request & { currentUser?: object }, res: Response, next: NextFunction) => {
-    if (!res.locals.currentUser) {
+export const isLoggedIn = (req: Request & { currentAdmin?: object }, res: Response, next: NextFunction) => {
+    if (!res.locals.currentAdmin) {
         req.flash('fail', 'Bạn cần đăng nhập trước.');
-        return res.redirect("back");
+        const prefixAdmin = process.env.PATH_ADMIN;
+        return res.redirect(`${prefixAdmin}/auth/login`);
     }
     return next();
 }
 
-export const isLoggedOut = (req: Request & { currentUser?: object }, res: Response, next: NextFunction) => {
-    if (res.locals.currentUser) {
+export const isLoggedOut = (req: Request & { currentAdmin?: object }, res: Response, next: NextFunction) => {
+    if (res.locals.currentAdmin) {
         req.flash('fail', 'Bạn đã đăng nhập rồi.');
-        return res.redirect("back");
+        const prefixAdmin = process.env.PATH_ADMIN;
+        return res.redirect(`${prefixAdmin}/dashboard`);
     }
     return next();
 }

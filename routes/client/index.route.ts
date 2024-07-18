@@ -4,7 +4,7 @@ import songRoutes from "./song.route";
 import userRoutes from "./user.route";
 import homeRoutes from "./home.route";
 import searchRoutes from "./search.route";
-import { checkToken } from "../../middlewares/auth";
+import { checkToken } from "../../middlewares/client/auth";
 
 const clientRoutes = (app: Application): void => {
     app.use(checkToken({ tokenName: 'token', type: 'currentUser' }));

@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import * as validate from "../../validate/client/user.validate";
 import * as controller from "../../controllers/client/user.controller";
-import { checkToken, isLoggedIn, isLoggedOut } from "../../middlewares/auth";
+import { checkToken, isLoggedIn, isLoggedOut } from "../../middlewares/client/auth";
 import { upload, uploadSingleFile } from "../../middlewares/client/upload";
 
 const router: Router = express.Router();
