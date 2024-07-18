@@ -10,18 +10,18 @@ block main
                 .col-6
                     .form-group
                         label(for='email') Email
-                        input#email.form-control(type='email' name="email")
+                        input#email.form-control(type='email' name="email" placeholder="Nhập email")
             .row
                 .col-3 
                 .col-6
                     .form-group
                         label(for='password') Mật khẩu
-                        input#password.form-control(type='password' name="password")
+                        input#password.form-control(type='password' name="password" placeholder="Nhập mật khẩu")
 
             .row
                 .col-3 
                 .col-6(style="display: flex; justify-content: space-between;") 
-                    a(href="/user/forgot-password") Quên mật khẩu?
+                    a(href="/user/password/forgot") Quên mật khẩu?
                     a(href="/user/register") Đăng ký
 
             .row

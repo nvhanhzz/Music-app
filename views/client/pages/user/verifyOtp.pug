@@ -1,0 +1,25 @@
+extends ../../layouts/default.pug
+
+block main 
+    .container
+        div(style="height: 70px")
+        form(action="/user/password/verify-otp" method="POST")
+            h2(style="text-align: center") Xác thực mã OTP
+            .row
+                .col-3 
+                .col-6
+                    .form-group
+                        label(for='email') Email
+                        input#email.form-control(type='email' name="email" value=email disabled)
+
+            .row
+                .col-3 
+                .col-6
+                    .form-group
+                        label(for='otp') Mã OTP
+                        input#otp.form-control(type='text' name="otp" placeholder="Nhập OTP")
+
+            .row
+                .col-3 
+                .col-6
+                    button.btn.btn-primary(type='submit' style="width: 100%; margin-top: 20px;") Submit

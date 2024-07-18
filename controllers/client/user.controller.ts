@@ -4,6 +4,9 @@ import { hashPassword, comparePassword } from "../../helper/hashPassword";
 import generateToken from '../../helper/generateToken';
 import Song from '../../models/song.model';
 import ListStatus from "../../enums/status.enum";
+import ForgotPassword from "../../models/forgotPassword.model";
+import { generateOTP } from "../../helper/generate";
+import { sendMail } from "../../helper/senMail";
 
 // [GET] /user/register
 export const getRegister = async (req: Request, res: Response): Promise<void> => {
@@ -25,14 +28,14 @@ export const postRegister = async (req: Request, res: Response): Promise<void> =
 
     req.body.password = await hashPassword(req.body.password);
     req.body.status = ListStatus.ACTIVE;
-    req.body.avatar = "https://th.bing.com/th/id/OIP.VImWjbk4meO4actlY89hAAHaGj?w=1099&h=973&rs=1&pid=ImgDetMain";
+    req.body.avatar = "";
     req.body.favoriteSong = [];
     const newUser = new User(req.body);
     await newUser.save();
 
     generateToken(res, newUser.id, TOKEN_EXP, "token");
 
-    req.flash("success", `Register success, hello ${newUser.fullName}.`);
+    req.flash("success", `Đăng ký thành công, xin chào ${newUser.fullName}.`);
     res.redirect(`/`);
 }
 
@@ -70,7 +73,7 @@ export const postLogin = async (req: Request, res: Response): Promise<void> => {
 // [POST] /user/logout
 export const postLogout = (req: Request, res: Response): void => {
     res.clearCookie("token");
-    req.flash("success", "Đăng xuât thành công.");
+    req.flash("success", "Đăng xuất thành công.");
     return res.redirect("/");
 }
 
@@ -100,4 +103,164 @@ export const addFavoriteSong = async (req: Request, res: Response): Promise<Resp
     } catch (error) {
         return res.status(404).json({ message: "Song not found or user not found." });
     }
+}
+
+// [GET] /user/password/forgot
+export const getForgotPassword = (req: Request, res: Response): void => {
+    res.render("client/pages/user/forgotPassword", {
+        pageTitle: "Quên mật khẩu"
+    });
+}
+
+// [POST] /user/password/forgot
+export const postForgotPassword = async (req: Request, res: Response): Promise<void> => {
+    const email = req.body.email;
+    const existUser = await User.findOne({
+        email: email,
+        deleted: false,
+        status: ListStatus.ACTIVE
+    });
+    if (!existUser) {
+        req.flash("fail", "Không tìm thấy email hoặc tài khoản đã bị khóa.");
+        return res.redirect("back");
+    }
+
+    // solve exist otp
+    const existOtp = await ForgotPassword.findOne({
+        email: email
+    });
+    if (existOtp) {
+        req.flash("fail", "Đã gửi OTP đến email của bạn, vui lòng kiểm tra lại email.");
+        return res.redirect("/user/password/verify-otp");
+    }
+    // end solve exist otp
+
+    // create OTP
+    const otp = generateOTP(8);
+    const attemptsLeft = 5;
+    const forgotPassword = new ForgotPassword({
+        email: email,
+        otp: otp,
+        attemptsLeft: attemptsLeft
+    });
+
+    const save = await forgotPassword.save();
+    if (!save) {
+        req.flash("fail", "Đã có lỗi xảy ra, vui lòng thử lại.");
+        return res.redirect("back");
+    }
+    // end create OTP
+
+    // send mail
+    const subject = `Mã OTP xác minh lấy lại mật khẩu`
+    const html = `Mã OTP là <b>${otp}</b>. Thời hạn sử dụng là 3 phút. Lưu ý không được để lộ mã này.`
+    sendMail(email, subject, html);
+    // end send mail
+
+    // create temp token
+    const TEMP_TOKEN_EXP: number = parseInt(process.env.TEMP_TOKEN_EXP, 10);
+    generateToken(res, existUser.id, TEMP_TOKEN_EXP, "verify_otp_token");
+    // end create temp token
+
+    req.flash("fail", "Đã gửi OTP đến email của bạn, vui lòng kiểm tra email.");
+    return res.redirect("/user/password/verify-otp");
+}
+
+// [GET] /user/password/verify-otp
+export const getVerifyOtp = (req: Request, res: Response): void => {
+    if (!res.locals.userVerifyOtp) {
+        return res.redirect("/");
+    }
+    const email = res.locals.userVerifyOtp.email;
+
+    res.render("client/pages/user/verifyOtp", {
+        pageTitle: "Xác thực mã OTP",
+        email: email
+    });
+}
+
+// [POST] /user/password/verify-otp
+export const postVerifyOtp = async (req: Request, res: Response): Promise<void> => {
+    const userVerifyOtp = res.locals.userVerifyOtp
+    const email = userVerifyOtp.email;
+    const otp = req.body.otp;
+    const forgotPassword = await ForgotPassword.findOne({
+        email: email
+    });
+
+    if (!forgotPassword) {
+        req.flash("fail", "Xác thực không thành công");
+        return res.redirect("back");
+    }
+
+    if (forgotPassword.attemptsLeft === 0) {
+        const del = await ForgotPassword.deleteOne({
+            email: email
+        });
+        if (!del) {
+            req.flash("fail", "Đã có lỗi xảy ra, vui lòng thử lại.");
+            return res.redirect("back");
+        }
+        res.clearCookie("verify_otp_token");
+
+        req.flash("fail", "Bạn đã nhập sai 5 lần, vui lòng lấy mã OTP mới và thử lại.");
+        return res.redirect("/");
+    }
+
+    if (otp !== forgotPassword.otp) {
+        forgotPassword.attemptsLeft -= 1;
+        await forgotPassword.save();
+        req.flash("fail", "Mã OTP không chính xác.");
+        return res.redirect("back");
+    }
+
+    const del = await ForgotPassword.deleteOne({
+        email: email
+    });
+    if (!del) {
+        req.flash("fail", "Đã có lỗi xảy ra, vui lòng thử lại.");
+        return res.redirect("back");
+    }
+
+    res.clearCookie("verify_otp_token");
+    const TEMP_TOKEN_EXP: number = parseInt(process.env.TEMP_TOKEN_EXP, 10);
+    generateToken(res, userVerifyOtp.id, TEMP_TOKEN_EXP, "reset-password-token");
+    req.flash("success", "Xác thực thành công, hãy đặt lại mật khẩu.");
+    return res.redirect("/user/password/reset");
+}
+
+// [GET] /user/password/reset
+export const getResetPassword = (req: Request, res: Response): void => {
+    if (!res.locals.userResetPassword) {
+        return res.redirect("/");
+    }
+    res.render("client/pages/user/resetPassword", {
+        pageTitle: "Đặt lại mật khẩu"
+    });
+}
+
+// [POST] /api/v1/user/password/reset
+export const patchResetPassword = async (req: Request, res: Response): Promise<void> => {
+    const userResetPassword = res.locals.userResetPassword;
+
+    const password = await hashPassword(req.body.password);
+    const reset = await User.updateOne(
+        {
+            _id: userResetPassword.id
+        },
+        {
+            password: password
+        }
+    );
+
+    if (!reset) {
+        req.flash("fail", "Đã có lỗi xảy ra, vui lòng thử lại.");
+        return res.redirect("back");
+    }
+
+    res.clearCookie("reset-password-token");
+    const TOKEN_EXP: number = parseInt(process.env.TOKEN_EXP, 10);
+    generateToken(res, userResetPassword.id, TOKEN_EXP, "token");
+    req.flash("success", `Đặt lại mật khẩu thành công, xin chào ${userResetPassword.fullName}.`);
+    res.redirect(`/`);
 }
