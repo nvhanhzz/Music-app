@@ -6,6 +6,7 @@ import uploadRoute from "./upload.route";
 import authRoute from "./auth.route";
 import accountAdminRoute from "./accountAdmin.route";
 import roleRoute from "./role.route";
+import permissionRoute from "./permission.route";
 
 import { checkToken, isLoggedIn } from "../../middlewares/admin/auth";
 
@@ -20,6 +21,7 @@ const adminRoutes = (app: Application): void => {
     app.use(`${prefixAdmin}/dashboard`, isLoggedIn, dashboardRoute);
     app.use(`${prefixAdmin}/account-admin`, isLoggedIn, accountAdminRoute);
     app.use(`${prefixAdmin}/roles`, isLoggedIn, roleRoute);
+    app.use(`${prefixAdmin}/permissions`, isLoggedIn, permissionRoute);
     app.use(`${prefixAdmin}/topics`, isLoggedIn, topicRoute);
     app.use(`${prefixAdmin}/songs`, isLoggedIn, songRoute);
     app.use(`${prefixAdmin}/upload`, isLoggedIn, uploadRoute);

@@ -1,0 +1,61 @@
+extends ../../layouts/default.pug
+include ../../mixins/notification.pug
+
+block addCss 
+    link(rel="stylesheet", href="/admin/css/permission.css")
+
+block main
+    //- if currentUser.role.permission.includes("permission")
+    h1 Phân quyền
+
+    .card.mb-3 
+
+    .card.mb-3 
+        .card-header
+            button(class="update-permission-button") Cập nhật
+
+        .card-body 
+            table.table.table-hober.table-sm
+                thead 
+                    tr 
+                        th Tính năng 
+                        each item, index in roles   
+                            th #{item.title}
+                    tr(class="d_none") 
+                        th Id 
+                        each item, index in roles   
+                            th 
+                                input(class="role-id" value=item.id)
+
+                tbody 
+                    tr 
+                        th Bài hát
+                    tr 
+                        td Xem 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="view-song" value=index check-box-permission checked= item.permission.includes("view-song"))
+                    tr
+                        td Tạo mới
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="create-song" value=index check-box-permission checked= item.permission.includes("create-song"))
+                    tr
+                        td Cập nhật 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="update-song" value=index check-box-permission checked= item.permission.includes("update-song"))
+                    tr
+                        td Xóa 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="delete-song" value=index check-box-permission checked= item.permission.includes("delete-song"))
+                    
+
+    form(action=`${prefixAdmin}/permissions/update?_method=PATCH` 
+    class="update-permission-form d_none"
+    method="POST")
+        input(type="text" permissions name="permissions")
+    script(src="/admin/js/permission.js")
+    //- else 
+    //-     h1 No permission

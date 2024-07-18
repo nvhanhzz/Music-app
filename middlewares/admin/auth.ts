@@ -39,7 +39,7 @@ export const checkToken = (options: CheckTokenOptions = { tokenName: '' }) => {
                 _id: decoded.id,
                 deleted: false,
                 status: ListStatus.ACTIVE
-            }).select("-password");
+            }).populate("roleId").select("-password");
 
             if (!user) {
                 res.clearCookie(tokenName);
