@@ -6,6 +6,8 @@ import search from "../../helper/search";
 import pagination from "../../helper/pagination";
 import sort from "../../helper/sort";
 import { Sort } from "../../enums/accountAdmin.enum";
+import Role from "../../models/role.model";
+import { hashPassword } from "../../helper/hashPassword";
 const PATH_ADMIN = process.env.PATH_ADMIN;
 
 // [GET] /admin/account-admin
@@ -319,4 +321,60 @@ export const getAdminDetail = async (req: Request, res: Response): Promise<void>
         req.flash("fail", "Bạn không đủ quyền.");
         res.redirect(`${PATH_ADMIN}/dashboard`);
     }
+}
+
+// [GET] /admin/account-admin/create
+export const getCreate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('create-admin')) {
+        const roles = await Role.find({
+            deleted: false,
+        }).populate("title");
+
+        res.render("admin/pages/accountAdmin/create", {
+            pageTitle: "Tạo mới tài khoản admin",
+            roles: roles,
+        });
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [POST] /admin/account-admin/create-account
+export const postCreate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('create-admin')) {
+        const accountExist = await Admin.findOne({
+            email: req.body.email
+        });
+        if (accountExist) {
+            req.flash('fail', 'Email đã tồn tại trong hệ thống.');
+            return res.redirect("back");
+        }
+        if (req.body.file) {
+            req.body.avatar = req.body.file;
+        }
+
+        req.body.createdBy = {
+            adminId: res.locals.currentAdmin.id
+        };
+
+        req.body.password = await hashPassword(req.body.password);
+
+        const admin = new Admin(req.body);
+
+        try {
+            await admin.save();
+            req.flash('success', 'Tạo tài khoản admin thành công');
+        } catch (error) {
+            console.error(error);
+        }
+
+        return res.redirect(`${PATH_ADMIN}/account-admin`);
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
 }

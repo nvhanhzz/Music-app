@@ -1,0 +1,48 @@
+extends ../../layouts/default.pug
+include ../../mixins/notification.pug
+
+block addCss 
+    link(rel="stylesheet", href="/admin/css/createPage.css")
+
+block main
+    h2 #{pageTitle}
+
+    form(action=`${prefixAdmin}/account-admin/create`, enctype="multipart/form-data", method="POST")
+        .form-group
+            label(for="title") Họ và tên:
+            input#title.form-control(type="text", name="fullName", placeholder="Nhập họ tên admin")
+        
+        .form-group
+            label(for="roleId" class="label") Quyền:
+            select#roleId(name="roleId")  
+                option(value="" disabled selected) --Chọn nhóm quyền--
+                each role in roles
+                    option(value=role.id) #{role.title} 
+        div.form-group
+            label(for="avatar") Ảnh đại diện:
+            input#avatar.form-control.img-inp(type="file", accept="image/*", name="avatar")
+            img(id="blah" src="" alt="your image")
+        div.form-group
+            label(for="title") Email:
+            input#title.form-control(type="text", name="email", placeholder="Nhập email của admin")
+        div.form-group
+            label(for="title") Số điện thoại:
+            input#title.form-control(type="text", name="phone", placeholder="Nhập số điện thoại của admin")
+        div.form-group
+            label(for="title") Mật khẩu:
+            input#title.form-control(type="password", name="password", placeholder="Nhập mật khẩu")
+
+        div.form-group
+            label Trạng thái:
+            div
+                input#status-active(type="radio", name="status", value="active")
+                label(for="status-active") Hoạt động
+            div
+                input#status-inactive(type="radio", name="status", value="inactive", checked)
+                label(for="status-inactive") Dừng hoạt động
+
+        div.form-group
+            button.btn.btn-primary(type="submit") Tạo mới
+    
+    script(type="application/javascript" src= "/tinymce/tinymce.min.js")
+    script(type="application/javascript" src= "/admin/js/tinymce-config.js") 

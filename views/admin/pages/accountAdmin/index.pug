@@ -62,7 +62,10 @@ block main
                             td #{item.fullName} 
                             td #{item.phone} 
                             td #{item.email} 
-                            td #{item.roleId.title}
+                            if item.roleId && item.roleId.title
+                                td #{item.roleId.title}
+                            else 
+                                td
                             
                             td  
                                 div #{item.createdBy.adminId.fullName} 

@@ -45,11 +45,11 @@ export const uploadMultipleFile = async (req: Request, res: Response, next: Next
 export const uploadSingleFile = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req["file"]) {
-            return res.status(400).json({ message: "Invalid file." });
+            return next();
         }
         const file = req["file"];
         req.body.file = await uploadToCloudinary(file.buffer);
-        next();
+        return next();
     } catch (error) {
         console.log(error);
         next(error);
