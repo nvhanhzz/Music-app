@@ -20,10 +20,10 @@ block main
 
     .card.mb-3 
         .card-header
-            //- if currentUser.role.permission.includes("create-product") 
-            a(href=`${prefixAdmin}/account-admin/create` class="create") + Tạo mới
-            //- if currentUser.role.permission.includes("update-product")
-            +change-multiple-form(`${prefixAdmin}/account-admin/change-multiple`)
+            if currentAdmin.roleId.permission.includes("create-admin") 
+                a(href=`${prefixAdmin}/account-admin/create` class="create") + Tạo mới
+            if currentAdmin.roleId.permission.includes("update-admin")
+                +change-multiple-form(`${prefixAdmin}/account-admin/change-multiple`)
         
         h4.sort-title Sắp xếp
         .card-sort
@@ -32,9 +32,9 @@ block main
             table.table.table-hober.table-sm
                 thead 
                     tr 
-                        //- if currentUser.role.permission.includes("update-product")
-                        th 
-                            input(type="checkbox" name="checkall")
+                        if currentAdmin.roleId.permission.includes("update-admin")
+                            th 
+                                input(type="checkbox" name="checkall")
                         th STT
                         th Ảnh   
                         th Tên 
@@ -42,16 +42,15 @@ block main
                         th Email 
                         th Quyền
                         th Người tạo 
-                        th Cập nhật bởi
                         th Trạng thái
                         th Hành động 
 
                 tbody 
                     each item, index in admins
                         tr.item 
-                            //- if currentUser.role.permission.includes("update-product")
-                            td
-                                input(type="checkbox" name="checkitem" val=item._id)
+                            if currentAdmin.roleId.permission.includes("update-admin")
+                                td
+                                    input(type="checkbox" name="checkitem" val=item._id)
                             td #{(pagination.page - 1) * pagination.limit + index + 1}
                             td 
                                 img(
@@ -63,41 +62,36 @@ block main
                             td #{item.fullName} 
                             td #{item.phone} 
                             td #{item.email} 
-                            td Nhóm quyền
+                            td #{item.roleId.title}
                             
-                            td #{item.createdBy.adminId.fullName} 
-                            td #{item.updatedBy[item.updatedBy.length - 1].adminId.fullName} 
-                                //- div #{item.creatorName}
-                                //- +date(item.createdBy.createdAt)
+                            td  
+                                div #{item.createdBy.adminId.fullName} 
+                                +date(item.createdBy.createdAt)
                             td 
-                                //- if currentUser.role.permission.includes("update-product")
-                                if(item.status === "active")
-                                    button(class="badge badge-success" itemId=item._id val="active" update-status) Hoạt động 
-                                else 
-                                    button(class="badge badge-danger" itemId=item._id val="inactive" update-status) Dừng hoạt động 
-                                //- else
-                                //-     if(item.status === "active")
-                                //-         span(class="badge badge-success" itemId=item._id val="active") Active 
-                                //-     else 
-                                //-         span(class="badge badge-danger" itemId=item._id val="inactive") Inactive 
+                                if currentAdmin.roleId.permission.includes("update-admin")
+                                    if(item.status === "active")
+                                        button(class="badge badge-success" itemId=item._id val="active" update-status) Hoạt động 
+                                    else 
+                                        button(class="badge badge-danger" itemId=item._id val="inactive" update-status) Dừng hoạt động 
+                                else
+                                    if(item.status === "active")
+                                        span(class="badge badge-success" itemId=item._id val="active") Hoạt động 
+                                    else 
+                                        span(class="badge badge-danger" itemId=item._id val="inactive") Dừng hoạt động 
                             td 
                                 a(class="btn  btn-secondary btn-sm" detail-button href=`${prefixAdmin}/songs/detail/${item.id}`) Chi tiết
-                                //- if currentUser.role.permission.includes("update-product")
-                                a(class="btn btn-warning btn-sm ml-1" update-button href=`${prefixAdmin}/songs/update/${item.id}`) Cập nhật 
-                                //- if currentUser.role.permission.includes("delete-product")
-                                button(class="btn btn-danger btn-sm ml-1" delete-button item_id=item._id) Xóa
+                                if currentAdmin.roleId.permission.includes("update-admin")
+                                    a(class="btn btn-warning btn-sm ml-1" update-button href=`${prefixAdmin}/songs/update/${item.id}`) Cập nhật 
+                                if currentAdmin.roleId.permission.includes("delete-admin")
+                                    button(class="btn btn-danger btn-sm ml-1" delete-button item_id=item._id) Xóa
                     
     .pagination
         +pagination(pagination)
 
-    form(action=`${prefixAdmin}/songs/change-status` 
+    form(action=`${prefixAdmin}/account-admin/change-status` 
     class="change-status-form"
     method="POST")
 
-    form(action=`${prefixAdmin}/songs/change-featured` 
-    class="change-featured-form"
-    method="POST")
-
-    form(action=`${prefixAdmin}/songs/delete` 
+    form(action=`${prefixAdmin}/account-admin/delete` 
     class="delete-form"
     method="POST")

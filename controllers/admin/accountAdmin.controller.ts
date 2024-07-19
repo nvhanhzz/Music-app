@@ -62,8 +62,8 @@ export const index = async (req: Request, res: Response): Promise<void> => {
             .skip(paginationObject.skip)
             .limit(paginationObject.limit)
             .sort(sortObject)
+            .populate("roleId", "title")
             .populate("createdBy.adminId", "fullName")
-            .populate("updatedBy.adminId", "fullName")
             .select("-password");
 
         res.render("admin/pages/accountAdmin/index", {
@@ -74,6 +74,53 @@ export const index = async (req: Request, res: Response): Promise<void> => {
             pagination: paginationObject,
             sortArray: sortArray
         });
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [PATCH] /admin/songs/change-status/:status/:id
+export const patchChangeStatus = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('update-admin')) {
+        const status = req.params.status;
+        const itemId = req.params.id;
+
+        if (!Object.values(ListStatus).includes(status as ListStatus)) {
+            req.flash('fail', 'Cập nhật thất bại.');
+            return;
+        }
+
+        try {
+            const result = await Admin.updateOne(
+                {
+                    _id: itemId,
+                    deleted: false
+                },
+                {
+                    $set: {
+                        status: status
+                    },
+                    $push: {
+                        updatedBy: {
+                            adminId: res.locals.currentAdmin.id,
+                            action: `Thay đổi trạng thái sang ${status}`,
+                            updatedAt: new Date()
+                        }
+                    }
+                }
+            );
+            if (result.modifiedCount === 1) {
+                req.flash('success', 'Cập nhật thành công.');
+            } else {
+                req.flash('fail', 'Cập nhật thất bại.');
+            }
+        } catch (error) {
+            req.flash('fail', 'Cập nhật thất bại.');
+        }
+
+        res.redirect("back");
     } else {
         req.flash("fail", "Bạn không đủ quyền.");
         res.redirect(`${PATH_ADMIN}/dashboard`);

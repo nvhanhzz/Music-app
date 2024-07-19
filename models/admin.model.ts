@@ -6,34 +6,34 @@ mongoose.plugin(slug);
 
 const adminSchema = new mongoose.Schema(
     {
-        "fullName": String,
-        "email": String,
-        "password": String,
-        "avatar": String,
-        "phone": String,
-        "status": String,
-        "roleId": { type: mongoose.Schema.Types.ObjectId, ref: Role },
+        fullName: String,
+        email: String,
+        password: String,
+        avatar: String,
+        phone: String,
+        status: String,
+        roleId: { type: mongoose.Schema.Types.ObjectId, ref: Role },
         slug: { type: String, slug: "fullName", unique: true },
-        "deleted": {
+        deleted: {
             type: Boolean,
             default: false
         },
-        "createdBy": {
-            "adminId": { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
-            action: String,
-            "createdAt": {
+        createdBy: {
+            adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
+            createdAt: {
                 type: Date,
                 default: Date.now
             }
         },
-        "deletedBy": {
-            "adminId": { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
-            "deletedAt": Date
+        deletedBy: {
+            adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+            deletedAt: Date
         },
-        "updatedBy": [
+        updatedBy: [
             {
-                "adminId": { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
-                "updatedAt": {
+                adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
+                action: String,
+                updatedAt: {
                     type: Date
                 }
             }
