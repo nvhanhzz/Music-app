@@ -29,7 +29,7 @@ block main
 
                 tbody 
                     tr 
-                        th Bài hát
+                        th Quản lý bài hát
                     tr 
                         td Xem 
                         each item, index in roles 
@@ -50,6 +50,160 @@ block main
                         each item, index in roles 
                             td 
                                 input(type="checkbox" name="delete-song" value=index check-box-permission checked= item.permission.includes("delete-song"))
+                    
+                    tr 
+                        th Quản lý chủ đề
+                    tr 
+                        td Xem 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="view-topic" value=index check-box-permission checked= item.permission.includes("view-topic"))
+                    tr
+                        td Tạo mới
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="create-topic" value=index check-box-permission checked= item.permission.includes("create-topic"))
+                    tr
+                        td Cập nhật 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="update-topic" value=index check-box-permission checked= item.permission.includes("update-topic"))
+                    tr
+                        td Xóa 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="delete-topic" value=index check-box-permission checked= item.permission.includes("delete-topic"))
+                    
+                    tr 
+                        th Quản lý ca sĩ
+                    tr 
+                        td Xem 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="view-singer" value=index check-box-permission checked= item.permission.includes("view-singer"))
+                    tr
+                        td Tạo mới
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="create-singer" value=index check-box-permission checked= item.permission.includes("create-singer"))
+                    tr
+                        td Cập nhật 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="update-singer" value=index check-box-permission checked= item.permission.includes("update-singer"))
+                    tr
+                        td Xóa 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="delete-singer" value=index check-box-permission checked= item.permission.includes("delete-singer"))
+                    
+                    tr 
+                        th Quản lý bài viết
+                    tr 
+                        td Xem 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="view-article" value=index check-box-permission checked= item.permission.includes("view-article"))
+                    tr
+                        td Tạo mới
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="create-article" value=index check-box-permission checked= item.permission.includes("create-article"))
+                    tr
+                        td Cập nhật 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="update-article" value=index check-box-permission checked= item.permission.includes("update-article"))
+                    tr
+                        td Xóa 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="delete-article" value=index check-box-permission checked= item.permission.includes("delete-article"))
+                    
+                    tr 
+                        th Quản lý tài khoản admin
+                    tr 
+                        td Xem 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="view-admin" value=index check-box-permission checked= item.permission.includes("view-admin"))
+                    tr
+                        td Tạo mới
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="create-admin" value=index check-box-permission checked= item.permission.includes("create-admin"))
+                    tr
+                        td Cập nhật 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="update-admin" value=index check-box-permission checked= item.permission.includes("update-admin"))
+                    tr
+                        td Xóa 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="delete-admin" value=index check-box-permission checked= item.permission.includes("delete-admin"))
+
+                    tr 
+                        th Quản lý tài khoản user
+                    tr 
+                        td Xem 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="view-user" value=index check-box-permission checked= item.permission.includes("view-user"))
+                    tr
+                        td Tạo mới
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="create-user" value=index check-box-permission checked= item.permission.includes("create-user"))
+                    tr
+                        td Cập nhật 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="update-user" value=index check-box-permission checked= item.permission.includes("update-user"))
+                    tr
+                        td Xóa 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="delete-user" value=index check-box-permission checked= item.permission.includes("delete-user"))
+                    
+                    tr 
+                        th Quản lý nhóm quyền
+                    tr 
+                        td Xem 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="view-role" value=index check-box-permission checked= item.permission.includes("view-role"))
+                    tr
+                        td Tạo mới
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="create-role" value=index check-box-permission checked= item.permission.includes("create-role"))
+                    tr
+                        td Cập nhật 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="update-role" value=index check-box-permission checked= item.permission.includes("update-role"))
+                    tr
+                        td Xóa 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="delete-role" value=index check-box-permission checked= item.permission.includes("delete-role"))
+                    
+                    tr 
+                        th Quản lý phân quyền
+                    tr
+                        td Cập nhật 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="update-permission" value=index check-box-permission checked= item.permission.includes("update-permission"))
+
+                    tr 
+                        th Cài đặt chung
+                    tr
+                        td Cập nhật 
+                        each item, index in roles 
+                            td 
+                                input(type="checkbox" name="update-setting" value=index check-box-permission checked= item.permission.includes("update-setting"))            
                     
 
     form(action=`${prefixAdmin}/permissions/update?_method=PATCH` 

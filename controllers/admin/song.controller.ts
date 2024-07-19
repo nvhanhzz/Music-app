@@ -12,366 +12,343 @@ const PATH_ADMIN = process.env.PATH_ADMIN;
 
 // [GET] /admin/songs
 export const index = async (req: Request, res: Response): Promise<void> => {
-    const query = req.query;
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('view-song')) {
+        const query = req.query;
 
-    // filter
-    const filter = filterStatus(query);
-    // end filter
+        // filter
+        const filter = filterStatus(query);
+        // end filter
 
-    // search
-    let searchObject = {
-        keyword: ""
-    };
-    if (query.keyword) {
-        interface SearchQuery {
-            keyword: string;
+        // search
+        let searchObject = {
+            keyword: ""
+        };
+        if (query.keyword) {
+            interface SearchQuery {
+                keyword: string;
+            }
+            searchObject = search(query as unknown as SearchQuery);
         }
-        searchObject = search(query as unknown as SearchQuery);
+        // end search
+
+        // create find object
+        const find = {
+            deleted: false
+        };
+        const status = query.status;
+        if (Object.values(ListStatus).includes(status as ListStatus)) {
+            find["status"] = status;
+        }
+        if (searchObject && searchObject["regex"]) {
+            find["slug"] = searchObject["regex"];
+        }
+        // end create find object
+
+        //pagination
+        const limit = 5;
+        const total = await Song.countDocuments(find);
+        const paginationObject = pagination(query, limit, total);
+        //endpagination
+
+        //sort
+        const sortObject = sort(query, Sort);
+        const [sortKey, sortValue] = Object.entries(sortObject)[0];
+        const sortArray = [
+            { name: "Vị trí giảm dần", value: "position-desc", selected: `${sortKey}-${sortValue}` === "position-desc" },
+            { name: "Vị trí tăng dần", value: "position-asc", selected: `${sortKey}-${sortValue}` === "position-asc" },
+            { name: "Tên Z-A", value: "title-desc", selected: `${sortKey}-${sortValue}` === "title-desc" },
+            { name: "Tên A-Z", value: "title-asc", selected: `${sortKey}-${sortValue}` === "title-asc" },
+            { name: "Lượt nghe giảm dần", value: "listenCount-desc", selected: `${sortKey}-${sortValue}` === "listenCount-desc" },
+            { name: "Lượt nghe tăng dần", value: "listenCount-asc", selected: `${sortKey}-${sortValue}` === "listenCount-asc" },
+        ]
+        //end sort
+
+        const songs = await Song.find(find)
+            .skip(paginationObject.skip)
+            .limit(paginationObject.limit)
+            .sort(sortObject)
+            .populate("singerId", "fullName")
+            .populate("topicId", "title")
+            .select("title avatar singerId topicId status listenCount slug position featured");
+
+        res.render("admin/pages/song/index", {
+            pageTitle: "Quản lý bài hát",
+            songs: songs,
+            filterStatus: filter,
+            keyword: searchObject.keyword,
+            pagination: paginationObject,
+            sortArray: sortArray
+        });
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
     }
-    // end search
-
-    // create find object
-    const find = {
-        deleted: false
-    };
-    const status = query.status;
-    if (Object.values(ListStatus).includes(status as ListStatus)) {
-        find["status"] = status;
-    }
-    if (searchObject && searchObject["regex"]) {
-        find["slug"] = searchObject["regex"];
-    }
-    // end create find object
-
-    //pagination
-    const limit = 5;
-    const total = await Song.countDocuments(find);
-    const paginationObject = pagination(query, limit, total);
-    //endpagination
-
-    //sort
-    const sortObject = sort(query, Sort);
-    const [sortKey, sortValue] = Object.entries(sortObject)[0];
-    const sortArray = [
-        { name: "Vị trí giảm dần", value: "position-desc", selected: `${sortKey}-${sortValue}` === "position-desc" },
-        { name: "Vị trí tăng dần", value: "position-asc", selected: `${sortKey}-${sortValue}` === "position-asc" },
-        { name: "Tên Z-A", value: "title-desc", selected: `${sortKey}-${sortValue}` === "title-desc" },
-        { name: "Tên A-Z", value: "title-asc", selected: `${sortKey}-${sortValue}` === "title-asc" },
-        { name: "Lượt nghe giảm dần", value: "listenCount-desc", selected: `${sortKey}-${sortValue}` === "listenCount-desc" },
-        { name: "Lượt nghe tăng dần", value: "listenCount-asc", selected: `${sortKey}-${sortValue}` === "listenCount-asc" },
-    ]
-    //end sort
-
-    const songs = await Song.find(find)
-        .skip(paginationObject.skip)
-        .limit(paginationObject.limit)
-        .sort(sortObject)
-        .populate("singerId", "fullName")
-        .populate("topicId", "title")
-        .select("title avatar singerId topicId status listenCount slug position featured");
-
-    res.render("admin/pages/song/index", {
-        pageTitle: "Quản lý bài hát",
-        songs: songs,
-        filterStatus: filter,
-        keyword: searchObject.keyword,
-        pagination: paginationObject,
-        sortArray: sortArray
-    });
 }
 
 // [PATCH] /admin/songs/change-status/:status/:id
 export const patchChangeStatus = async (req: Request, res: Response): Promise<void> => {
-    const status = req.params.status;
-    const itemId = req.params.id;
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('update-song')) {
+        const status = req.params.status;
+        const itemId = req.params.id;
 
-    if (!Object.values(ListStatus).includes(status as ListStatus)) {
-        req.flash('fail', 'Cập nhật thất bại.');
-        return;
-    }
-
-    try {
-        const result = await Song.updateOne(
-            {
-                _id: itemId,
-                deleted: false
-            },
-            {
-                $set: {
-                    status: status
-                },
-                // $push: {
-                //     updatedBy: {
-                //         accountId: res.locals.currentUser.id,
-                //         updatedAt: new Date()
-                //     }
-                // }
-            }
-        );
-        if (result.modifiedCount === 1) {
-            req.flash('success', 'Cập nhật thành công.');
-        } else {
+        if (!Object.values(ListStatus).includes(status as ListStatus)) {
             req.flash('fail', 'Cập nhật thất bại.');
-        }
-    } catch (error) {
-        req.flash('fail', 'Cập nhật thất bại.');
-    }
-
-    res.redirect("back");
-}
-
-// [PATCH] /admin/songs/change-featured/:featured/:id
-export const patchChangeFeatured = async (req: Request, res: Response): Promise<void> => {
-    const featured = req.params.featured === "true";
-    const itemId = req.params.id;
-
-    try {
-        const result = await Song.updateOne(
-            {
-                _id: itemId,
-                deleted: false
-            },
-            {
-                $set: {
-                    featured: featured
-                },
-                // $push: {
-                //     updatedBy: {
-                //         accountId: res.locals.currentUser.id,
-                //         updatedAt: new Date()
-                //     }
-                // }
-            }
-        );
-        if (result.modifiedCount === 1) {
-            req.flash('success', 'Cập nhật thành công.');
-        } else {
-            req.flash('fail', 'Cập nhật thất bại.');
-        }
-    } catch (error) {
-        req.flash('fail', 'Cập nhật thất bại.');
-    }
-
-    res.redirect("back");
-}
-
-// [DELETE] /admin/songs/delete/:id
-export const deleteSong = async (req: Request, res: Response): Promise<void> => {
-    const itemId = req.params.id;
-
-    try {
-        const result = await Song.updateOne(
-            {
-                _id: itemId,
-                deleted: false
-            },
-            {
-                $set: {
-                    deleted: true
-                },
-                // $push: {
-                //     updatedBy: {
-                //         accountId: res.locals.currentUser.id,
-                //         updatedAt: new Date()
-                //     }
-                // }
-            }
-        );
-        if (result.modifiedCount === 1) {
-            req.flash('success', 'Xóa thành công.');
-        } else {
-            req.flash('fail', 'Xóa thất bại.');
-        }
-    } catch (error) {
-        req.flash('fail', 'Xóa thất bại.');
-    }
-
-    res.redirect("back");
-}
-
-// [PATCH] /admin/songs/change-multiple/:type
-export const patchMultiple = async (req: Request, res: Response): Promise<void> => {
-    const type = req.params.type;
-    const listSongChange = req.body.inputChangeMultiple.split(", ");
-    // const accountId = res.locals.currentUser._id; // Assuming the current user's ID is stored in res.locals.currentUser._id
-
-    const updateObject: {
-        status?: string,
-        deleted?: boolean
-    } = {};
-    switch (type) {
-        case 'active':
-            updateObject.status = 'active';
-            break;
-
-        case 'inactive':
-            updateObject.status = 'inactive';
-            break;
-
-        case 'delete':
-            updateObject.deleted = true;
-            break;
-
-        case 'change_position':
-            const listPosition = req.body.inputChangePosition.split(", ");
-            let check = true;
-            for (let i = 0; i < listSongChange.length; ++i) {
-                try {
-                    const result = await Song.updateOne(
-                        { _id: listSongChange[i] },
-                        {
-                            $set: { position: parseInt(listPosition[i]) },
-                            // $push: {
-                            //     updatedBy: {
-                            //         accountId: accountId,
-                            //         updatedAt: new Date()
-                            //     }
-                            // }
-                        }
-                    );
-                } catch (error) {
-                    check = false;
-                    console.error(`Error updating product ${listSongChange[i]}:`, error);
-                }
-            }
-            if (check) {
-                req.flash('success', `Đã cập nhật vị trí của ${listSongChange.length} bài hát.`);
-            }
-            res.redirect("back");
             return;
+        }
 
-        default:
-            break;
-    }
-
-    if (type !== "change_position") {
         try {
-            const update = await Song.updateMany(
+            const result = await Song.updateOne(
                 {
-                    _id: { $in: listSongChange },
+                    _id: itemId,
+                    deleted: false
                 },
                 {
-                    $set: updateObject,
+                    $set: {
+                        status: status
+                    },
                     // $push: {
                     //     updatedBy: {
-                    //         accountId: accountId,
+                    //         accountId: res.locals.currentUser.id,
                     //         updatedAt: new Date()
                     //     }
                     // }
                 }
             );
-
-            switch (type) {
-                case 'active':
-                    req.flash('success', `Đã cập nhật trạng thái ${listSongChange.length} bài hát thành hoạt động.`);
-                    break;
-
-                case 'inactive':
-                    req.flash('success', `Đã cập nhật trạng thái ${listSongChange.length} bài hát thành dừng hoạt động.`);
-                    break;
-
-                case 'delete':
-                    req.flash('success', `Đã xóa ${listSongChange.length} bài hát.`);
-                    break;
+            if (result.modifiedCount === 1) {
+                req.flash('success', 'Cập nhật thành công.');
+            } else {
+                req.flash('fail', 'Cập nhật thất bại.');
             }
-
         } catch (error) {
-            console.error(error);
-            req.flash('fail', 'Lỗi!!!');
+            req.flash('fail', 'Cập nhật thất bại.');
         }
-    }
 
-    res.redirect("back");
+        res.redirect("back");
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [PATCH] /admin/songs/change-featured/:featured/:id
+export const patchChangeFeatured = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('update-song')) {
+        const featured = req.params.featured === "true";
+        const itemId = req.params.id;
+
+        try {
+            const result = await Song.updateOne(
+                {
+                    _id: itemId,
+                    deleted: false
+                },
+                {
+                    $set: {
+                        featured: featured
+                    },
+                    // $push: {
+                    //     updatedBy: {
+                    //         accountId: res.locals.currentUser.id,
+                    //         updatedAt: new Date()
+                    //     }
+                    // }
+                }
+            );
+            if (result.modifiedCount === 1) {
+                req.flash('success', 'Cập nhật thành công.');
+            } else {
+                req.flash('fail', 'Cập nhật thất bại.');
+            }
+        } catch (error) {
+            req.flash('fail', 'Cập nhật thất bại.');
+        }
+
+        res.redirect("back");
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [DELETE] /admin/songs/delete/:id
+export const deleteSong = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('delete-song')) {
+        const itemId = req.params.id;
+
+        try {
+            const result = await Song.updateOne(
+                {
+                    _id: itemId,
+                    deleted: false
+                },
+                {
+                    $set: {
+                        deleted: true
+                    },
+                    // $push: {
+                    //     updatedBy: {
+                    //         accountId: res.locals.currentUser.id,
+                    //         updatedAt: new Date()
+                    //     }
+                    // }
+                }
+            );
+            if (result.modifiedCount === 1) {
+                req.flash('success', 'Xóa thành công.');
+            } else {
+                req.flash('fail', 'Xóa thất bại.');
+            }
+        } catch (error) {
+            req.flash('fail', 'Xóa thất bại.');
+        }
+
+        res.redirect("back");
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [PATCH] /admin/songs/change-multiple/:type
+export const patchMultiple = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('update-song')) {
+        const type = req.params.type;
+        const listSongChange = req.body.inputChangeMultiple.split(", ");
+        // const accountId = res.locals.currentUser._id; // Assuming the current user's ID is stored in res.locals.currentUser._id
+
+        const updateObject: {
+            status?: string,
+            deleted?: boolean
+        } = {};
+        switch (type) {
+            case 'active':
+                updateObject.status = 'active';
+                break;
+
+            case 'inactive':
+                updateObject.status = 'inactive';
+                break;
+
+            case 'delete':
+                updateObject.deleted = true;
+                break;
+
+            case 'change_position':
+                const listPosition = req.body.inputChangePosition.split(", ");
+                let check = true;
+                for (let i = 0; i < listSongChange.length; ++i) {
+                    try {
+                        const result = await Song.updateOne(
+                            { _id: listSongChange[i] },
+                            {
+                                $set: { position: parseInt(listPosition[i]) },
+                                // $push: {
+                                //     updatedBy: {
+                                //         accountId: accountId,
+                                //         updatedAt: new Date()
+                                //     }
+                                // }
+                            }
+                        );
+                    } catch (error) {
+                        check = false;
+                        console.error(`Error updating product ${listSongChange[i]}:`, error);
+                    }
+                }
+                if (check) {
+                    req.flash('success', `Đã cập nhật vị trí của ${listSongChange.length} bài hát.`);
+                }
+                res.redirect("back");
+                return;
+
+            default:
+                break;
+        }
+
+        if (type !== "change_position") {
+            try {
+                const update = await Song.updateMany(
+                    {
+                        _id: { $in: listSongChange },
+                    },
+                    {
+                        $set: updateObject,
+                        // $push: {
+                        //     updatedBy: {
+                        //         accountId: accountId,
+                        //         updatedAt: new Date()
+                        //     }
+                        // }
+                    }
+                );
+
+                switch (type) {
+                    case 'active':
+                        req.flash('success', `Đã cập nhật trạng thái ${listSongChange.length} bài hát thành hoạt động.`);
+                        break;
+
+                    case 'inactive':
+                        req.flash('success', `Đã cập nhật trạng thái ${listSongChange.length} bài hát thành dừng hoạt động.`);
+                        break;
+
+                    case 'delete':
+                        req.flash('success', `Đã xóa ${listSongChange.length} bài hát.`);
+                        break;
+                }
+
+            } catch (error) {
+                console.error(error);
+                req.flash('fail', 'Lỗi!!!');
+            }
+        }
+
+        res.redirect("back");
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
 }
 
 // [GET] /admin/songs/:id
 export const getSongDetail = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const id = req.params.id;
-        const song = await Song.findOne({
-            _id: id,
-            deleted: false
-        })
-            .populate("singerId", "fullName")
-            .populate("topicId", "title");
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('view-song')) {
+        try {
+            const id = req.params.id;
+            const song = await Song.findOne({
+                _id: id,
+                deleted: false
+            })
+                .populate("singerId", "fullName")
+                .populate("topicId", "title");
 
-        if (song) {
-            res.render('admin/pages/song/detail', {
-                pageTitle: "Chi tiết bài hát",
-                song: song
-            });
-        } else {
+            if (song) {
+                res.render('admin/pages/song/detail', {
+                    pageTitle: "Chi tiết bài hát",
+                    song: song
+                });
+            } else {
+                res.redirect(`${PATH_ADMIN}/dashboard`);
+            }
+
+        } catch (e) {
             res.redirect(`${PATH_ADMIN}/dashboard`);
         }
-
-    } catch (e) {
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
         res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 }
 
 // [GET] /admin/songs/create
 export const getCreate = async (req: Request, res: Response): Promise<void> => {
-    const topics = await Topic.find({
-        deleted: false,
-        status: ListStatus.ACTIVE
-    }).populate("title");
-
-    const singers = await Singer.find({
-        deleted: false,
-        status: ListStatus.ACTIVE
-    }).populate("fullName");
-
-    const positionDefault = await Song.countDocuments({
-        deleted: false
-    }) + 1;
-
-    res.render("admin/pages/song/create", {
-        pageTitle: "Tạo mới bài hát",
-        topics: topics,
-        singers: singers,
-        positionDefault: positionDefault
-    });
-}
-
-// [POST] /admin/songs/create
-export const postCreate = async (req: Request, res: Response): Promise<void> => {
-    try {
-        req.body.position = parseInt(req.body.position);
-        if (!Number.isInteger(req.body.position)) {
-            const positionDefault = await Song.countDocuments({
-                deleted: false
-            }) + 1;
-            req.body.position = positionDefault;
-        }
-
-        const newSong = new Song(req.body);
-        const result = await newSong.save();
-        if (result) {
-            req.flash("success", "Tạo bài hát thành công.");
-            res.redirect("/admin/songs");
-        } else {
-            req.flash("fail", "Tạo bài hát thất bại.");
-            return res.redirect("back");
-        }
-    } catch (e) {
-        req.flash("fail", "Tạo bài hát thất bại.");
-        return res.redirect("back");
-    }
-}
-
-// [GET] /admin/songs/update/:id
-export const getUpdate = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const id = req.params.id;
-        const song = await Song.findOne({
-            _id: id,
-            deleted: false
-        });
-
-        if (!song) {
-            return res.redirect("back");
-        }
-
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('create-song')) {
         const topics = await Topic.find({
             deleted: false,
             status: ListStatus.ACTIVE
@@ -382,34 +359,117 @@ export const getUpdate = async (req: Request, res: Response): Promise<void> => {
             status: ListStatus.ACTIVE
         }).populate("fullName");
 
-        res.render("admin/pages/song/update", {
-            pageTitle: "Cập nhật bài hát",
-            song: song,
+        const positionDefault = await Song.countDocuments({
+            deleted: false
+        }) + 1;
+
+        res.render("admin/pages/song/create", {
+            pageTitle: "Tạo mới bài hát",
             topics: topics,
-            singers: singers
+            singers: singers,
+            positionDefault: positionDefault
         });
-    } catch (e) {
-        return res.redirect("back");
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [POST] /admin/songs/create
+export const postCreate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('create-song')) {
+        try {
+            req.body.position = parseInt(req.body.position);
+            if (!Number.isInteger(req.body.position)) {
+                const positionDefault = await Song.countDocuments({
+                    deleted: false
+                }) + 1;
+                req.body.position = positionDefault;
+            }
+
+            const newSong = new Song(req.body);
+            const result = await newSong.save();
+            if (result) {
+                req.flash("success", "Tạo bài hát thành công.");
+                res.redirect("/admin/songs");
+            } else {
+                req.flash("fail", "Tạo bài hát thất bại.");
+                return res.redirect("back");
+            }
+        } catch (e) {
+            req.flash("fail", "Tạo bài hát thất bại.");
+            return res.redirect("back");
+        }
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [GET] /admin/songs/update/:id
+export const getUpdate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('update-song')) {
+        try {
+            const id = req.params.id;
+            const song = await Song.findOne({
+                _id: id,
+                deleted: false
+            });
+
+            if (!song) {
+                return res.redirect("back");
+            }
+
+            const topics = await Topic.find({
+                deleted: false,
+                status: ListStatus.ACTIVE
+            }).populate("title");
+
+            const singers = await Singer.find({
+                deleted: false,
+                status: ListStatus.ACTIVE
+            }).populate("fullName");
+
+            res.render("admin/pages/song/update", {
+                pageTitle: "Cập nhật bài hát",
+                song: song,
+                topics: topics,
+                singers: singers
+            });
+        } catch (e) {
+            return res.redirect("back");
+        }
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 }
 
 // [PATCH] /admin/songs/update/:id
 export const patchUpdate = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const id = req.params.id;
-        const result = await Song.updateOne(
-            { _id: id },
-            req.body
-        );
-        if (result) {
-            req.flash("success", "Cập nhật bài hát thành công.");
-            res.redirect("back");
-        } else {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('update-song')) {
+        try {
+            const id = req.params.id;
+            const result = await Song.updateOne(
+                { _id: id },
+                req.body
+            );
+            if (result) {
+                req.flash("success", "Cập nhật bài hát thành công.");
+                res.redirect("back");
+            } else {
+                req.flash("fail", "Cập nhật bài hát thất bại.");
+                return res.redirect("back");
+            }
+        } catch (e) {
             req.flash("fail", "Cập nhật bài hát thất bại.");
             return res.redirect("back");
         }
-    } catch (e) {
-        req.flash("fail", "Cập nhật bài hát thất bại.");
-        return res.redirect("back");
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 }
