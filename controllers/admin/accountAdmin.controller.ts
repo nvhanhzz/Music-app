@@ -7,7 +7,7 @@ import pagination from "../../helper/pagination";
 import sort from "../../helper/sort";
 import { Sort } from "../../enums/accountAdmin.enum";
 import Role from "../../models/role.model";
-import { hashPassword } from "../../helper/hashPassword";
+import { comparePassword, hashPassword } from "../../helper/hashPassword";
 const PATH_ADMIN = process.env.PATH_ADMIN;
 
 // [GET] /admin/account-admin
@@ -341,7 +341,7 @@ export const getCreate = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-// [POST] /admin/account-admin/create-account
+// [POST] /admin/account-admin/create
 export const postCreate = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
     if (permission.includes('create-admin')) {
@@ -377,4 +377,125 @@ export const postCreate = async (req: Request, res: Response): Promise<void> => 
         res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 
+}
+
+// [GET] /admin/account-admin/update/:id
+export const getUpdate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('update-admin')) {
+        const id = req.params.id;
+        const admin = await Admin.findOne({
+            _id: id,
+            deleted: false
+        });
+        const roles = await Role.find({
+            deleted: false,
+        }).populate("title");
+
+        res.render("admin/pages/accountAdmin/update", {
+            pageTitle: "Cập nhật tài khoản admin",
+            admin: admin,
+            roles: roles
+        });
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [PATCH] /admin/account-admin/update/:id
+export const patchUpdate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('update-admin')) {
+        const id = req.params.id;
+        const admin = await Admin.findOne({
+            _id: id,
+            deleted: false
+        });
+        if (!admin) {
+            return res.redirect("back");
+        }
+
+        const accountExist = await Admin.findOne({
+            email: req.body.email
+        });
+        if (accountExist && accountExist.id !== id) {
+            req.flash('fail', 'Email đã tồn tại trong hệ thống.');
+            return res.redirect("back");
+        }
+        if (req.body.file) {
+            req.body.avatar = req.body.file;
+        }
+
+        if (req.body.password) {
+            req.body.password = await hashPassword(req.body.password);
+        }
+
+        let logUpdate = "";
+        for (const key in req.body) {
+            if (!admin[key] || (admin[key].toString() !== req.body[key].toString())) {
+                logUpdate += key + " ";
+            }
+        }
+        if (!logUpdate) {
+            return res.redirect("back");
+        }
+        logUpdate = "Thay đổi " + logUpdate;
+
+        try {
+            await Admin.updateOne(
+                {
+                    _id: id
+                },
+                {
+                    $set: req.body,
+                    $push: {
+                        updatedBy: {
+                            adminId: res.locals.currentAdmin.id,
+                            action: logUpdate,
+                            updatedAt: new Date()
+                        }
+                    }
+                }
+            );
+            req.flash('success', 'Cập nhật thành công');
+        } catch (error) {
+            req.flash("fail", "Cập nhật thất bại.");
+        }
+
+        return res.redirect("back");
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [GET] /admin/account-admin/edit-history/:id
+export const getEditHistory = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('view-admin')) {
+        try {
+            const id = req.params.id;
+            const admin = await Admin.findOne({
+                _id: id,
+                deleted: false
+            }).populate("updatedBy.adminId", "fullName");
+
+            if (!admin) {
+                return res.redirect(`${PATH_ADMIN}/dashboard`);
+            }
+
+            res.render('admin/pages/editHistory/index', {
+                pageTitle: "Lịch sử cập nhật",
+                item: admin,
+                type: "tài khoản admin"
+            });
+
+        } catch (e) {
+            res.redirect(`${PATH_ADMIN}/dashboard`);
+        }
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
 }

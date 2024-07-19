@@ -489,12 +489,16 @@ export const patchUpdate = async (req: Request, res: Response): Promise<void> =>
                 _id: id,
                 deleted: false
             });
-            let logUpdate = "Thay đổi ";
+            let logUpdate = "";
             for (const key in req.body) {
-                if (song[key].toString() !== req.body[key].toString()) {
+                if (!song[key] || (song[key].toString() !== req.body[key].toString())) {
                     logUpdate += key + " ";
                 }
             }
+            if (!logUpdate) {
+                return res.redirect("back");
+            }
+            logUpdate = "Thay đổi " + logUpdate;
 
             const result = await Song.updateOne(
                 {
@@ -520,7 +524,6 @@ export const patchUpdate = async (req: Request, res: Response): Promise<void> =>
                 return res.redirect("back");
             }
         } catch (e) {
-            console.log(e);
             req.flash("fail", "Cập nhật bài hát thất bại.");
             return res.redirect("back");
         }

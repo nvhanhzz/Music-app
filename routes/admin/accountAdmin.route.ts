@@ -23,6 +23,18 @@ router.post(
     controller.postCreate
 );
 
+router.get("/update/:id", controller.getUpdate);
+
+router.patch(
+    "/update/:id",
+    upload.single("avatar"),
+    uploadSingleFile,
+    validate.update,
+    controller.patchUpdate
+);
+
+router.get("/update-history/:id", controller.getEditHistory);
+
 router.get("/", controller.index);
 
 export default router;
