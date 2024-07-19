@@ -1,0 +1,37 @@
+extends ../../layouts/default.pug
+include ../../mixins/time.pug
+
+block main
+    if item && item.title
+        h1 #{`Lịch sử cập nhật của ${type} ${item.title}`}
+    if item && item.fullName
+        h1 #{`Lịch sử cập nhật của ${type} ${item.fullName}`}
+
+    .card.mb-3 
+        .card-body 
+            table.table.table-hober.table-sm
+                thead 
+                    tr 
+                        th STT 
+                        th Cập nhật bởi
+                        th Hành động
+                        th Thời gian
+
+                tbody 
+                    each i, index in item.updatedBy.slice().reverse()
+                        tr
+                            td #{index + 1}
+                            if (i.adminId.fullName)
+                                td #{i.adminId.fullName}
+                            else 
+                                td
+                            if (i.action)
+                                td #{i.action}
+                            else 
+                                td   
+                            if (i.updatedAt)
+                                td 
+                                    +dateTime(i.updatedAt)
+                            else 
+                                td 
+                            

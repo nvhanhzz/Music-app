@@ -30,6 +30,7 @@ const roleSchema = new mongoose.Schema(
         updatedBy: [
             {
                 adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+                action: String,
                 updatedAt: {
                     type: Date
                 }

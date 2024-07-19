@@ -20,10 +20,10 @@ block main
 
     .card.mb-3 
         .card-header
-            //- if currentUser.role.permission.includes("create-product") 
-            a(href=`${prefixAdmin}/songs/create` class="create") + Tạo mới
-            //- if currentUser.role.permission.includes("update-product")
-            +change-multiple-form(`${prefixAdmin}/songs/change-multiple`)
+            if currentAdmin.roleId.permission.includes("create-song") 
+                a(href=`${prefixAdmin}/songs/create` class="create") + Tạo mới
+            if currentAdmin.roleId.permission.includes("update-song")
+                +change-multiple-form(`${prefixAdmin}/songs/change-multiple`)
         
         h4.sort-title Sắp xếp
         .card-sort
@@ -32,9 +32,9 @@ block main
             table.table.table-hober.table-sm
                 thead 
                     tr 
-                        //- if currentUser.role.permission.includes("update-product")
-                        th 
-                            input(type="checkbox" name="checkall")
+                        if currentAdmin.roleId.permission.includes("update-song")
+                            th 
+                                input(type="checkbox" name="checkall")
                         th STT
                         th Ảnh   
                         th Tên 
@@ -50,9 +50,9 @@ block main
                 tbody 
                     each item, index in songs
                         tr.item 
-                            //- if currentUser.role.permission.includes("update-product")
-                            td
-                                input(type="checkbox" name="checkitem" val=item._id)
+                            if currentAdmin.roleId.permission.includes("update-song")
+                                td
+                                    input(type="checkbox" name="checkitem" val=item._id)
                             td #{(pagination.page - 1) * pagination.limit + index + 1}
                             td 
                                 img(
@@ -72,33 +72,41 @@ block main
                                 td 
                             td #{item.listenCount}
                             td 
-                                input(type="number" value=item.position class="position")
-                            td Admin
-                                //- div #{item.creatorName}
-                                //- +date(item.createdBy.createdAt)
-                            td 
-                                //- if currentUser.role.permission.includes("update-product")
-                                if(item.featured)
-                                    button(class="badge badge-success" itemId=item._id val="true" update-featured) Nổi bật
+                                if currentAdmin.roleId.permission.includes("update-song")
+                                    input(type="number" value=item.position class="position")
                                 else 
-                                    button(class="badge badge-danger" itemId=item._id val="false" update-featured) Không
+                                    span #{item.position}
                             td 
-                                //- if currentUser.role.permission.includes("update-product")
-                                if(item.status === "active")
-                                    button(class="badge badge-success" itemId=item._id val="active" update-status) Hoạt động 
+                                div #{item.createdBy.adminId.fullName}
+                                +date(item.createdBy.createdAt)
+                            td 
+                                if currentAdmin.roleId.permission.includes("update-song")
+                                    if(item.featured)
+                                        button(class="badge badge-success" itemId=item._id val="true" update-featured) Nổi bật
+                                    else 
+                                        button(class="badge badge-danger" itemId=item._id val="false" update-featured) Không
                                 else 
-                                    button(class="badge badge-danger" itemId=item._id val="inactive" update-status) Dừng hoạt động 
-                                //- else
-                                //-     if(item.status === "active")
-                                //-         span(class="badge badge-success" itemId=item._id val="active") Active 
-                                //-     else 
-                                //-         span(class="badge badge-danger" itemId=item._id val="inactive") Inactive 
+                                    if(item.featured)
+                                        span(class="badge badge-success" itemId=item._id val="true" update-featured) Nổi bật
+                                    else 
+                                        span(class="badge badge-danger" itemId=item._id val="false" update-featured) Không
+                            td 
+                                if currentAdmin.roleId.permission.includes("update-song")
+                                    if(item.status === "active")
+                                        button(class="badge badge-success" itemId=item._id val="active" update-status) Hoạt động 
+                                    else 
+                                        button(class="badge badge-danger" itemId=item._id val="inactive" update-status) Dừng hoạt động 
+                                else
+                                    if(item.status === "active")
+                                        span(class="badge badge-success" itemId=item._id val="active") Active 
+                                    else 
+                                        span(class="badge badge-danger" itemId=item._id val="inactive") Inactive 
                             td 
                                 a(class="btn  btn-secondary btn-sm" detail-button href=`${prefixAdmin}/songs/detail/${item.id}`) Chi tiết
-                                //- if currentUser.role.permission.includes("update-product")
-                                a(class="btn btn-warning btn-sm ml-1" update-button href=`${prefixAdmin}/songs/update/${item.id}`) Cập nhật 
-                                //- if currentUser.role.permission.includes("delete-product")
-                                button(class="btn btn-danger btn-sm ml-1" delete-button item_id=item._id) Xóa
+                                if currentAdmin.roleId.permission.includes("update-song")
+                                    a(class="btn btn-warning btn-sm ml-1" update-button href=`${prefixAdmin}/songs/update/${item.id}`) Cập nhật 
+                                if currentAdmin.roleId.permission.includes("delete-song")
+                                    button(class="btn btn-danger btn-sm ml-1" delete-button item_id=item._id) Xóa
                     
     .pagination
         +pagination(pagination)

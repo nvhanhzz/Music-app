@@ -41,6 +41,8 @@ router.patch(
 
 router.get("/detail/:id", controller.getSongDetail);
 
+router.get("/update-history/:id", controller.getEditHistory);
+
 router.get("/", controller.index);
 
 export default router;

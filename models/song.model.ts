@@ -3,6 +3,7 @@ import slug from "mongoose-slug-updater";
 import Singer from "./singer.model";
 import Topic from "./topic.model";
 import User from "./user.model";
+import Admin from "./admin.model";
 
 mongoose.plugin(slug);
 
@@ -22,22 +23,23 @@ const songSchema = new mongoose.Schema(
         status: { type: String },
         slug: { type: String, slug: "title", unique: true },
         deleted: { type: Boolean, default: false },
-        // "deletedBy: { "accountId": String, "deletedAt": Date },
-        // "createdBy": {
-        //     "accountId": String,
-        //     "createdAt": {
-        //         type: Date,
-        //         default: Date.now
-        //     }
-        // },
-        // "updatedBy": [
-        //     {
-        //         "accountId": String,
-        //         "updatedAt": {
-        //             type: Date
-        //         }
-        //     }
-        // ]
+        deletedBy: { adminId: { type: mongoose.Schema.Types.ObjectId, ref: Admin }, deletedAt: Date },
+        createdBy: {
+            adminId: { type: mongoose.Schema.Types.ObjectId, ref: Admin },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            }
+        },
+        updatedBy: [
+            {
+                adminId: { type: mongoose.Schema.Types.ObjectId, ref: Admin },
+                action: String,
+                updatedAt: {
+                    type: Date
+                }
+            }
+        ]
     }
 );
 

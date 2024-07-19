@@ -20,6 +20,7 @@ const adminSchema = new mongoose.Schema(
         },
         "createdBy": {
             "adminId": { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
+            action: String,
             "createdAt": {
                 type: Date,
                 default: Date.now

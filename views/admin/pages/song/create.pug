@@ -5,8 +5,6 @@ block addCss
     link(rel="stylesheet", href="/admin/css/createPage.css")
 
 block main
-    //- if currentUser.role.permission.includes("create-product")
-
     h2 #{pageTitle}
 
     form(action=`${prefixAdmin}/songs/create`, enctype="multipart/form-data", method="POST")
@@ -69,5 +67,3 @@ block main
     
     script(type="application/javascript" src= "/tinymce/tinymce.min.js")
     script(type="application/javascript" src= "/admin/js/tinymce-config.js") 
-    //- else
-    //-     h1 No permission

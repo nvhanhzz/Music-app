@@ -5,7 +5,6 @@ block addCss
     link(rel="stylesheet", href="/admin/css/detailPage.css")
 
 block main
-    //- if currentUser.role.permission.includes("view-product")
     .title
         h2.margin= song.title 
         a(href=`${prefixAdmin}/songs/update-history/${song.id}`, class="btn btn-secondary") Lịch sử cập nhật
@@ -64,16 +63,14 @@ block main
             span Trạng thái:
             span= ' ' + song.status ? "Hoạt động" : "Dừng hoạt động"
             
-    //- div.margin.product-attribute
-    //-     span Created by:
-    //-     span= ' ' + product.creatorName
+    div.margin.item-attribute
+        span Created by:
+        span= ' ' + song.createdBy.adminId.fullName
     
-    //- div.margin.product-attribute
-    //-     span Created at:
-    //-     +dateTime(product.createdBy.createdAt)
+    div.margin.item-attribute
+        span Created at:
+        +dateTime(song.createdBy.createdAt)
 
-    //- if currentUser.role.permission.includes("update-product")
-    div
-        a(href=`${prefixAdmin}/songs/update/${song.id}`, class="margin update-button") Cập nhật
-    //- else 
-    //-     h1 No permission
+    if currentAdmin.roleId.permission.includes("update-song")
+        div
+            a(href=`${prefixAdmin}/songs/update/${song.id}`, class="margin update-button") Cập nhật

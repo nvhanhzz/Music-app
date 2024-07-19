@@ -70,6 +70,7 @@ export const index = async (req: Request, res: Response): Promise<void> => {
             .sort(sortObject)
             .populate("singerId", "fullName")
             .populate("topicId", "title")
+            .populate("createdBy.adminId", "fullName")
             .select("title avatar singerId topicId status listenCount slug position featured");
 
         res.render("admin/pages/song/index", {
@@ -108,12 +109,13 @@ export const patchChangeStatus = async (req: Request, res: Response): Promise<vo
                     $set: {
                         status: status
                     },
-                    // $push: {
-                    //     updatedBy: {
-                    //         accountId: res.locals.currentUser.id,
-                    //         updatedAt: new Date()
-                    //     }
-                    // }
+                    $push: {
+                        updatedBy: {
+                            adminId: res.locals.currentAdmin.id,
+                            action: `Thay đổi trạng thái sang ${status}`,
+                            updatedAt: new Date()
+                        }
+                    }
                 }
             );
             if (result.modifiedCount === 1) {
@@ -149,12 +151,13 @@ export const patchChangeFeatured = async (req: Request, res: Response): Promise<
                     $set: {
                         featured: featured
                     },
-                    // $push: {
-                    //     updatedBy: {
-                    //         accountId: res.locals.currentUser.id,
-                    //         updatedAt: new Date()
-                    //     }
-                    // }
+                    $push: {
+                        updatedBy: {
+                            adminId: res.locals.currentAdmin.id,
+                            action: `Thay đổi thành bài hát ${featured ? '' : 'không '}nổi bật`,
+                            updatedAt: new Date()
+                        }
+                    }
                 }
             );
             if (result.modifiedCount === 1) {
@@ -187,14 +190,12 @@ export const deleteSong = async (req: Request, res: Response): Promise<void> => 
                 },
                 {
                     $set: {
-                        deleted: true
-                    },
-                    // $push: {
-                    //     updatedBy: {
-                    //         accountId: res.locals.currentUser.id,
-                    //         updatedAt: new Date()
-                    //     }
-                    // }
+                        deleted: true,
+                        deletedBy: {
+                            adminId: res.locals.currentAdmin.id,
+                            deletedAt: new Date()
+                        }
+                    }
                 }
             );
             if (result.modifiedCount === 1) {
@@ -219,7 +220,7 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
     if (permission.includes('update-song')) {
         const type = req.params.type;
         const listSongChange = req.body.inputChangeMultiple.split(", ");
-        // const accountId = res.locals.currentUser._id; // Assuming the current user's ID is stored in res.locals.currentUser._id
+        const adminId = res.locals.currentAdmin._id;
 
         const updateObject: {
             status?: string,
@@ -247,12 +248,13 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
                             { _id: listSongChange[i] },
                             {
                                 $set: { position: parseInt(listPosition[i]) },
-                                // $push: {
-                                //     updatedBy: {
-                                //         accountId: accountId,
-                                //         updatedAt: new Date()
-                                //     }
-                                // }
+                                $push: {
+                                    updatedBy: {
+                                        adminId: adminId,
+                                        action: "Thay đổi vị trí",
+                                        updatedAt: new Date()
+                                    }
+                                }
                             }
                         );
                     } catch (error) {
@@ -272,19 +274,35 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
 
         if (type !== "change_position") {
             try {
+                let upd = {};
+                if (type !== "delete") {
+                    const action = `Thay đổi trạng thái sang ${type}`;
+                    upd = {
+                        $set: updateObject,
+                        $push: {
+                            updatedBy: {
+                                adminId: adminId,
+                                action: action,
+                                updatedAt: new Date()
+                            }
+                        }
+                    }
+                } else {
+                    upd = {
+                        $set: {
+                            deleted: true,
+                            deletedBy: {
+                                adminId: res.locals.currentAdmin.id,
+                                deletedAt: new Date()
+                            }
+                        }
+                    }
+                }
                 const update = await Song.updateMany(
                     {
                         _id: { $in: listSongChange },
                     },
-                    {
-                        $set: updateObject,
-                        // $push: {
-                        //     updatedBy: {
-                        //         accountId: accountId,
-                        //         updatedAt: new Date()
-                        //     }
-                        // }
-                    }
+                    upd
                 );
 
                 switch (type) {
@@ -325,7 +343,8 @@ export const getSongDetail = async (req: Request, res: Response): Promise<void> 
                 deleted: false
             })
                 .populate("singerId", "fullName")
-                .populate("topicId", "title");
+                .populate("topicId", "title")
+                .populate("createdBy.adminId", "fullName");
 
             if (song) {
                 res.render('admin/pages/song/detail', {
@@ -388,7 +407,12 @@ export const postCreate = async (req: Request, res: Response): Promise<void> => 
                 req.body.position = positionDefault;
             }
 
-            const newSong = new Song(req.body);
+            const newSong = new Song({
+                ...req.body,
+                createdBy: {
+                    adminId: res.locals.currentAdmin.id
+                }
+            });
             const result = await newSong.save();
             if (result) {
                 req.flash("success", "Tạo bài hát thành công.");
@@ -453,9 +477,32 @@ export const patchUpdate = async (req: Request, res: Response): Promise<void> =>
     if (permission.includes('update-song')) {
         try {
             const id = req.params.id;
+            const song = await Song.findOne({
+                _id: id,
+                deleted: false
+            });
+            let logUpdate = "Thay đổi ";
+            for (const key in req.body) {
+                if (song[key].toString() !== req.body[key].toString()) {
+                    logUpdate += key + " ";
+                }
+            }
+
             const result = await Song.updateOne(
-                { _id: id },
-                req.body
+                {
+                    _id: id,
+                    deleted: false
+                },
+                {
+                    $set: req.body,
+                    $push: {
+                        updatedBy: {
+                            adminId: res.locals.currentAdmin.id,
+                            action: logUpdate,
+                            updatedAt: new Date()
+                        }
+                    }
+                }
             );
             if (result) {
                 req.flash("success", "Cập nhật bài hát thành công.");
@@ -465,8 +512,39 @@ export const patchUpdate = async (req: Request, res: Response): Promise<void> =>
                 return res.redirect("back");
             }
         } catch (e) {
+            console.log(e);
             req.flash("fail", "Cập nhật bài hát thất bại.");
             return res.redirect("back");
+        }
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [GET] /admin/songs/edit-history/:id
+export const getEditHistory = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('view-song')) {
+        try {
+            const id = req.params.id;
+            const song = await Song.findOne({
+                _id: id,
+                deleted: false
+            }).populate("updatedBy.adminId", "fullName");
+
+            if (!song) {
+                return res.redirect(`${PATH_ADMIN}/dashboard`);
+            }
+
+            res.render('admin/pages/editHistory/index', {
+                pageTitle: "Lịch sử cập nhật",
+                item: song,
+                type: "bài hát"
+            });
+
+        } catch (e) {
+            res.redirect(`${PATH_ADMIN}/dashboard`);
         }
     } else {
         req.flash("fail", "Bạn không đủ quyền.");
