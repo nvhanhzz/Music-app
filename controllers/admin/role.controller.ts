@@ -116,3 +116,40 @@ export const deleteRole = async (req: Request, res: Response): Promise<void> => 
         res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 }
+
+// [PATCH] /admin/roles/change-multiple/:type
+export const patchMultiple = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    const type = req.params.type;
+    if (permission.includes('delete-role')) {
+        const listItemChange = req.body.inputChangeMultiple.split(", ");
+        const adminId = res.locals.currentAdmin._id;
+
+        const upd = {
+            $set: {
+                deleted: true,
+                deletedBy: {
+                    adminId: res.locals.currentAdmin.id,
+                    deletedAt: new Date()
+                }
+            }
+        }
+        try {
+            const update = await Role.updateMany(
+                {
+                    _id: { $in: listItemChange },
+                },
+                upd
+            );
+            req.flash('success', `Đã xóa ${listItemChange.length} nhóm quyền.`);
+        } catch (error) {
+            console.error(error);
+            req.flash('fail', 'Lỗi!!!');
+        }
+        res.redirect("back");
+
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
