@@ -51,7 +51,7 @@ block main
                             td #{item.title} 
                             td #{item.description} 
                             
-                            if item.createdBy.adminId.fullName
+                            if item.createdBy
                                 td
                                     div #{item.createdBy.adminId.fullName}
                                     +date(item.createdBy.createdAt)

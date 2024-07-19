@@ -182,3 +182,45 @@ export const getRoleDetail = async (req: Request, res: Response): Promise<void> 
         res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 }
+
+// [GET] /admin/roles/create
+export const getCreate = (req: Request, res: Response): void => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('create-role')) {
+        res.render("admin/pages/role/create", {
+            pageTitle: "Tạo mới nhóm quyền"
+        });
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [POST] /admin/roles/create
+export const postCreate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('create-role')) {
+        try {
+            const newRole = new Role({
+                ...req.body,
+                createdBy: {
+                    adminId: res.locals.currentAdmin.id
+                }
+            });
+            const result = await newRole.save();
+            if (result) {
+                req.flash("success", "Tạo nhóm quyền thành công.");
+                res.redirect("/admin/roles");
+            } else {
+                req.flash("fail", "Tạo nhóm quyền thất bại.");
+                return res.redirect("back");
+            }
+        } catch (e) {
+            req.flash("fail", "Tạo nhóm quyền thất bại.");
+            return res.redirect("back");
+        }
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
