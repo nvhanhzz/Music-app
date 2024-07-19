@@ -5,6 +5,7 @@ import songRoute from "./song.route";
 import uploadRoute from "./upload.route";
 import authRoute from "./auth.route";
 import accountAdminRoute from "./accountAdmin.route";
+import accountUserRoute from "./accountUser.route";
 import roleRoute from "./role.route";
 import permissionRoute from "./permission.route";
 
@@ -20,6 +21,7 @@ const adminRoutes = (app: Application): void => {
     app.use(`${prefixAdmin}/auth`, authRoute);
     app.use(`${prefixAdmin}/dashboard`, isLoggedIn, dashboardRoute);
     app.use(`${prefixAdmin}/account-admin`, isLoggedIn, accountAdminRoute);
+    app.use(`${prefixAdmin}/account-user`, isLoggedIn, accountUserRoute);
     app.use(`${prefixAdmin}/roles`, isLoggedIn, roleRoute);
     app.use(`${prefixAdmin}/permissions`, isLoggedIn, permissionRoute);
     app.use(`${prefixAdmin}/topics`, isLoggedIn, topicRoute);
