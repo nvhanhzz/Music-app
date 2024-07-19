@@ -224,3 +224,84 @@ export const postCreate = async (req: Request, res: Response): Promise<void> => 
         res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 }
+
+// [GET] /admin/roles/update/:id
+export const getUpdate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('update-role')) {
+        try {
+            const id = req.params.id;
+            const role = await Role.findOne({
+                _id: id,
+                deleted: false
+            });
+            if (!role) {
+                return res.redirect(`${PATH_ADMIN}/dashboard`);
+            }
+
+            res.render("admin/pages/role/update", {
+                pageTitle: "Cập nhật nhóm quyền",
+                role: role
+            });
+        } catch (error) {
+            res.redirect(`${PATH_ADMIN}/dashboard`);
+        }
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [PATCH] /admin/roles/update/:id
+export const patchUpdate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('update-role')) {
+        try {
+            const id = req.params.id;
+            const role = await Role.findOne({
+                _id: id,
+                deleted: false
+            });
+            let logUpdate = "";
+            for (const key in req.body) {
+                if (!role[key] || (role[key].toString() !== req.body[key].toString())) {
+                    logUpdate += key + " ";
+                }
+            }
+            if (!logUpdate) {
+                return res.redirect("back");
+            }
+            logUpdate = "Thay đổi " + logUpdate;
+
+            const result = await Role.updateOne(
+                {
+                    _id: id,
+                    deleted: false
+                },
+                {
+                    $set: req.body,
+                    $push: {
+                        updatedBy: {
+                            adminId: res.locals.currentAdmin.id,
+                            action: logUpdate,
+                            updatedAt: new Date()
+                        }
+                    }
+                }
+            );
+            if (result) {
+                req.flash("success", "Cập nhật nhóm quyền thành công.");
+                res.redirect("back");
+            } else {
+                req.flash("fail", "Cập nhật nhóm quyền thất bại.");
+                return res.redirect("back");
+            }
+        } catch (e) {
+            req.flash("fail", "Cập nhật nhóm quyền thất bại.");
+            return res.redirect("back");
+        }
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}

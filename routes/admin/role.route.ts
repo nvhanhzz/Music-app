@@ -12,6 +12,10 @@ router.get("/create", controller.getCreate);
 
 router.post("/create", validate.create, controller.postCreate);
 
+router.get("/update/:id", controller.getUpdate);
+
+router.patch("/update/:id", validate.create, controller.patchUpdate);
+
 router.get("/detail/:id", controller.getRoleDetail);
 
 router.get("/", controller.index);
