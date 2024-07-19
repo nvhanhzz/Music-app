@@ -53,6 +53,10 @@ export const index = async (req: Request, res: Response): Promise<void> => {
         ]
         //end sort
 
+        const changeMultipleOptions = [
+            { value: "delete", name: "Xóa" },
+        ]
+
         const roles = await Role.find(find)
             .skip(paginationObject.skip)
             .limit(paginationObject.limit)
@@ -66,8 +70,47 @@ export const index = async (req: Request, res: Response): Promise<void> => {
             filterStatus: filter,
             keyword: searchObject.keyword,
             pagination: paginationObject,
-            sortArray: sortArray
+            sortArray: sortArray,
+            changeMultipleOptions: changeMultipleOptions
         });
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [DELETE] /admin/roles/delete/:id
+export const deleteRole = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('delete-role')) {
+        const itemId = req.params.id;
+
+        try {
+            const result = await Role.updateOne(
+                {
+                    _id: itemId,
+                    deleted: false
+                },
+                {
+                    $set: {
+                        deleted: true,
+                        deletedBy: {
+                            adminId: res.locals.currentAdmin.id,
+                            deletedAt: new Date()
+                        }
+                    }
+                }
+            );
+            if (result.modifiedCount === 1) {
+                req.flash('success', 'Xóa thành công.');
+            } else {
+                req.flash('fail', 'Xóa thất bại.');
+            }
+        } catch (error) {
+            req.flash('fail', 'Xóa thất bại.');
+        }
+
+        res.redirect("back");
     } else {
         req.flash("fail", "Bạn không đủ quyền.");
         res.redirect(`${PATH_ADMIN}/dashboard`);

@@ -20,10 +20,10 @@ block main
 
     .card.mb-3 
         .card-header
-            //- if currentUser.role.permission.includes("create-product") 
-            a(href=`${prefixAdmin}/account-admin/create` class="create") + Tạo mới
-            //- if currentUser.role.permission.includes("update-product")
-            +change-multiple-form(`${prefixAdmin}/account-admin/change-multiple`)
+            if currentAdmin.roleId.permission.includes("create-role") 
+                a(href=`${prefixAdmin}/roles/create` class="create") + Tạo mới
+            if currentAdmin.roleId.permission.includes("update-role")
+                +change-multiple-form(`${prefixAdmin}/roles/change-multiple`, changeMultipleOptions)
         
         h4.sort-title Sắp xếp
         .card-sort
@@ -32,53 +32,41 @@ block main
             table.table.table-hober.table-sm
                 thead 
                     tr 
-                        //- if currentUser.role.permission.includes("update-product")
-                        th 
-                            input(type="checkbox" name="checkall")
+                        if currentAdmin.roleId.permission.includes("update-role")
+                            th 
+                                input(type="checkbox" name="checkall")
                         th STT
                         th Tên 
                         th Mô tả
                         th Người tạo 
-                        th Cập nhật bởi
                         th Hành động 
 
                 tbody 
                     each item, index in roles
                         tr.item 
-                            //- if currentUser.role.permission.includes("update-product")
-                            td
-                                input(type="checkbox" name="checkitem" val=item._id)
+                            if currentAdmin.roleId.permission.includes("update-role")
+                                td
+                                    input(type="checkbox" name="checkitem" val=item._id)
                             td #{(pagination.page - 1) * pagination.limit + index + 1}
                             td #{item.title} 
                             td #{item.description} 
                             
-                            td #{item.createdBy.adminId.fullName} 
-                            td #{item.updatedBy[item.updatedBy.length - 1].adminId.fullName} 
-                                //- div #{item.creatorName}
-                                //- +date(item.createdBy.createdAt)
-                                //- else
-                                //-     if(item.status === "active")
-                                //-         span(class="badge badge-success" itemId=item._id val="active") Active 
-                                //-     else 
-                                //-         span(class="badge badge-danger" itemId=item._id val="inactive") Inactive 
+                            if item.createdBy.adminId.fullName
+                                td
+                                    div #{item.createdBy.adminId.fullName}
+                                    +date(item.createdBy.createdAt)
+                            else 
+                                td
                             td 
-                                a(class="btn  btn-secondary btn-sm" detail-button href=`${prefixAdmin}/songs/detail/${item.id}`) Chi tiết
-                                //- if currentUser.role.permission.includes("update-product")
-                                a(class="btn btn-warning btn-sm ml-1" update-button href=`${prefixAdmin}/songs/update/${item.id}`) Cập nhật 
-                                //- if currentUser.role.permission.includes("delete-product")
-                                button(class="btn btn-danger btn-sm ml-1" delete-button item_id=item._id) Xóa
+                                a(class="btn  btn-secondary btn-sm" detail-button href=`${prefixAdmin}/roles/detail/${item.id}`) Chi tiết
+                                if currentAdmin.roleId.permission.includes("update-role")
+                                    a(class="btn btn-warning btn-sm ml-1" update-button href=`${prefixAdmin}/roles/update/${item.id}`) Cập nhật 
+                                if currentAdmin.roleId.permission.includes("delete-role")
+                                    button(class="btn btn-danger btn-sm ml-1" delete-button item_id=item._id) Xóa
                     
     .pagination
         +pagination(pagination)
 
-    form(action=`${prefixAdmin}/songs/change-status` 
-    class="change-status-form"
-    method="POST")
-
-    form(action=`${prefixAdmin}/songs/change-featured` 
-    class="change-featured-form"
-    method="POST")
-
-    form(action=`${prefixAdmin}/songs/delete` 
+    form(action=`${prefixAdmin}/roles/delete` 
     class="delete-form"
     method="POST")
