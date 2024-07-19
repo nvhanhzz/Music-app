@@ -23,7 +23,7 @@ block main
             if currentAdmin.roleId.permission.includes("create-admin") 
                 a(href=`${prefixAdmin}/account-admin/create` class="create") + Tạo mới
             if currentAdmin.roleId.permission.includes("update-admin")
-                +change-multiple-form(`${prefixAdmin}/account-admin/change-multiple`)
+                +change-multiple-form(`${prefixAdmin}/account-admin/change-multiple`, changeMultipleOptions)
         
         h4.sort-title Sắp xếp
         .card-sort

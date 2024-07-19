@@ -23,7 +23,7 @@ block main
             if currentAdmin.roleId.permission.includes("create-song") 
                 a(href=`${prefixAdmin}/songs/create` class="create") + Tạo mới
             if currentAdmin.roleId.permission.includes("update-song")
-                +change-multiple-form(`${prefixAdmin}/songs/change-multiple`)
+                +change-multiple-form(`${prefixAdmin}/songs/change-multiple`, changeMultipleOptions)
         
         h4.sort-title Sắp xếp
         .card-sort

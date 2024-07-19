@@ -1,4 +1,4 @@
-mixin change-multiple-form(action)
+mixin change-multiple-form(action, changeMultipleOptions)
     form(id="change-multiple-form" action=action method="POST")
         input(
             type="text"
@@ -13,10 +13,9 @@ mixin change-multiple-form(action)
         .select-group 
             select.select-change-multiple
                 option(value="" disabled selected) --Chọn hành động--
-                option(value="active") Hoạt động
-                option(value="inactive") Dừng hoạt động
-                option(value="delete") Xóa
-                option(value="change position") Thay đổi vị trí
+                each opt in changeMultipleOptions
+                    option(value=opt.value) #{opt.name}
+
             .input-group-append 
                 button(
                     name="btn-change-multiple"

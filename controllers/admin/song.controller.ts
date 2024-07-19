@@ -64,6 +64,13 @@ export const index = async (req: Request, res: Response): Promise<void> => {
         ]
         //end sort
 
+        const changeMultipleOptions = [
+            { value: "active", name: "Hoạt động" },
+            { value: "inactive", name: "Dừng hoạt động" },
+            { value: "change_position", name: "Thay đổi vị trí" },
+            { value: "delete", name: "Xóa" },
+        ]
+
         const songs = await Song.find(find)
             .skip(paginationObject.skip)
             .limit(paginationObject.limit)
@@ -79,7 +86,8 @@ export const index = async (req: Request, res: Response): Promise<void> => {
             filterStatus: filter,
             keyword: searchObject.keyword,
             pagination: paginationObject,
-            sortArray: sortArray
+            sortArray: sortArray,
+            changeMultipleOptions: changeMultipleOptions
         });
     } else {
         req.flash("fail", "Bạn không đủ quyền.");
@@ -217,8 +225,8 @@ export const deleteSong = async (req: Request, res: Response): Promise<void> => 
 // [PATCH] /admin/songs/change-multiple/:type
 export const patchMultiple = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
-    if (permission.includes('update-song')) {
-        const type = req.params.type;
+    const type = req.params.type;
+    if ((type === "delete" && permission.includes('delete-song')) || (type !== "delete" && permission.includes('update-song'))) {
         const listSongChange = req.body.inputChangeMultiple.split(", ");
         const adminId = res.locals.currentAdmin._id;
 
