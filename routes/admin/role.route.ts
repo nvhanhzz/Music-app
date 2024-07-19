@@ -7,6 +7,8 @@ router.delete("/delete/:id", controller.deleteRole);
 
 router.patch("/change-multiple/:type", controller.patchMultiple);
 
+router.get("/detail/:id", controller.getRoleDetail);
+
 router.get("/", controller.index);
 
 export default router;

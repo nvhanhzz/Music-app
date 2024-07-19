@@ -4,7 +4,7 @@ import filterStatus from "../../helper/filterStatus";
 import search from "../../helper/search";
 import pagination from "../../helper/pagination";
 import sort from "../../helper/sort";
-import { Sort } from "../../enums/accountAdmin.enum";
+import { Sort } from "../../enums/role.enum";
 const PATH_ADMIN = process.env.PATH_ADMIN;
 
 // [GET] /admin/roles
@@ -148,6 +148,35 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
         }
         res.redirect("back");
 
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [GET] /admin/roles/:id
+export const getRoleDetail = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('view-role')) {
+        try {
+            const id = req.params.id;
+            const role = await Role.findOne({
+                _id: id,
+                deleted: false
+            }).populate("createdBy.adminId", "fullName");
+
+            if (role) {
+                res.render('admin/pages/role/detail', {
+                    pageTitle: "Chi tiết nhóm quyền",
+                    role: role
+                });
+            } else {
+                res.redirect(`${PATH_ADMIN}/dashboard`);
+            }
+
+        } catch (e) {
+            res.redirect(`${PATH_ADMIN}/dashboard`);
+        }
     } else {
         req.flash("fail", "Bạn không đủ quyền.");
         res.redirect(`${PATH_ADMIN}/dashboard`);

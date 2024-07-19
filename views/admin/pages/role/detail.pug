@@ -1,0 +1,34 @@
+extends ../../layouts/default.pug
+include ../../mixins/time.pug
+
+block addCss 
+    link(rel="stylesheet", href="/admin/css/detailPage.css")
+
+block main
+    .title
+        h2.margin= pageTitle
+        a(href=`${prefixAdmin}/roles/update-history/${role.id}`, class="btn btn-secondary") Lịch sử cập nhật
+
+    if role.title
+        div.margin.item-attribute
+            span Tên:
+            div!= role.title
+    
+    if role.description
+        div.margin.item-attribute
+            span Mô tả:
+            div!= role.description
+            
+    if role.createdBy.adminId.fullName        
+        div.margin.item-attribute
+            span Người tạo:
+            span= ' ' + role.createdBy.adminId.fullName
+    
+    if role.createdBy.createdAt
+        div.margin.item-attribute
+            span Thời gian tạo:
+            +dateTime(role.createdBy.createdAt)
+
+    if currentAdmin.roleId.permission.includes("update-role")
+        div
+            a(href=`${prefixAdmin}/roles/update/${role.id}`, class="margin update-button") Cập nhật
