@@ -305,3 +305,33 @@ export const patchUpdate = async (req: Request, res: Response): Promise<void> =>
         res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 }
+
+// [GET] /admin/roles/edit-history/:id
+export const getEditHistory = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('view-role')) {
+        try {
+            const id = req.params.id;
+            const role = await Role.findOne({
+                _id: id,
+                deleted: false
+            }).populate("updatedBy.adminId", "fullName");
+
+            if (!role) {
+                return res.redirect(`${PATH_ADMIN}/dashboard`);
+            }
+
+            res.render('admin/pages/editHistory/index', {
+                pageTitle: "Lịch sử cập nhật",
+                item: role,
+                type: "nhóm quyền"
+            });
+
+        } catch (e) {
+            res.redirect(`${PATH_ADMIN}/dashboard`);
+        }
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}

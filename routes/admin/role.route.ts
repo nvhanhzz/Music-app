@@ -16,6 +16,8 @@ router.get("/update/:id", controller.getUpdate);
 
 router.patch("/update/:id", validate.create, controller.patchUpdate);
 
+router.get("/update-history/:id", controller.getEditHistory);
+
 router.get("/detail/:id", controller.getRoleDetail);
 
 router.get("/", controller.index);
