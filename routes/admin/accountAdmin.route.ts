@@ -9,6 +9,8 @@ router.delete("/delete/:id", controller.deleteAdmin);
 
 router.patch("/change-multiple/:type", controller.patchMultiple);
 
+router.get("/detail/:id", controller.getAdminDetail);
+
 router.get("/", controller.index);
 
 export default router;

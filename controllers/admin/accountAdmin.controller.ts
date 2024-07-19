@@ -87,7 +87,7 @@ export const index = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-// [PATCH] /admin/songs/change-status/:status/:id
+// [PATCH] /admin/account-admin/change-status/:status/:id
 export const patchChangeStatus = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
     if (permission.includes('update-admin')) {
@@ -134,7 +134,7 @@ export const patchChangeStatus = async (req: Request, res: Response): Promise<vo
     }
 }
 
-// [DELETE] /admin/songs/delete/:id
+// [DELETE] /admin/account-admin/delete/:id
 export const deleteAdmin = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
     if (permission.includes('delete-admin')) {
@@ -172,7 +172,7 @@ export const deleteAdmin = async (req: Request, res: Response): Promise<void> =>
     }
 }
 
-// [PATCH] /admin/songs/change-multiple/:type
+// [PATCH] /admin/account-admin/change-multiple/:type
 export const patchMultiple = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
     const type = req.params.type;
@@ -284,6 +284,37 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
         }
 
         res.redirect("back");
+    } else {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [GET] /admin/account-admin/:id
+export const getAdminDetail = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (permission.includes('view-admin')) {
+        try {
+            const id = req.params.id;
+            const admin = await Admin.findOne({
+                _id: id,
+                deleted: false
+            })
+                .populate("roleId", "title")
+                .populate("createdBy.adminId", "fullName");
+
+            if (admin) {
+                res.render('admin/pages/accountAdmin/detail', {
+                    pageTitle: "Chi tiết bài hát",
+                    admin: admin
+                });
+            } else {
+                res.redirect(`${PATH_ADMIN}/dashboard`);
+            }
+
+        } catch (e) {
+            res.redirect(`${PATH_ADMIN}/dashboard`);
+        }
     } else {
         req.flash("fail", "Bạn không đủ quyền.");
         res.redirect(`${PATH_ADMIN}/dashboard`);

@@ -64,11 +64,11 @@ block main
             span= ' ' + song.status ? "Hoạt động" : "Dừng hoạt động"
             
     div.margin.item-attribute
-        span Created by:
+        span Người tạo:
         span= ' ' + song.createdBy.adminId.fullName
     
     div.margin.item-attribute
-        span Created at:
+        span Thời gian tạo:
         +dateTime(song.createdBy.createdAt)
 
     if currentAdmin.roleId.permission.includes("update-song")
