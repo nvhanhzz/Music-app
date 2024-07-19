@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import Admin from '../../models/admin.model';
 import ListStatus from "../../enums/status.enum";
+import mongoose from 'mongoose';
 
 const verifyToken = (token: string, key: string): { id: string } | null => {
     try {
@@ -39,7 +40,17 @@ export const checkToken = (options: CheckTokenOptions = { tokenName: '' }) => {
                 _id: decoded.id,
                 deleted: false,
                 status: ListStatus.ACTIVE
-            }).populate("roleId").select("-password");
+            }).populate({
+                path: 'roleId',
+                match: { deleted: false }
+            }).select('-password');
+            if (!user.roleId) {
+                user.roleId = {
+                    _id: new mongoose.Types.ObjectId(),
+                    deleted: false,
+                    permission: []
+                } as any;
+            }
 
             if (!user) {
                 res.clearCookie(tokenName);
