@@ -188,7 +188,7 @@ if (formChangeMultiple) {
         const oldAction = formChangeMultiple.getAttribute("action");
         const formChangeMultiplePath = `${oldAction}/${changeCase}?_method=PATCH`;
         if (changeCase != "" && listIdChange.length > 0) {
-            const confirmed = confirm("Are you sure you want to change products?");
+            const confirmed = confirm("Bạn có chắc chắn với những cập nhật đó không?");
             if (confirmed) {
                 formChangeMultiple.setAttribute("action", formChangeMultiplePath);
                 formChangeMultiple.submit();

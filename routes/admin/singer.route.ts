@@ -11,7 +11,7 @@ router.patch("/change-featured/:featured/:id", controller.patchChangeFeatured);
 
 router.delete("/delete/:id", controller.deleteSinger);
 
-// router.patch("/change-multiple/:type", controller.patchMultiple);
+router.patch("/change-multiple/:type", controller.patchMultiple);
 
 // router.get("/create", controller.getCreate);
 

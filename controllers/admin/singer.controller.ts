@@ -176,7 +176,7 @@ export const patchChangeFeatured = async (req: Request, res: Response): Promise<
                 $push: {
                     updatedBy: {
                         adminId: res.locals.currentAdmin.id,
-                        action: `Thay đổi thành chủ đề ${featured ? '' : 'không '}nổi bật`,
+                        action: `Thay đổi thành ca sĩ ${featured ? '' : 'không '}nổi bật`,
                         updatedAt: new Date()
                     }
                 }
@@ -197,7 +197,7 @@ export const patchChangeFeatured = async (req: Request, res: Response): Promise<
 // [DELETE] /admin/singers/delete/:id
 export const deleteSinger = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('delete-topic')) {
+    if (!permission.includes('delete-singer')) {
         req.flash("fail", "Bạn không đủ quyền.");
         return res.redirect(`${PATH_ADMIN}/dashboard`);
     }
@@ -226,6 +226,141 @@ export const deleteSinger = async (req: Request, res: Response): Promise<void> =
         }
     } catch (error) {
         req.flash('fail', 'Xóa thất bại.');
+    }
+
+    res.redirect("back");
+}
+
+// [PATCH] /admin/singers/change-multiple/:type
+export const patchMultiple = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    const type = req.params.type;
+    if ((type === "delete" && !permission.includes('delete-singer')) || (type !== "delete" && !permission.includes('update-singer'))) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
+    const listItemChange = req.body.inputChangeMultiple.split(", ");
+    const adminId = res.locals.currentAdmin._id;
+
+    const updateObject: {
+        status?: string,
+        featured?: boolean,
+        deleted?: boolean
+    } = {};
+    switch (type) {
+        case 'active':
+            updateObject.status = 'active';
+            break;
+
+        case 'inactive':
+            updateObject.status = 'inactive';
+            break;
+
+        case 'featured':
+            updateObject.featured = true;
+            break;
+
+        case 'unfeatured':
+            updateObject.featured = false;
+            break;
+
+        case 'delete':
+            updateObject.deleted = true;
+            break;
+
+        case 'change_position':
+            const listPosition = req.body.inputChangePosition.split(", ");
+            let check = true;
+            for (let i = 0; i < listItemChange.length; ++i) {
+                try {
+                    const result = await Singer.updateOne(
+                        { _id: listItemChange[i] },
+                        {
+                            $set: { position: parseInt(listPosition[i]) },
+                            $push: {
+                                updatedBy: {
+                                    adminId: adminId,
+                                    action: "Thay đổi vị trí",
+                                    updatedAt: new Date()
+                                }
+                            }
+                        }
+                    );
+                } catch (error) {
+                    check = false;
+                    console.error(`Error updating product ${listItemChange[i]}:`, error);
+                }
+            }
+            if (check) {
+                req.flash('success', `Đã cập nhật vị trí của ${listItemChange.length} ca sĩ.`);
+            }
+            res.redirect("back");
+            return;
+
+        default:
+            break;
+    }
+
+    if (type !== "change_position") {
+        try {
+            let upd = {};
+            if (type !== "delete") {
+                const action = `Thay đổi sang ${type}`;
+                upd = {
+                    $set: updateObject,
+                    $push: {
+                        updatedBy: {
+                            adminId: adminId,
+                            action: action,
+                            updatedAt: new Date()
+                        }
+                    }
+                }
+            } else {
+                upd = {
+                    $set: {
+                        deleted: true,
+                        deletedBy: {
+                            adminId: res.locals.currentAdmin.id,
+                            deletedAt: new Date()
+                        }
+                    }
+                }
+            }
+            const update = await Singer.updateMany(
+                {
+                    _id: { $in: listItemChange },
+                },
+                upd
+            );
+
+            switch (type) {
+                case 'active':
+                    req.flash('success', `Đã cập nhật trạng thái ${listItemChange.length} ca sĩ thành hoạt động.`);
+                    break;
+
+                case 'inactive':
+                    req.flash('success', `Đã cập nhật ${listItemChange.length} ca sĩ thành dừng hoạt động.`);
+                    break;
+
+                case 'featured':
+                    req.flash('success', `Đã cập nhật ${listItemChange.length} ca sĩ thành nổi bật.`);
+                    break;
+
+                case 'unfeatured':
+                    req.flash('success', `Đã cập nhật ${listItemChange.length} ca sĩ thành không nổi bật.`);
+                    break;
+
+                case 'delete':
+                    req.flash('success', `Đã xóa ${listItemChange.length} ca sĩ.`);
+                    break;
+            }
+
+        } catch (error) {
+            console.error(error);
+            req.flash('fail', 'Lỗi!!!');
+        }
     }
 
     res.redirect("back");
