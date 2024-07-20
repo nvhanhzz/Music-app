@@ -79,9 +79,9 @@ block main
                                         button(class="badge badge-danger" itemId=item._id val="false" update-featured) Không
                                 else
                                     if(item.featured)
-                                        span(class="badge badge-success" itemId=item._id val="active") Nổi bật 
+                                        span(class="badge badge-success" itemId=item._id val="true") Nổi bật 
                                     else 
-                                        span(class="badge badge-danger" itemId=item._id val="inactive") Không 
+                                        span(class="badge badge-danger" itemId=item._id val="false") Không 
                             td 
                                 if currentAdmin.roleId.permission.includes("update-topic")
                                     if(item.status === "active")
@@ -105,6 +105,10 @@ block main
 
     form(action=`${prefixAdmin}/topics/change-status` 
     class="change-status-form"
+    method="POST")
+
+    form(action=`${prefixAdmin}/topics/change-featured` 
+    class="change-featured-form"
     method="POST")
 
     form(action=`${prefixAdmin}/topics/delete` 

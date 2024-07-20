@@ -5,6 +5,8 @@ const router: Router = express.Router();
 
 router.patch("/change-status/:status/:id", controller.patchChangeStatus);
 
+router.patch("/change-featured/:featured/:id", controller.patchChangeFeatured);
+
 router.get("/", controller.index);
 
 export default router;

@@ -76,7 +76,7 @@ export const index = async (req: Request, res: Response): Promise<void> => {
         .limit(paginationObject.limit)
         .sort(sortObject)
         .populate("createdBy.adminId", "fullName")
-        .select("title avatar status slug position");
+        .select("title avatar status slug position featured");
 
     res.render("admin/pages/topic/index", {
         pageTitle: "Quản lý chủ đề",
@@ -119,6 +119,48 @@ export const patchChangeStatus = async (req: Request, res: Response): Promise<vo
                     updatedBy: {
                         adminId: res.locals.currentAdmin.id,
                         action: `Thay đổi trạng thái sang ${status}`,
+                        updatedAt: new Date()
+                    }
+                }
+            }
+        );
+        if (result.modifiedCount === 1) {
+            req.flash('success', 'Cập nhật thành công.');
+        } else {
+            req.flash('fail', 'Cập nhật thất bại.');
+        }
+    } catch (error) {
+        req.flash('fail', 'Cập nhật thất bại.');
+    }
+
+    res.redirect("back");
+}
+
+// [PATCH] /admin/topics/change-featured/:featured/:id
+export const patchChangeFeatured = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('update-song')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
+    const featured = req.params.featured === "true";
+    const itemId = req.params.id;
+
+    try {
+        const result = await Topic.updateOne(
+            {
+                _id: itemId,
+                deleted: false
+            },
+            {
+                $set: {
+                    featured: featured
+                },
+                $push: {
+                    updatedBy: {
+                        adminId: res.locals.currentAdmin.id,
+                        action: `Thay đổi thành chủ đề ${featured ? '' : 'không '}nổi bật`,
                         updatedAt: new Date()
                     }
                 }
