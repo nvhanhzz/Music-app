@@ -365,3 +365,44 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
 
     res.redirect("back");
 }
+
+// [GET] /admin/singers/:id
+export const getDetail = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('view-singer')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
+    try {
+        const id = req.params.id;
+        const singer = await Singer.findOne({
+            _id: id,
+            deleted: false
+        })
+            .populate("createdBy.adminId", "fullName");
+
+        const songs = await Song.find({
+            singerId: singer._id,
+            deleted: false,
+            status: ListStatus.ACTIVE
+        });
+        singer["songCount"] = songs.length;
+        singer["listenedCount"] = 0;
+        for (const song of songs) {
+            singer["listenedCount"] += song.listenCount;
+        }
+
+        if (singer) {
+            res.render('admin/pages/singer/detail', {
+                pageTitle: "Chi tiết ca sĩ",
+                singer: singer
+            });
+        } else {
+            return res.redirect(`${PATH_ADMIN}/dashboard`);
+        }
+
+    } catch (e) {
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
