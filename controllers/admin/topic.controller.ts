@@ -8,6 +8,7 @@ import Topic from "../../models/topic.model";
 import { Sort } from "../../enums/songs.enum";
 const PATH_ADMIN = process.env.PATH_ADMIN;
 
+// [GET] /admin/topics
 export const index = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
     if (!permission.includes('view-topic')) {
@@ -86,4 +87,51 @@ export const index = async (req: Request, res: Response): Promise<void> => {
         sortArray: sortArray,
         changeMultipleOptions: changeMultipleOptions
     });
+}
+
+// [PATCH] /admin/topics/change-status/:status/:id
+export const patchChangeStatus = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('update-topic')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
+    const status = req.params.status;
+    const itemId = req.params.id;
+
+    if (!Object.values(ListStatus).includes(status as ListStatus)) {
+        req.flash('fail', 'Cập nhật thất bại.');
+        return;
+    }
+
+    try {
+        const result = await Topic.updateOne(
+            {
+                _id: itemId,
+                deleted: false
+            },
+            {
+                $set: {
+                    status: status
+                },
+                $push: {
+                    updatedBy: {
+                        adminId: res.locals.currentAdmin.id,
+                        action: `Thay đổi trạng thái sang ${status}`,
+                        updatedAt: new Date()
+                    }
+                }
+            }
+        );
+        if (result.modifiedCount === 1) {
+            req.flash('success', 'Cập nhật thành công.');
+        } else {
+            req.flash('fail', 'Cập nhật thất bại.');
+        }
+    } catch (error) {
+        req.flash('fail', 'Cập nhật thất bại.');
+    }
+
+    res.redirect("back");
 }
