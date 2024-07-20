@@ -155,7 +155,7 @@ export const patchChangeStatus = async (req: Request, res: Response): Promise<vo
 // [PATCH] /admin/singers/change-featured/:featured/:id
 export const patchChangeFeatured = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('update-song')) {
+    if (!permission.includes('update-singer')) {
         req.flash("fail", "Bạn không đủ quyền.");
         return res.redirect(`${PATH_ADMIN}/dashboard`);
     }
@@ -189,6 +189,43 @@ export const patchChangeFeatured = async (req: Request, res: Response): Promise<
         }
     } catch (error) {
         req.flash('fail', 'Cập nhật thất bại.');
+    }
+
+    res.redirect("back");
+}
+
+// [DELETE] /admin/singers/delete/:id
+export const deleteSinger = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('delete-topic')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+    const itemId = req.params.id;
+
+    try {
+        const result = await Singer.updateOne(
+            {
+                _id: itemId,
+                deleted: false
+            },
+            {
+                $set: {
+                    deleted: true,
+                    deletedBy: {
+                        adminId: res.locals.currentAdmin.id,
+                        deletedAt: new Date()
+                    }
+                }
+            }
+        );
+        if (result.modifiedCount === 1) {
+            req.flash('success', 'Xóa thành công.');
+        } else {
+            req.flash('fail', 'Xóa thất bại.');
+        }
+    } catch (error) {
+        req.flash('fail', 'Xóa thất bại.');
     }
 
     res.redirect("back");

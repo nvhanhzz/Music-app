@@ -9,7 +9,7 @@ router.patch("/change-status/:status/:id", controller.patchChangeStatus);
 
 router.patch("/change-featured/:featured/:id", controller.patchChangeFeatured);
 
-// router.delete("/delete/:id", controller.deleteTopic);
+router.delete("/delete/:id", controller.deleteSinger);
 
 // router.patch("/change-multiple/:type", controller.patchMultiple);
 

@@ -141,7 +141,7 @@ export const patchChangeStatus = async (req: Request, res: Response): Promise<vo
 // [PATCH] /admin/topics/change-featured/:featured/:id
 export const patchChangeFeatured = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('update-song')) {
+    if (!permission.includes('update-topic')) {
         req.flash("fail", "Bạn không đủ quyền.");
         return res.redirect(`${PATH_ADMIN}/dashboard`);
     }
