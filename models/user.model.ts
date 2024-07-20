@@ -18,6 +18,10 @@ const userSchema: mongoose.Schema = new mongoose.Schema(
         }],
         status: { type: String, required: true },
         deleted: { type: Boolean, default: false },
+        deletedBy: {
+            adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+            deletedAt: Date
+        },
         updatedBy: [
             {
                 adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },

@@ -20,8 +20,7 @@ block main
 
     .card.mb-3 
         .card-header
-            if currentAdmin.roleId.permission.includes("create-user") 
-                a(href=`${prefixAdmin}/account-user/create` class="create") + Tạo mới
+            div
             if currentAdmin.roleId.permission.includes("update-user")
                 +change-multiple-form(`${prefixAdmin}/account-user/change-multiple`, changeMultipleOptions)
         

@@ -85,7 +85,7 @@ export const index = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-// [GET] /admin/detail/:id
+// [GET] /admin/account-user/detail/:id
 export const getUserDetail = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
     if (!permission.includes('view-user')) {
@@ -111,10 +111,10 @@ export const getUserDetail = async (req: Request, res: Response): Promise<void> 
     }
 }
 
-// [PATCH] /admin/account-admin/change-status/:status/:id
+// [PATCH] /admin/account-user/change-status/:status/:id
 export const patchChangeStatus = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('update-admin')) {
+    if (!permission.includes('update-user')) {
         req.flash("fail", "Bạn không đủ quyền.");
         res.redirect(`${PATH_ADMIN}/dashboard`);
     }
@@ -153,6 +153,43 @@ export const patchChangeStatus = async (req: Request, res: Response): Promise<vo
         }
     } catch (error) {
         req.flash('fail', 'Cập nhật thất bại.');
+    }
+
+    res.redirect("back");
+}
+
+// [DELETE] /admin/account-user/delete/:id
+export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('delete-user')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+    const itemId = req.params.id;
+
+    try {
+        const result = await User.updateOne(
+            {
+                _id: itemId,
+                deleted: false
+            },
+            {
+                $set: {
+                    deleted: true,
+                    deletedBy: {
+                        adminId: res.locals.currentAdmin.id,
+                        deletedAt: new Date()
+                    }
+                }
+            }
+        );
+        if (result.modifiedCount === 1) {
+            req.flash('success', 'Xóa thành công.');
+        } else {
+            req.flash('fail', 'Xóa thất bại.');
+        }
+    } catch (error) {
+        req.flash('fail', 'Xóa thất bại.');
     }
 
     res.redirect("back");

@@ -5,7 +5,7 @@ const router: Router = express.Router();
 
 router.patch("/change-status/:status/:id", controller.patchChangeStatus);
 
-// router.delete("/delete/:id", controller.deleteAdmin);
+router.delete("/delete/:id", controller.deleteUser);
 
 // router.patch("/change-multiple/:type", controller.patchMultiple);
 

@@ -151,11 +151,6 @@ block main
                             td 
                                 input(type="checkbox" name="view-user" value=index check-box-permission checked= item.permission.includes("view-user"))
                     tr
-                        td Tạo mới
-                        each item, index in roles 
-                            td 
-                                input(type="checkbox" name="create-user" value=index check-box-permission checked= item.permission.includes("create-user"))
-                    tr
                         td Cập nhật 
                         each item, index in roles 
                             td 
