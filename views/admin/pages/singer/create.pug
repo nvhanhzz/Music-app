@@ -7,20 +7,16 @@ block addCss
 block main
     h2 #{pageTitle}
 
-    form(action=`${prefixAdmin}/topics/create`, enctype="multipart/form-data", method="POST")
+    form(action=`${prefixAdmin}/singers/create`, enctype="multipart/form-data", method="POST")
         .form-group
-            label(for="title") Tên:
-            input#title.form-control(type="text", name="title", placeholder="Nhập tên chủ đề")
+            label(for="fullName") Tên:
+            input#fullName.form-control(type="text", name="fullName", placeholder="Nhập tên ca sĩ")
 
         div.form-group
             label(for="avatar") Ảnh đại diện:
             input#avatar.form-control.img-inp(type="file", accept="image/*", name="avatar")
             img(id="blah" src="" alt="your image")
-
-        div.form-group
-            label(for="description") Mô tả:
-            textarea#my-expressjs-tinymce-app.form-control(name="description", rows="4", placeholder="Nhập mô tả chủ đề")
-
+            
         div.form-group
             label Nổi bật:
             div

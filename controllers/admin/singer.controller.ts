@@ -435,3 +435,61 @@ export const getEditHistory = async (req: Request, res: Response): Promise<void>
         res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 }
+
+// [GET] /admin/singers/create
+export const getCreate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('create-singer')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
+    const positionDefault = await Singer.countDocuments({
+        deleted: false
+    }) + 1;
+
+    res.render("admin/pages/singer/create", {
+        pageTitle: "Tạo mới ca sĩ",
+        positionDefault: positionDefault
+    });
+}
+
+// [POST] /admin/singers/create
+export const postCreate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('create-singer')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
+    try {
+        req.body.position = parseInt(req.body.position);
+        if (req.body.file) {
+            req.body.avatar = req.body.file;
+        }
+        if (!Number.isInteger(req.body.position)) {
+            const positionDefault = await Singer.countDocuments({
+                deleted: false
+            }) + 1;
+            req.body.position = positionDefault;
+        }
+
+        const newSinger = new Singer({
+            ...req.body,
+            createdBy: {
+                adminId: res.locals.currentAdmin.id
+            }
+        });
+        const result = await newSinger.save();
+        if (result) {
+            req.flash("success", "Tạo ca sĩ thành công.");
+            return res.redirect("/admin/singers");
+        } else {
+            req.flash("fail", "Tạo ca sĩ thất bại.");
+            return res.redirect("back");
+        }
+    } catch (e) {
+        req.flash("fail", "Tạo ca sĩ thất bại.");
+        return res.redirect("back");
+    }
+}

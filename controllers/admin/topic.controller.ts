@@ -438,6 +438,9 @@ export const postCreate = async (req: Request, res: Response): Promise<void> => 
     }
 
     try {
+        if (req.body.file) {
+            req.body.avatar = req.body.file;
+        }
         req.body.position = parseInt(req.body.position);
         if (!Number.isInteger(req.body.position)) {
             const positionDefault = await Topic.countDocuments({
@@ -498,6 +501,9 @@ export const patchUpdate = async (req: Request, res: Response): Promise<void> =>
         return res.redirect(`${PATH_ADMIN}/dashboard`);
     }
     try {
+        if (req.body.file) {
+            req.body.avatar = req.body.file;
+        }
         const id = req.params.id;
         const topic = await Topic.findOne({
             _id: id,

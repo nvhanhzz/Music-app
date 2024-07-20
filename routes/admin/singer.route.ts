@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import * as controller from "../../controllers/admin/singer.controller";
-// import * as validate from "../../validate/admin/topic.validate";
-// import { upload, uploadMultipleFile } from "../../middlewares/admin/upload";
+import * as validate from "../../validate/admin/singer.validate";
+import { upload, uploadSingleFile } from "../../middlewares/admin/upload";
 
 const router: Router = express.Router();
 
@@ -13,28 +13,22 @@ router.delete("/delete/:id", controller.deleteSinger);
 
 router.patch("/change-multiple/:type", controller.patchMultiple);
 
-// router.get("/create", controller.getCreate);
+router.get("/create", controller.getCreate);
 
-// router.post(
-//     "/create",
-//     upload.fields([
-//         { name: "avatar", maxCount: 1 },
-//         { name: "audio", maxCount: 1 }
-//     ]),
-//     uploadMultipleFile,
-//     validate.create,
-//     controller.postCreate
-// );
+router.post(
+    "/create",
+    upload.single("avatar"),
+    uploadSingleFile,
+    validate.create,
+    controller.postCreate
+);
 
 // router.get("/update/:id", controller.getUpdate);
 
 // router.patch(
 //     "/update/:id",
-//     upload.fields([
-//         { name: "avatar", maxCount: 1 },
-//         { name: "audio", maxCount: 1 }
-//     ]),
-//     uploadMultipleFile,
+// upload.single("avatar"),
+// uploadSingleFile,
 //     validate.update,
 //     controller.patchUpdate
 // );
