@@ -9,6 +9,8 @@ router.patch("/change-featured/:featured/:id", controller.patchChangeFeatured);
 
 router.delete("/delete/:id", controller.deleteTopic);
 
+router.patch("/change-multiple/:type", controller.patchMultiple);
+
 router.get("/", controller.index);
 
 export default router;

@@ -67,6 +67,8 @@ export const index = async (req: Request, res: Response): Promise<void> => {
         const changeMultipleOptions = [
             { value: "active", name: "Hoạt động" },
             { value: "inactive", name: "Dừng hoạt động" },
+            { value: "featured", name: "Nổi bật" },
+            { value: "unfeatured", name: "Không nổi bật" },
             { value: "change_position", name: "Thay đổi vị trí" },
             { value: "delete", name: "Xóa" },
         ]
@@ -232,6 +234,7 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
 
         const updateObject: {
             status?: string,
+            featured?: boolean,
             deleted?: boolean
         } = {};
         switch (type) {
@@ -241,6 +244,14 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
 
             case 'inactive':
                 updateObject.status = 'inactive';
+                break;
+
+            case 'featured':
+                updateObject.featured = true;
+                break;
+
+            case 'unfeatured':
+                updateObject.featured = false;
                 break;
 
             case 'delete':
@@ -284,7 +295,7 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
             try {
                 let upd = {};
                 if (type !== "delete") {
-                    const action = `Thay đổi trạng thái sang ${type}`;
+                    const action = `Thay đổi sang ${type}`;
                     upd = {
                         $set: updateObject,
                         $push: {
@@ -320,6 +331,14 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
 
                     case 'inactive':
                         req.flash('success', `Đã cập nhật trạng thái ${listSongChange.length} bài hát thành dừng hoạt động.`);
+                        break;
+
+                    case 'featured':
+                        req.flash('success', `Đã cập nhật ${listSongChange.length} bài hát thành nổi bật.`);
+                        break;
+
+                    case 'unfeatured':
+                        req.flash('success', `Đã cập nhật ${listSongChange.length} bài hát thành không nổi bật.`);
                         break;
 
                     case 'delete':

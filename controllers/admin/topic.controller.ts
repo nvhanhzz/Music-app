@@ -67,6 +67,8 @@ export const index = async (req: Request, res: Response): Promise<void> => {
     const changeMultipleOptions = [
         { value: "active", name: "Hoạt động" },
         { value: "inactive", name: "Dừng hoạt động" },
+        { value: "featured", name: "Nổi bật" },
+        { value: "unfeatured", name: "Không nổi bật" },
         { value: "change_position", name: "Thay đổi vị trí" },
         { value: "delete", name: "Xóa" },
     ]
@@ -210,6 +212,141 @@ export const deleteTopic = async (req: Request, res: Response): Promise<void> =>
         }
     } catch (error) {
         req.flash('fail', 'Xóa thất bại.');
+    }
+
+    res.redirect("back");
+}
+
+// [PATCH] /admin/topics/change-multiple/:type
+export const patchMultiple = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    const type = req.params.type;
+    if ((type === "delete" && !permission.includes('delete-topic')) || (type !== "delete" && !permission.includes('update-topic'))) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
+    const listItemChange = req.body.inputChangeMultiple.split(", ");
+    const adminId = res.locals.currentAdmin._id;
+
+    const updateObject: {
+        status?: string,
+        featured?: boolean,
+        deleted?: boolean
+    } = {};
+    switch (type) {
+        case 'active':
+            updateObject.status = 'active';
+            break;
+
+        case 'inactive':
+            updateObject.status = 'inactive';
+            break;
+
+        case 'featured':
+            updateObject.featured = true;
+            break;
+
+        case 'unfeatured':
+            updateObject.featured = false;
+            break;
+
+        case 'delete':
+            updateObject.deleted = true;
+            break;
+
+        case 'change_position':
+            const listPosition = req.body.inputChangePosition.split(", ");
+            let check = true;
+            for (let i = 0; i < listItemChange.length; ++i) {
+                try {
+                    const result = await Topic.updateOne(
+                        { _id: listItemChange[i] },
+                        {
+                            $set: { position: parseInt(listPosition[i]) },
+                            $push: {
+                                updatedBy: {
+                                    adminId: adminId,
+                                    action: "Thay đổi vị trí",
+                                    updatedAt: new Date()
+                                }
+                            }
+                        }
+                    );
+                } catch (error) {
+                    check = false;
+                    console.error(`Error updating product ${listItemChange[i]}:`, error);
+                }
+            }
+            if (check) {
+                req.flash('success', `Đã cập nhật vị trí của ${listItemChange.length} chủ đề.`);
+            }
+            res.redirect("back");
+            return;
+
+        default:
+            break;
+    }
+
+    if (type !== "change_position") {
+        try {
+            let upd = {};
+            if (type !== "delete") {
+                const action = `Thay đổi sang ${type}`;
+                upd = {
+                    $set: updateObject,
+                    $push: {
+                        updatedBy: {
+                            adminId: adminId,
+                            action: action,
+                            updatedAt: new Date()
+                        }
+                    }
+                }
+            } else {
+                upd = {
+                    $set: {
+                        deleted: true,
+                        deletedBy: {
+                            adminId: res.locals.currentAdmin.id,
+                            deletedAt: new Date()
+                        }
+                    }
+                }
+            }
+            const update = await Topic.updateMany(
+                {
+                    _id: { $in: listItemChange },
+                },
+                upd
+            );
+
+            switch (type) {
+                case 'active':
+                    req.flash('success', `Đã cập nhật trạng thái ${listItemChange.length} chủ đề thành hoạt động.`);
+                    break;
+
+                case 'inactive':
+                    req.flash('success', `Đã cập nhật ${listItemChange.length} chủ đề thành dừng hoạt động.`);
+                    break;
+
+                case 'featured':
+                    req.flash('success', `Đã cập nhật ${listItemChange.length} chủ đề thành nổi bật.`);
+                    break;
+
+                case 'unfeatured':
+                    req.flash('success', `Đã cập nhật ${listItemChange.length} chủ đề thành không nổi bật.`);
+                    break;
+
+                case 'delete':
+                    req.flash('success', `Đã xóa ${listItemChange.length} chủ đề.`);
+                    break;
+            }
+
+        } catch (error) {
+            console.error(error);
+            req.flash('fail', 'Lỗi!!!');
+        }
     }
 
     res.redirect("back");
