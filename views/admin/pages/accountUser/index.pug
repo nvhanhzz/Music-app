@@ -52,7 +52,7 @@ block main
                             td #{(pagination.page - 1) * pagination.limit + index + 1}
                             td 
                                 img(
-                                    src=item.avatar
+                                    src=item.avatar || "https://th.bing.com/th/id/OIP.VImWjbk4meO4actlY89hAAHaGj?w=1099&h=973&rs=1&pid=ImgDetMain"
                                     alt=item.title
                                     width="100px"
                                     height="auto"

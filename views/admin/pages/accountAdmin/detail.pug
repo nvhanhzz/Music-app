@@ -9,9 +9,8 @@ block main
         h2.margin= pageTitle
         a(href=`${prefixAdmin}/account-admin/update-history/${admin.id}`, class="btn btn-secondary") Lịch sử cập nhật
 
-    if admin.avatar
-        div.margin.outer-thumbnail
-            img(src=admin.avatar, alt=admin.fullName)
+    div.margin.outer-thumbnail
+        img(src=admin.avatar || "https://th.bing.com/th/id/OIP.VImWjbk4meO4actlY89hAAHaGj?w=1099&h=973&rs=1&pid=ImgDetMain", alt=admin.fullName)
     
     if admin.fullName
         div.margin.item-attribute

@@ -51,8 +51,7 @@ export const postLogin = async (req: Request, res: Response): Promise<void> => {
     const TOKEN_EXP: number = parseInt(process.env.TOKEN_EXP, 10);
     const user = await User.findOne({
         email: req.body.email,
-        deleted: false,
-        status: ListStatus.ACTIVE
+        deleted: false
     });
     if (!user) {
         req.flash("fail", "Email hoặc mật khẩu không chính xác.");
@@ -62,6 +61,11 @@ export const postLogin = async (req: Request, res: Response): Promise<void> => {
     const confirm = await comparePassword(req.body.password, user.password.toString());
     if (!confirm) {
         req.flash("fail", "Email hoặc mật khẩu không chính xác.");
+        return res.redirect("back");
+    }
+
+    if (user.status !== ListStatus.ACTIVE) {
+        req.flash("fail", "Tài khoản đã bị khóa.");
         return res.redirect("back");
     }
 

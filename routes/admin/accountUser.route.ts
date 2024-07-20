@@ -3,7 +3,7 @@ import * as controller from "../../controllers/admin/accountUser.controller";
 
 const router: Router = express.Router();
 
-// router.patch("/change-status/:status/:id", controller.patchChangeStatus);
+router.patch("/change-status/:status/:id", controller.patchChangeStatus);
 
 // router.delete("/delete/:id", controller.deleteAdmin);
 
