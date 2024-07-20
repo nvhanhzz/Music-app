@@ -29,3 +29,8 @@ block main
         div.margin.item-attribute
             span Số điện thoại:
             div!= user.phone
+    
+    if user.status
+        div.margin.item-attribute
+            span Trạng thái:
+            span= ' ' + (user.status === "active" ? "Hoạt động" : "Dừng hoạt động")

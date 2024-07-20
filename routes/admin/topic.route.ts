@@ -11,6 +11,8 @@ router.delete("/delete/:id", controller.deleteTopic);
 
 router.patch("/change-multiple/:type", controller.patchMultiple);
 
+router.get("/detail/:id", controller.getDetail);
+
 router.get("/", controller.index);
 
 export default router;

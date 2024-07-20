@@ -351,3 +351,33 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
 
     res.redirect("back");
 }
+
+// [GET] /admin/topics/:id
+export const getDetail = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('view-topic')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
+    try {
+        const id = req.params.id;
+        const topic = await Topic.findOne({
+            _id: id,
+            deleted: false
+        })
+            .populate("createdBy.adminId", "fullName");
+
+        if (topic) {
+            res.render('admin/pages/topic/detail', {
+                pageTitle: "Chi tiết chủ đề",
+                topic: topic
+            });
+        } else {
+            return res.redirect(`${PATH_ADMIN}/dashboard`);
+        }
+
+    } catch (e) {
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}

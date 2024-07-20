@@ -42,6 +42,11 @@ block main
             span Thời gian tạo:
             +dateTime(admin.createdBy.createdAt)
 
+    if admin.status
+        div.margin.item-attribute
+            span Trạng thái:
+            span= ' ' + (admin.status === "active" ? "Hoạt động" : "Dừng hoạt động")
+
     if currentAdmin.roleId.permission.includes("update-admin")
         div
             a(href=`${prefixAdmin}/account-admin/update/${admin.id}`, class="margin update-button") Cập nhật

@@ -38,10 +38,9 @@ block main
             span Lời bài hát:
             div!= song.lyrics
 
-    if song.featured
-        div.margin.item-attribute
-            span Bài hát nổi bật:
-            span= song.featured ? 'Nổi bật' : 'Không'
+    div.margin.item-attribute
+        span Bài hát nổi bật:
+        span= song.featured ? 'Nổi bật' : 'Không'
 
     if song.listenCount
         div.margin.item-attribute
@@ -61,7 +60,7 @@ block main
     if song.status
         div.margin.item-attribute
             span Trạng thái:
-            span= ' ' + song.status ? "Hoạt động" : "Dừng hoạt động"
+            span= ' ' + song.status === "active" ? "Hoạt động" : "Dừng hoạt động"
             
     div.margin.item-attribute
         span Người tạo:
