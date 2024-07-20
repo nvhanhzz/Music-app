@@ -9,7 +9,7 @@ import { Sort } from "../../enums/singer.enum";
 import Song from "../../models/song.model";
 const PATH_ADMIN = process.env.PATH_ADMIN;
 
-// [GET] /admin/topics
+// [GET] /admin/singers
 export const index = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
     if (!permission.includes('view-singer')) {
@@ -105,7 +105,7 @@ export const index = async (req: Request, res: Response): Promise<void> => {
     });
 }
 
-// [PATCH] /admin/topics/change-status/:status/:id
+// [PATCH] /admin/singers/change-status/:status/:id
 export const patchChangeStatus = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
     if (!permission.includes('update-singer')) {
@@ -135,6 +135,48 @@ export const patchChangeStatus = async (req: Request, res: Response): Promise<vo
                     updatedBy: {
                         adminId: res.locals.currentAdmin.id,
                         action: `Thay đổi trạng thái sang ${status}`,
+                        updatedAt: new Date()
+                    }
+                }
+            }
+        );
+        if (result.modifiedCount === 1) {
+            req.flash('success', 'Cập nhật thành công.');
+        } else {
+            req.flash('fail', 'Cập nhật thất bại.');
+        }
+    } catch (error) {
+        req.flash('fail', 'Cập nhật thất bại.');
+    }
+
+    res.redirect("back");
+}
+
+// [PATCH] /admin/singers/change-featured/:featured/:id
+export const patchChangeFeatured = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('update-song')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
+    const featured = req.params.featured === "true";
+    const itemId = req.params.id;
+
+    try {
+        const result = await Singer.updateOne(
+            {
+                _id: itemId,
+                deleted: false
+            },
+            {
+                $set: {
+                    featured: featured
+                },
+                $push: {
+                    updatedBy: {
+                        adminId: res.locals.currentAdmin.id,
+                        action: `Thay đổi thành chủ đề ${featured ? '' : 'không '}nổi bật`,
                         updatedAt: new Date()
                     }
                 }
