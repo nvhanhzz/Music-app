@@ -381,3 +381,32 @@ export const getDetail = async (req: Request, res: Response): Promise<void> => {
         return res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 }
+
+// [GET] /admin/topics/edit-history/:id
+export const getEditHistory = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('view-topic')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+    try {
+        const id = req.params.id;
+        const topic = await Topic.findOne({
+            _id: id,
+            deleted: false
+        }).populate("updatedBy.adminId", "fullName");
+
+        if (!topic) {
+            return res.redirect(`${PATH_ADMIN}/dashboard`);
+        }
+
+        res.render('admin/pages/editHistory/index', {
+            pageTitle: "Lịch sử cập nhật",
+            item: topic,
+            type: "chủ đề"
+        });
+
+    } catch (e) {
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}

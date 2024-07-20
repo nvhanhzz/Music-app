@@ -13,6 +13,8 @@ router.patch("/change-multiple/:type", controller.patchMultiple);
 
 router.get("/detail/:id", controller.getDetail);
 
+router.get("/update-history/:id", controller.getEditHistory);
+
 router.get("/", controller.index);
 
 export default router;
