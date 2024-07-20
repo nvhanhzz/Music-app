@@ -5,7 +5,7 @@ import filterStatus from "../../helper/filterStatus";
 import search from "../../helper/search";
 import pagination from "../../helper/pagination";
 import sort from "../../helper/sort";
-import { Sort } from "../../enums/accountAdmin.enum";
+import { Sort } from "../../enums/accountUser.enum";
 const PATH_ADMIN = process.env.PATH_ADMIN;
 
 // [GET] /admin/account-user

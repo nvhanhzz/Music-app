@@ -5,7 +5,7 @@ import search from "../../helper/search";
 import pagination from "../../helper/pagination";
 import sort from "../../helper/sort";
 import Topic from "../../models/topic.model";
-import { Sort } from "../../enums/songs.enum";
+import { Sort } from "../../enums/topic.enum";
 const PATH_ADMIN = process.env.PATH_ADMIN;
 
 // [GET] /admin/topics

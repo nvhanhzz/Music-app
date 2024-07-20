@@ -9,7 +9,7 @@ ul
             a(href=`${prefixAdmin}/topics`) Quản lý chủ đề 
     if (currentAdmin.roleId.permission.includes("view-singer"))
         li 
-            a(href=`${prefixAdmin}/`) Quản lý ca sĩ
+            a(href=`${prefixAdmin}/singers`) Quản lý ca sĩ
     if (currentAdmin.roleId.permission.includes("view-admin"))
         li 
             a(href=`${prefixAdmin}/account-admin`) Tài quản admin
