@@ -8,3 +8,7 @@
     width: 32% !important;
     margin-top: 15px;
 }
+
+.topic img {
+    aspect-ratio: 1/1;
+}

@@ -410,3 +410,58 @@ export const getEditHistory = async (req: Request, res: Response): Promise<void>
         res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 }
+
+// [GET] /admin/topics/create
+export const getCreate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('create-topic')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
+    const positionDefault = await Topic.countDocuments({
+        deleted: false
+    }) + 1;
+
+    res.render("admin/pages/topic/create", {
+        pageTitle: "Tạo mới chủ đề",
+        positionDefault: positionDefault
+    });
+}
+
+// [POST] /admin/songs/create
+export const postCreate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('create-topic')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
+    try {
+        req.body.position = parseInt(req.body.position);
+        if (!Number.isInteger(req.body.position)) {
+            const positionDefault = await Topic.countDocuments({
+                deleted: false
+            }) + 1;
+            req.body.position = positionDefault;
+        }
+
+        const newTopic = new Topic({
+            ...req.body,
+            createdBy: {
+                adminId: res.locals.currentAdmin.id
+            }
+        });
+        const result = await newTopic.save();
+        if (result) {
+            req.flash("success", "Tạo chủ đề thành công.");
+            return res.redirect("/admin/topics");
+        } else {
+            req.flash("fail", "Tạo chủ đề thất bại.");
+            return res.redirect("back");
+        }
+    } catch (e) {
+        req.flash("fail", "Tạo chủ đề thất bại.");
+        return res.redirect("back");
+    }
+}
