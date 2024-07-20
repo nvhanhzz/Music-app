@@ -24,7 +24,7 @@ export const update = (req: Request, res: Response, next: NextFunction): void =>
     if (req.body.position) {
         req.body.position = parseInt(req.body.position);
         if (!Number.isInteger(req.body.position)) {
-            req.flash("fail", "Cập nhật bài hát thất bại.");
+            req.flash("fail", "Cập nhật chủ đề thất bại.");
             return res.redirect("back");
         }
     }

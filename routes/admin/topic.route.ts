@@ -26,18 +26,18 @@ router.post(
     controller.postCreate
 );
 
-// router.get("/update/:id", controller.getUpdate);
+router.get("/update/:id", controller.getUpdate);
 
-// router.patch(
-//     "/update/:id",
-//     upload.fields([
-//         { name: "avatar", maxCount: 1 },
-//         { name: "audio", maxCount: 1 }
-//     ]),
-//     uploadMultipleFile,
-//     validateUpdateSong,
-//     controller.patchUpdate
-// );
+router.patch(
+    "/update/:id",
+    upload.fields([
+        { name: "avatar", maxCount: 1 },
+        { name: "audio", maxCount: 1 }
+    ]),
+    uploadMultipleFile,
+    validate.update,
+    controller.patchUpdate
+);
 
 router.get("/detail/:id", controller.getDetail);
 
