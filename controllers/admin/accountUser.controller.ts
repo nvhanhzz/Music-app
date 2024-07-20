@@ -84,3 +84,29 @@ export const index = async (req: Request, res: Response): Promise<void> => {
         res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 }
+
+// [GET] /admin/detail/:id
+export const getUserDetail = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('view-user')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+    try {
+        const id = req.params.id;
+        const user = await User.findOne({
+            _id: id,
+            deleted: false
+        });
+        if (!user) {
+            return res.redirect(`${PATH_ADMIN}/dashboard`);
+        }
+        return res.render("admin/pages/accountUser/detail", {
+            pageTitle: "Chi tiết người dùng",
+            user: user
+        });
+
+    } catch (error) {
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}

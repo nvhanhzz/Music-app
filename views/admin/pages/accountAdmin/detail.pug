@@ -6,12 +6,17 @@ block addCss
 
 block main
     .title
-        h2.margin= admin.fullName 
+        h2.margin= pageTitle
         a(href=`${prefixAdmin}/account-admin/update-history/${admin.id}`, class="btn btn-secondary") Lịch sử cập nhật
 
     if admin.avatar
         div.margin.outer-thumbnail
             img(src=admin.avatar, alt=admin.fullName)
+    
+    if admin.fullName
+        div.margin.item-attribute
+            span Họ và tên:
+            div!= admin.fullName
 
     if admin.email
         div.margin.item-attribute

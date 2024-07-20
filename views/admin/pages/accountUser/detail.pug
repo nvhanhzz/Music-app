@@ -1,0 +1,31 @@
+extends ../../layouts/default.pug
+include ../../mixins/time.pug
+
+block addCss 
+    link(rel="stylesheet", href="/admin/css/detailPage.css")
+
+block main
+    .title
+        h2.margin= pageTitle
+        a(href=`${prefixAdmin}/account-user/update-history/${user.id}`, class="btn btn-secondary") Lịch sử cập nhật
+
+    div.margin.outer-thumbnail
+        if user.avatar
+            img(src=user.avatar, alt=user.fullName)
+        else 
+            img(src="https://th.bing.com/th/id/OIP.VImWjbk4meO4actlY89hAAHaGj?w=1099&h=973&rs=1&pid=ImgDetMain", alt=admin.fullName)
+
+    if user.fullName
+        div.margin.item-attribute
+            span Họ và tên:
+            div!= user.fullName
+
+    if user.email
+        div.margin.item-attribute
+            span Email:
+            div!= user.email
+    
+    if user.phone
+        div.margin.item-attribute
+            span Số điện thoại:
+            div!= user.phone

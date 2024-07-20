@@ -307,7 +307,7 @@ export const getAdminDetail = async (req: Request, res: Response): Promise<void>
 
             if (admin) {
                 res.render('admin/pages/accountAdmin/detail', {
-                    pageTitle: "Chi tiết bài hát",
+                    pageTitle: "Chi tiết tài khoản admin",
                     admin: admin
                 });
             } else {
