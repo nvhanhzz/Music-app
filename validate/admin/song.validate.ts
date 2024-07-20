@@ -7,7 +7,12 @@ export const validateCreateSong = (req: Request, res: Response, next: NextFuncti
         return res.redirect("back");
     }
     if (!req.body.status || !Object.values(ListStatus).includes(req.body.status)) {
-        req.body.status = "inactive";
+        req.flash("fail", "Tạo mới bài hát thất bại.");
+        return res.redirect("back");
+    }
+    if (req.body.listenCount || req.body.like) {
+        req.flash("fail", "Tạo mới bài hát thất bại.");
+        return res.redirect("back");
     }
     req.body.listenCount = 0;
     req.body.like = [];
@@ -21,7 +26,8 @@ export const validateUpdateSong = (req: Request, res: Response, next: NextFuncti
         return res.redirect("back");
     }
     if (req.body.status && !Object.values(ListStatus).includes(req.body.status)) {
-        req.body.status = "inactive";
+        req.flash("fail", "Cập nhật bài hát thất bại.");
+        return res.redirect("back");
     }
     if (req.body.position) {
         req.body.position = parseInt(req.body.position);
@@ -31,10 +37,12 @@ export const validateUpdateSong = (req: Request, res: Response, next: NextFuncti
         }
     }
     if (req.body.like) {
-        delete req.body.like;
+        req.flash("fail", "Cập nhật bài hát thất bại.");
+        return res.redirect("back");
     }
     if (req.body.listenCount) {
-        delete req.body.listenCount;
+        req.flash("fail", "Cập nhật bài hát thất bại.");
+        return res.redirect("back");
     }
 
     next();

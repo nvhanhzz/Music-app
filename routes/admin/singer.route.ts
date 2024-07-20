@@ -23,15 +23,15 @@ router.post(
     controller.postCreate
 );
 
-// router.get("/update/:id", controller.getUpdate);
+router.get("/update/:id", controller.getUpdate);
 
-// router.patch(
-//     "/update/:id",
-// upload.single("avatar"),
-// uploadSingleFile,
-//     validate.update,
-//     controller.patchUpdate
-// );
+router.patch(
+    "/update/:id",
+    upload.single("avatar"),
+    uploadSingleFile,
+    validate.update,
+    controller.patchUpdate
+);
 
 router.get("/detail/:id", controller.getDetail);
 

@@ -493,3 +493,84 @@ export const postCreate = async (req: Request, res: Response): Promise<void> => 
         return res.redirect("back");
     }
 }
+
+// [GET] /admin/singers/update/:id
+export const getUpdate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('update-singer')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+    try {
+        const id = req.params.id;
+        const singer = await Singer.findOne({
+            _id: id,
+            deleted: false
+        });
+
+        return res.render("admin/pages/singer/update", {
+            pageTitle: "Cập nhật ca sĩ",
+            singer: singer
+        });
+
+    } catch (error) {
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+}
+
+// [PATCH] /admin/singers/update/:id
+export const patchUpdate = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('update-singer')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
+    try {
+        if (req.body.file) {
+            req.body.avatar = req.body.file;
+        }
+        const id = req.params.id;
+        const singer = await Singer.findOne({
+            _id: id,
+            deleted: false
+        });
+        let logUpdate = "";
+        for (const key in req.body) {
+            if (!singer[key] || (singer[key].toString() !== req.body[key].toString())) {
+                logUpdate += key + " ";
+            }
+        }
+        if (!logUpdate) {
+            return res.redirect("back");
+        }
+        logUpdate = "Thay đổi " + logUpdate;
+
+        const result = await Singer.updateOne(
+            {
+                _id: id,
+                deleted: false
+            },
+            {
+                $set: req.body,
+                $push: {
+                    updatedBy: {
+                        adminId: res.locals.currentAdmin.id,
+                        action: logUpdate,
+                        updatedAt: new Date()
+                    }
+                }
+            }
+        );
+        if (result) {
+            req.flash("success", "Cập nhật ca sĩ thành công.");
+            res.redirect("back");
+        } else {
+            req.flash("fail", "Cập nhật ca sĩ thất bại.");
+            return res.redirect("back");
+        }
+    } catch (e) {
+        req.flash("fail", "Cập nhật ca sĩ thất bại.");
+        return res.redirect("back");
+    }
+}
