@@ -1,33 +1,36 @@
 import mongoose from "mongoose";
 import slug from "mongoose-slug-updater";
+import Admin from "./admin.model";
 
 mongoose.plugin(slug);
 
 const topicSchema = new mongoose.Schema(
     {
-        title: { type: String, required: true },
-        avatar: { type: String, required: true },
-        description: { type: String, required: true },
-        status: { type: String, required: true },
+        title: String,
+        avatar: String,
+        description: String,
+        status: String,
+        position: Number,
         slug: { type: String, slug: "title", unique: true },
+        featured: { type: Boolean, default: false },
         deleted: { type: Boolean, default: false },
-        // sau sửa phần dưới, khi có model account. Và thêm phần ref
-        // "deletedBy": { "accountId": String, "deletedAt": Date },
-        // "createdBy": {
-        //     "accountId": String,
-        //     "createdAt": {
-        //         type: Date,
-        //         default: Date.now
-        //     }
-        // },
-        // "updatedBy": [
-        //     {
-        //         "accountId": String,
-        //         "updatedAt": {
-        //             type: Date
-        //         }
-        //     }
-        // ]
+        deletedBy: { adminId: { type: mongoose.Schema.Types.ObjectId, ref: Admin }, deletedAt: Date },
+        createdBy: {
+            adminId: { type: mongoose.Schema.Types.ObjectId, ref: Admin },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            }
+        },
+        updatedBy: [
+            {
+                adminId: { type: mongoose.Schema.Types.ObjectId, ref: Admin },
+                action: String,
+                updatedAt: {
+                    type: Date
+                }
+            }
+        ]
     }
 );
 

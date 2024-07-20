@@ -1,4 +1,112 @@
 extends ../../layouts/default.pug
+include ../../mixins/filterStatus.pug
+include ../../mixins/searchForm.pug
+include ../../mixins/sort.pug
+include ../../mixins/pagination.pug
+include ../../mixins/changeMultipleForm.pug
+include ../../mixins/notification.pug
+include ../../mixins/time.pug
 
-block main 
-    p #{topics}
+block main
+    h1= pageTitle
+    .card.mb-3 
+        .card-header Bộ lọc và tìm kiếm
+        .card-body 
+            .row 
+                .col-6
+                    +filter-status(filterStatus)
+                .col-6 
+                    +search-form(keyword)
+
+    .card.mb-3 
+        .card-header
+            if currentAdmin.roleId.permission.includes("create-topic") 
+                a(href=`${prefixAdmin}/topics/create` class="create") + Tạo mới
+            if currentAdmin.roleId.permission.includes("update-topic")
+                +change-multiple-form(`${prefixAdmin}/topics/change-multiple`, changeMultipleOptions)
+        
+        h4.sort-title Sắp xếp
+        .card-sort
+            +sort(sortArray)
+        .card-body 
+            table.table.table-hober.table-sm
+                thead 
+                    tr 
+                        if currentAdmin.roleId.permission.includes("update-topic")
+                            th 
+                                input(type="checkbox" name="checkall")
+                        th STT
+                        th Ảnh   
+                        th Tên 
+                        th Vị trí
+                        th Người tạo
+                        th Nổi bật
+                        th Trạng thái
+                        th Hành động 
+
+                tbody 
+                    each item, index in topics
+                        tr.item 
+                            if currentAdmin.roleId.permission.includes("update-topic")
+                                td
+                                    input(type="checkbox" name="checkitem" val=item._id)
+                            td #{(pagination.page - 1) * pagination.limit + index + 1}
+                            td 
+                                img(
+                                    src=item.avatar
+                                    alt=item.title
+                                    width="100px"
+                                    height="auto"
+                                )
+                            td #{item.title} 
+                            td 
+                                if currentAdmin.roleId.permission.includes("update-topic")
+                                    input(type="number" value=item.position class="position")
+                                else 
+                                    span #{item.position}
+                            if item.createdBy.adminId
+                                td 
+                                    div #{item.createdBy.adminId.fullName}
+                                    +date(item.createdBy.createdAt)
+                            else 
+                                td
+
+                            td 
+                                if currentAdmin.roleId.permission.includes("update-topic")
+                                    if(item.featured)
+                                        button(class="badge badge-success" itemId=item._id val="true" update-featured) Nổi bật
+                                    else 
+                                        button(class="badge badge-danger" itemId=item._id val="false" update-featured) Không
+                                else
+                                    if(item.featured)
+                                        span(class="badge badge-success" itemId=item._id val="active") Nổi bật 
+                                    else 
+                                        span(class="badge badge-danger" itemId=item._id val="inactive") Không 
+                            td 
+                                if currentAdmin.roleId.permission.includes("update-topic")
+                                    if(item.status === "active")
+                                        button(class="badge badge-success" itemId=item._id val="active" update-status) Hoạt động 
+                                    else 
+                                        button(class="badge badge-danger" itemId=item._id val="inactive" update-status) Dừng hoạt động 
+                                else
+                                    if(item.status === "active")
+                                        span(class="badge badge-success" itemId=item._id val="active") Hoạt động  
+                                    else 
+                                        span(class="badge badge-danger" itemId=item._id val="inactive") Dừng hoạt động  
+                            td 
+                                a(class="btn  btn-secondary btn-sm" detail-button href=`${prefixAdmin}/topics/detail/${item.id}`) Chi tiết
+                                if currentAdmin.roleId.permission.includes("update-topic")
+                                    a(class="btn btn-warning btn-sm ml-1" update-button href=`${prefixAdmin}/topics/update/${item.id}`) Cập nhật 
+                                if currentAdmin.roleId.permission.includes("delete-topic")
+                                    button(class="btn btn-danger btn-sm ml-1" delete-button item_id=item._id) Xóa
+                    
+    .pagination
+        +pagination(pagination)
+
+    form(action=`${prefixAdmin}/topics/change-status` 
+    class="change-status-form"
+    method="POST")
+
+    form(action=`${prefixAdmin}/topics/delete` 
+    class="delete-form"
+    method="POST")

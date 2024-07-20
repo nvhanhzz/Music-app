@@ -98,9 +98,9 @@ block main
                                         button(class="badge badge-danger" itemId=item._id val="inactive" update-status) Dừng hoạt động 
                                 else
                                     if(item.status === "active")
-                                        span(class="badge badge-success" itemId=item._id val="active") Active 
+                                        span(class="badge badge-success" itemId=item._id val="active") Hoạt động  
                                     else 
-                                        span(class="badge badge-danger" itemId=item._id val="inactive") Inactive 
+                                        span(class="badge badge-danger" itemId=item._id val="inactive") Dừng hoạt động  
                             td 
                                 a(class="btn  btn-secondary btn-sm" detail-button href=`${prefixAdmin}/songs/detail/${item.id}`) Chi tiết
                                 if currentAdmin.roleId.permission.includes("update-song")
