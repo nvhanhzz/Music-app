@@ -7,7 +7,7 @@ router.patch("/change-status/:status/:id", controller.patchChangeStatus);
 
 router.delete("/delete/:id", controller.deleteUser);
 
-// router.patch("/change-multiple/:type", controller.patchMultiple);
+router.patch("/change-multiple/:type", controller.patchMultiple);
 
 // router.get("/update-history/:id", controller.getEditHistory);
 

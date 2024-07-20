@@ -194,3 +194,89 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 
     res.redirect("back");
 }
+
+// [PATCH] /admin/account-user/change-multiple/:type
+export const patchMultiple = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    const type = req.params.type;
+    if ((type === "delete" && !permission.includes('delete-user')) || (type !== "delete" && !permission.includes('update-user'))) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+
+    const ListItemChange = req.body.inputChangeMultiple.split(", ");
+    const adminId = res.locals.currentAdmin._id;
+
+    const updateObject: {
+        status?: string,
+        deleted?: boolean
+    } = {};
+    switch (type) {
+        case 'active':
+            updateObject.status = 'active';
+            break;
+
+        case 'inactive':
+            updateObject.status = 'inactive';
+            break;
+
+        case 'delete':
+            updateObject.deleted = true;
+            break;
+
+        default:
+            break;
+    }
+    try {
+        let upd = {};
+        if (type !== "delete") {
+            const action = `Thay đổi trạng thái sang ${type}`;
+            upd = {
+                $set: updateObject,
+                $push: {
+                    updatedBy: {
+                        adminId: adminId,
+                        action: action,
+                        updatedAt: new Date()
+                    }
+                }
+            }
+        } else {
+            upd = {
+                $set: {
+                    deleted: true,
+                    deletedBy: {
+                        adminId: res.locals.currentAdmin.id,
+                        deletedAt: new Date()
+                    }
+                }
+            }
+        }
+        const update = await User.updateMany(
+            {
+                _id: { $in: ListItemChange },
+            },
+            upd
+        );
+
+        switch (type) {
+            case 'active':
+                req.flash('success', `Đã cập nhật trạng thái ${ListItemChange.length} tài khoản thành hoạt động.`);
+                break;
+
+            case 'inactive':
+                req.flash('success', `Đã cập nhật trạng thái ${ListItemChange.length} tài khoản thành dừng hoạt động.`);
+                break;
+
+            case 'delete':
+                req.flash('success', `Đã xóa ${ListItemChange.length} tài khoản.`);
+                break;
+        }
+
+    } catch (error) {
+        console.error(error);
+        req.flash('fail', 'Lỗi!!!');
+    }
+
+    return res.redirect("back");
+}
