@@ -7,6 +7,8 @@ router.patch("/change-status/:status/:id", controller.patchChangeStatus);
 
 router.patch("/change-featured/:featured/:id", controller.patchChangeFeatured);
 
+router.delete("/delete/:id", controller.deleteTopic);
+
 router.get("/", controller.index);
 
 export default router;

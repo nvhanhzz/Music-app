@@ -13,7 +13,7 @@ export const index = async (req: Request, res: Response): Promise<void> => {
     const permission = res.locals.currentAdmin.roleId.permission;
     if (!permission.includes('view-topic')) {
         req.flash("fail", "Bạn không đủ quyền.");
-        res.redirect(`${PATH_ADMIN}/dashboard`);
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 
     const query = req.query;
@@ -141,7 +141,7 @@ export const patchChangeFeatured = async (req: Request, res: Response): Promise<
     const permission = res.locals.currentAdmin.roleId.permission;
     if (!permission.includes('update-song')) {
         req.flash("fail", "Bạn không đủ quyền.");
-        res.redirect(`${PATH_ADMIN}/dashboard`);
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
     }
 
     const featured = req.params.featured === "true";
@@ -173,6 +173,43 @@ export const patchChangeFeatured = async (req: Request, res: Response): Promise<
         }
     } catch (error) {
         req.flash('fail', 'Cập nhật thất bại.');
+    }
+
+    res.redirect("back");
+}
+
+// [DELETE] /admin/topics/delete/:id
+export const deleteTopic = async (req: Request, res: Response): Promise<void> => {
+    const permission = res.locals.currentAdmin.roleId.permission;
+    if (!permission.includes('delete-topic')) {
+        req.flash("fail", "Bạn không đủ quyền.");
+        return res.redirect(`${PATH_ADMIN}/dashboard`);
+    }
+    const itemId = req.params.id;
+
+    try {
+        const result = await Topic.updateOne(
+            {
+                _id: itemId,
+                deleted: false
+            },
+            {
+                $set: {
+                    deleted: true,
+                    deletedBy: {
+                        adminId: res.locals.currentAdmin.id,
+                        deletedAt: new Date()
+                    }
+                }
+            }
+        );
+        if (result.modifiedCount === 1) {
+            req.flash('success', 'Xóa thành công.');
+        } else {
+            req.flash('fail', 'Xóa thất bại.');
+        }
+    } catch (error) {
+        req.flash('fail', 'Xóa thất bại.');
     }
 
     res.redirect("back");
