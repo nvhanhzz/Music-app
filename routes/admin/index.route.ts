@@ -10,6 +10,7 @@ import roleRoute from "./role.route";
 import permissionRoute from "./permission.route";
 import singerRoute from "./singer.route";
 import myProfileRoute from "./myProfile.route";
+import settingRoute from "./setting.route";
 
 import { checkToken, isLoggedIn } from "../../middlewares/admin/auth";
 
@@ -29,6 +30,7 @@ const adminRoutes = (app: Application): void => {
     app.use(`${prefixAdmin}/singers`, isLoggedIn, singerRoute);
     app.use(`${prefixAdmin}/songs`, isLoggedIn, songRoute);
     app.use(`${prefixAdmin}/upload`, isLoggedIn, uploadRoute);
+    app.use(`${prefixAdmin}/setting`, isLoggedIn, settingRoute);
 }
 
 export default adminRoutes;

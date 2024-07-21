@@ -5,8 +5,10 @@ import userRoutes from "./user.route";
 import homeRoutes from "./home.route";
 import searchRoutes from "./search.route";
 import { checkToken } from "../../middlewares/client/auth";
+import { generalSetting } from "../../middlewares/client/setting";
 
 const clientRoutes = (app: Application): void => {
+    app.use(generalSetting);
     app.use(checkToken({ tokenName: 'token', type: 'currentUser' }));
 
     app.use("/topics", topicRoutes);

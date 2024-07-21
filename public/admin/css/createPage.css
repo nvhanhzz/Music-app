@@ -85,6 +85,7 @@ textarea.form-control {
 }
 
 #avatar,
+#logo,
 #audio {
     border: none;
     padding: 0px;

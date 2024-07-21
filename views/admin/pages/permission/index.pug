@@ -198,7 +198,7 @@ block main
                         td Cập nhật 
                         each item, index in roles 
                             td 
-                                input(type="checkbox" name="update-setting" value=index check-box-permission checked= item.permission.includes("update-setting"))            
+                                input(type="checkbox" name="update-general-setting" value=index check-box-permission checked= item.permission.includes("update-general-setting"))            
                     
 
     form(action=`${prefixAdmin}/permissions/update?_method=PATCH` 

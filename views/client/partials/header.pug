@@ -5,7 +5,8 @@ header.header
                 .inner-logo 
                     a(href="/")
                         if generalSetting && generalSetting.logo
-                            img(src=generalSetting.logo, alt="Logo")
+                            .inner-logo
+                                img(src=generalSetting.logo, alt="Logo")
                         else 
                             span LOGO
             

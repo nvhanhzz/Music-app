@@ -16,6 +16,15 @@ header.header {
     border-bottom: 1px solid #dbd8d8;
 }
 
+.header .inner-logo {
+    height: 70px;
+    width: 70px;
+}
+
+.header .inner-logo img {
+    height: 100%;
+}
+
 .header .menu ul {
     margin-top: 15px;
     list-style-type: none;
