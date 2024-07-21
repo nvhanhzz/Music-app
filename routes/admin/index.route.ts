@@ -9,6 +9,7 @@ import accountUserRoute from "./accountUser.route";
 import roleRoute from "./role.route";
 import permissionRoute from "./permission.route";
 import singerRoute from "./singer.route";
+import myProfileRoute from "./myProfile.route";
 
 import { checkToken, isLoggedIn } from "../../middlewares/admin/auth";
 
@@ -21,6 +22,7 @@ const adminRoutes = (app: Application): void => {
 
     app.use(`${prefixAdmin}/auth`, authRoute);
     app.use(`${prefixAdmin}/dashboard`, isLoggedIn, dashboardRoute);
+    app.use(`${prefixAdmin}/my-profile`, isLoggedIn, myProfileRoute);
     app.use(`${prefixAdmin}/account-admin`, isLoggedIn, accountAdminRoute);
     app.use(`${prefixAdmin}/account-user`, isLoggedIn, accountUserRoute);
     app.use(`${prefixAdmin}/roles`, isLoggedIn, roleRoute);

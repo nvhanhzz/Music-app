@@ -5,9 +5,12 @@ header.header
                 .inner-logo 
                     a(href="/admin/dashboard") ADMIN 
 
-            .col-8
+            .col-7
 
-            .col-2.auth-button
-                //- a(href=`${prefixAdmin}/my-profile` class="btn btn-primary" my-profile) Thông tin cá nhân
-                form(class="logout-form" action=`${prefixAdmin}/auth/logout` method="POST")
-                    button(type="submit" class="logout-button btn btn-danger") Đăng xuất
+            .col-3.auth-button
+                .btn-group
+                    button.btn.btn-primary.dropdown-toggle.header-color(type='button', data-toggle='dropdown', aria-expanded='false')
+                    .dropdown-menu
+                        a.dropdown-item(href=`${prefixAdmin}/my-profile`) Thông tin cá nhân
+                        form(class="logout-form" action=`${prefixAdmin}/auth/logout` method="POST")
+                            button(class="dropdown-item") Đăng xuất 

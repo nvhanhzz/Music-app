@@ -1,0 +1,33 @@
+extends ../../layouts/default.pug
+include ../../mixins/time.pug
+
+block addCss 
+    link(rel="stylesheet", href="/admin/css/detailPage.css")
+
+block main
+    .title
+        h2.margin #{pageTitle}
+
+    if admin.avatar
+        div.margin.outer-thumbnail
+            img(src=admin.avatar, alt=admin.fullName)
+
+    div.margin.item-attribute
+        span Họ và tên:
+        span= admin.fullName
+
+    div.margin.item-attribute
+        span Email:
+        span= admin.email
+    
+    div.margin.item-attribute
+        span Số điện thoại:
+        span= admin.phone 
+
+    div.margin.item-attribute
+        span Nhóm quyền:
+        span= admin.roleId.title
+
+    if currentAdmin.roleId.permission.includes("update-admin")
+        div
+            a(href=`${prefixAdmin}/my-profile/edit`, class="margin update-button") Cập nhật

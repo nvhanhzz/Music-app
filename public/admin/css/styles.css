@@ -39,6 +39,10 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.header .profile-button {
+    width: 100px;
+    font-size: 14px;
+}
 
 .inner-logo a {
     color: #fff;
@@ -49,18 +53,6 @@ body {
     display: flex;
     justify-content: right;
     align-items: center;
-}
-
-.auth-button a {
-    margin-top: 3px;
-    width: 100px;
-    display: flex;
-    align-items: center;
-}
-
-.auth-button .btn {
-    margin-left: 10px;
-    height: 38px;
 }
 
 /* Body styles */
