@@ -40,8 +40,8 @@ router.post(
     "/create",
     checkRolePermission({ permission: "create-singer" }),
     upload.single("avatar"),
-    uploadSingleFile,
     validate.create,
+    uploadSingleFile,
     controller.postCreate
 );
 
@@ -55,8 +55,8 @@ router.patch(
     "/update/:id",
     checkRolePermission({ permission: "update-singer" }),
     upload.single("avatar"),
-    uploadSingleFile,
     validate.update,
+    uploadSingleFile,
     controller.patchUpdate
 );
 

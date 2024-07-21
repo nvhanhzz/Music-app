@@ -40,8 +40,8 @@ router.post(
     "/create",
     checkRolePermission({ permission: "create-admin" }),
     upload.single("avatar"),
-    uploadSingleFile,
     validate.create,
+    uploadSingleFile,
     controller.postCreate
 );
 
@@ -55,8 +55,8 @@ router.patch(
     "/update/:id",
     checkRolePermission({ permission: "update-admin" }),
     upload.single("avatar"),
-    uploadSingleFile,
     validate.update,
+    uploadSingleFile,
     controller.patchUpdate
 );
 

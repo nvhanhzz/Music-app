@@ -43,8 +43,8 @@ router.post(
         { name: "avatar", maxCount: 1 },
         { name: "audio", maxCount: 1 }
     ]),
-    uploadMultipleFile,
     validateCreateSong,
+    uploadMultipleFile,
     controller.postCreate
 );
 
@@ -61,8 +61,8 @@ router.patch(
         { name: "avatar", maxCount: 1 },
         { name: "audio", maxCount: 1 }
     ]),
-    uploadMultipleFile,
     validateUpdateSong,
+    uploadMultipleFile,
     controller.patchUpdate
 );
 

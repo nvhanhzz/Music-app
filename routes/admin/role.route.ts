@@ -27,7 +27,8 @@ router.post(
     "/create",
     checkRolePermission({ permission: "create-role" }),
     validate.create,
-    controller.postCreate);
+    controller.postCreate
+);
 
 router.get(
     "/update/:id",
