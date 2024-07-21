@@ -9,7 +9,9 @@ router.get("/favorite", isLoggedIn, controller.getFavoriteSong);
 
 router.get("/detail/:slug", controller.getSongDetail);
 
-router.get("/:topicSlug", controller.getSongByTopic);
+router.get("/topic/:topicSlug", controller.getSongByTopic);
+
+router.get("/singer/:singerSlug", controller.getSongBySinger);
 
 router.patch("/like", isLoggedIn, validate.validatePatchLike, controller.patchLike);
 

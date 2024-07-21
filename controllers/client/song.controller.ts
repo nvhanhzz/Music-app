@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import Song from "../../models/song.model";
 import Topic from "../../models/topic.model";
 import ListStatus from "../../enums/status.enum";
+import Singer from "../../models/singer.model";
 
-// [GET] /songs/:topicSlug
+// [GET] /songs/topic/:topicSlug
 export const getSongByTopic = async (req: Request, res: Response): Promise<void> => {
     const topicSlug = req.params.topicSlug;
     const topic = await Topic.findOne({
@@ -24,10 +25,39 @@ export const getSongByTopic = async (req: Request, res: Response): Promise<void>
     })
         .sort({ position: "desc" })
         .populate("singerId", "fullName")
-        .select("avatar title singerId like slug"); // sau thêm createdAt
+        .select("avatar title singerId like slug createdBy");
 
     res.render("client/pages/song/songByTopic", {
         pageTitle: topic.title,
+        songs: songs
+    });
+}
+
+// [GET] /songs/singer/:singerSlug
+export const getSongBySinger = async (req: Request, res: Response): Promise<void> => {
+    const singerSlug = req.params.singerSlug;
+    const singer = await Singer.findOne({
+        deleted: false,
+        status: ListStatus.ACTIVE,
+        slug: singerSlug
+    });
+
+    if (!singer) {
+        res.redirect("/404-not-found");
+        return;
+    }
+
+    const songs = await Song.find({
+        deleted: false,
+        status: ListStatus.ACTIVE,
+        singerId: singer._id
+    })
+        .sort({ position: "desc" })
+        .populate("singerId", "fullName")
+        .select("avatar title singerId like slug createdBy");
+
+    res.render("client/pages/song/songBySinger", {
+        pageTitle: singer.fullName,
         songs: songs
     });
 }
@@ -40,8 +70,8 @@ export const getSongDetail = async (req: Request, res: Response): Promise<void> 
         deleted: false,
         status: ListStatus.ACTIVE
     })
-        .populate("topicId", "title")
-        .populate("singerId", "fullName");
+        .populate("topicId", "title slug")
+        .populate("singerId", "fullName slug");
 
     if (!song) {
         res.redirect("/404-not-found");

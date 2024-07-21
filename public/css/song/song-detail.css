@@ -2,6 +2,13 @@ i {
     margin-right: 10px;
 }
 
+.singer-link,
+.topic-link,
+.singer-link:hover,
+.topic-link:hover {
+    color: rgb(46, 43, 43);
+}
+
 .singer {
     font-weight: 600;
 }

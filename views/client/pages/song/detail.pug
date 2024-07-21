@@ -1,4 +1,5 @@
 extends ../../layouts/default.pug
+include ../../mixins/time.pug
 
 block addCss
     link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css")
@@ -16,16 +17,20 @@ block main
         .row    
             .col-3.time 
                 i(class="fa-regular fa-clock") 
-                //- fix cứng, sửa sau
-                span Hôm nay
+                span 
+                    +date(song.createdBy.createdAt)
 
             .col-3.singer
                 i(class="fa-solid fa-microphone-lines") 
-                span #{song.singerId.fullName}
+                if song.singerId
+                    a(href=`/songs/singer/${song.singerId.slug}` class="singer-link")
+                        span #{song.singerId.fullName}
 
             .col-3.topic 
                 i(class="fa-solid fa-music")
-                span #{song.topicId.title}
+                if song.topicId
+                    a(href=`/songs/topic/${song.topicId.slug}` class="topic-link")
+                        span #{song.topicId.title}
 
             .col-3.listen-count 
                 i(class="fa-solid fa-headphones")

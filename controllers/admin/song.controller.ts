@@ -78,7 +78,7 @@ export const index = async (req: Request, res: Response): Promise<void> => {
         .populate("singerId", "fullName")
         .populate("topicId", "title")
         .populate("createdBy.adminId", "fullName")
-        .select("title avatar singerId topicId status listenCount slug position featured");
+        .select("title avatar singerId topicId status listenCount slug position featured createdBy");
 
     res.render("admin/pages/song/index", {
         pageTitle: "Quản lý bài hát",
