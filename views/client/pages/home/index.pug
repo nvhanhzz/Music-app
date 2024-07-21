@@ -1,5 +1,94 @@
 extends ../../layouts/default.pug
+include ../../mixins/time.pug
+
+block addCss
+    link(rel="stylesheet", href="/css/home/home.css")
 
 block main 
     .container 
-        h1 Trang chủ
+        .outter-title.mt-5.mb-3
+            h4 Chủ đề nổi bật
+            a(href="#") Xem thêm →
+
+        .topics 
+            each topic in featuredTopics 
+                .topic
+                    a(href=`songs/topic/${topic.slug}`)
+                        img(src=topic.avatar)
+                        span.topic-title #{topic.title}
+                    p.topic-description #{topic.description}
+        
+        .outter-title.mt-5.mb-3
+            h4 Ca sĩ nổi bật
+            a(href="#") Xem thêm →
+
+        .singers 
+            each singer in featuredSingers 
+                .singer
+                    a(href=`songs/singer/${singer.slug}`)
+                        img(src=singer.avatar)
+                        p.singer-name #{singer.fullName}
+
+        
+        .outter-title.mt-5.mb-3
+            h4 Bài hát nổi bật
+            a(href="#") Xem thêm →
+        .songs 
+            each song in featuredSongs 
+                .song
+                    .row
+                        .col-4
+                            a(href=`/songs/detail/${song.slug}`)
+                                img(src=song.avatar, alt=song.title)
+                        .col-8.information
+                            .title.mb-2
+                                a(href=`/songs/detail/${song.slug}`) #{song.title}
+                            .singer.mb-2
+                                i(class="fa-solid fa-microphone-lines") 
+                                if song.singerId
+                                    a(href=`/songs/singer/${song.singerId.slug}`) #{song.singerId.fullName}
+                            .time.mb-2
+                                i(class="fa-regular fa-clock") 
+                                +date(song.createdBy.createdAt)
+
+        .outter-title.mt-3.mb-3
+            h4 Được nghe nhiều nhất
+            a(href="#") Xem thêm →
+        .songs 
+            each song in topListenedSongs 
+                .song
+                    .row
+                        .col-4
+                            a(href=`/songs/detail/${song.slug}`)
+                                img(src=song.avatar, alt=song.title)
+                        .col-8.information
+                            .title.mb-2
+                                a(href=`/songs/detail/${song.slug}`) #{song.title}
+                            .singer.mb-2
+                                i(class="fa-solid fa-microphone-lines") 
+                                if song.singerId
+                                    a(href=`/songs/singer/${song.singerId.slug}`) #{song.singerId.fullName}
+                            .listen-count
+                                i(class="fa-solid fa-headphones")
+                                span(listen-count) #{song.listenCount || 0} lượt nghe
+        
+        .outter-title.mt-3.mb-3
+            h4 Được thích nhiều nhất
+            a(href="#") Xem thêm →
+        .songs 
+            each song in topLikedSongs 
+                .song
+                    .row
+                        .col-4
+                            a(href=`/songs/detail/${song.slug}`)
+                                img(src=song.avatar, alt=song.title)
+                        .col-8.information
+                            .title.mb-2
+                                a(href=`/songs/detail/${song.slug}`) #{song.title}
+                            .singer.mb-2
+                                i(class="fa-solid fa-microphone-lines") 
+                                if song.singerId
+                                    a(href=`/songs/singer/${song.singerId.slug}`) #{song.singerId.fullName}
+                            .like
+                                i(class="fa-solid fa-thumbs-up")
+                                span #{song.like.length || 0} lượt thích
