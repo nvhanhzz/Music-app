@@ -13,8 +13,6 @@ import myProfileRoute from "./myProfile.route";
 
 import { checkToken, isLoggedIn } from "../../middlewares/admin/auth";
 
-// import { checkToken } from "../../middlewares/auth";
-
 const adminRoutes = (app: Application): void => {
     const prefixAdmin = app.locals.prefixAdmin;
 

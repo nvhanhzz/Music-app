@@ -1,4 +1,95 @@
 extends ../../layouts/default.pug
 
-block main 
-    h1 Dashboard
+block main
+    h1= pageTitle
+    .card.mb-4.mr-3
+        .card-header= 'Thông tin cá nhân'
+        .card-body 
+            div Họ và tên: 
+                b #{currentAdmin.fullName}
+            div Email: 
+                b #{currentAdmin.email}
+            div Số điện thoại: 
+                b #{currentAdmin.phone}
+            div Nhóm quyền: 
+                b #{currentAdmin.roleId.title}
+    
+    .row 
+        if currentAdmin.roleId.permission.includes("view-song")
+            .col-6
+                .card.mb-4
+                    .card-header Bài hát
+                    .card-body 
+                        div Số lượng: 
+                            b #{song.quantity}
+                        div Hoạt động: 
+                            b #{song.active}
+                        div Dừng hoạt động: 
+                            b #{song.inactive}
+        
+        if currentAdmin.roleId.permission.includes("view-topic")
+            .col-6
+                .card.mb-4
+                    .card-header Chủ đề
+                    .card-body 
+                        div Số lượng: 
+                            b #{topic.quantity}
+                        div Hoạt động: 
+                            b #{topic.active}
+                        div Dừng hoạt động: 
+                            b #{topic.inactive}
+
+        if currentAdmin.roleId.permission.includes("view-singer")
+            .col-6
+                .card.mb-4
+                    .card-header Ca sĩ
+                    .card-body 
+                        div Số lượng: 
+                            b #{singer.quantity}
+                        div Hoạt động: 
+                            b #{singer.active}
+                        div Dừng hoạt động: 
+                            b #{singer.inactive}
+
+        if currentAdmin.roleId.permission.includes("view-article")
+            .col-6
+                .card.mb-4
+                    .card-header Bài viết
+                    .card-body 
+                        div Số lượng: 
+                            
+                        div Hoạt động: 
+
+                        div Dừng hoạt động: 
+
+        if currentAdmin.roleId.permission.includes("view-admin")
+            .col-6
+                .card.mb-4
+                    .card-header Tài khoản admin
+                    .card-body 
+                        div Số lượng: 
+                            b #{admin.quantity}
+                        div Hoạt động: 
+                            b #{admin.active}
+                        div Dừng hoạt động: 
+                            b #{admin.inactive}
+
+        if currentAdmin.roleId.permission.includes("view-user")
+            .col-6
+                .card.mb-4
+                    .card-header Tài khoản user
+                    .card-body 
+                        div Số lượng: 
+                            b #{user.quantity}
+                        div Hoạt động: 
+                            b #{user.active}
+                        div Dừng hoạt động: 
+                            b #{user.inactive}                
+
+        if currentAdmin.roleId.permission.includes("view-role")
+            .col-6
+                .card.mb-4
+                    .card-header Nhóm quyền
+                    .card-body 
+                        div Số lượng: 
+                            b #{role.quantity}

@@ -27,7 +27,3 @@ block main
     div.margin.item-attribute
         span Nhóm quyền:
         span= admin.roleId.title
-
-    if currentAdmin.roleId.permission.includes("update-admin")
-        div
-            a(href=`${prefixAdmin}/my-profile/edit`, class="margin update-button") Cập nhật

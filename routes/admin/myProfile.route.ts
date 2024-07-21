@@ -8,9 +8,4 @@ router.get(
     controller.index
 );
 
-// router.get(
-//     "/update",
-//     controller.getUpdatePofile
-// );
-
 export default router;
