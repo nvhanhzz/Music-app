@@ -16,13 +16,15 @@
 
 .songs {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .song {
     height: 100px;
     font-size: 15px;
     width: 30%;
+    margin-bottom: 10px;
+    margin-right: calc(10% / 3);
 }
 
 .song:hover {

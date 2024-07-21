@@ -24,11 +24,12 @@ export const getSongByTopic = async (req: Request, res: Response): Promise<void>
         topicId: topic._id
     })
         .sort({ position: "desc" })
-        .populate("singerId", "fullName")
-        .select("avatar title singerId like slug createdBy");
+        .populate("singerId", "fullName slug")
+        .select("avatar title singerId like slug createdBy listenCount");
 
     res.render("client/pages/song/songByTopic", {
         pageTitle: topic.title,
+        topic: topic,
         songs: songs
     });
 }
@@ -54,10 +55,16 @@ export const getSongBySinger = async (req: Request, res: Response): Promise<void
     })
         .sort({ position: "desc" })
         .populate("singerId", "fullName")
-        .select("avatar title singerId like slug createdBy");
+        .select("avatar title singerId like slug createdBy listenCount");
+
+    singer["listenedCount"] = 0;
+    for (const song of songs) {
+        singer["listenedCount"] += song.listenCount;
+    }
 
     res.render("client/pages/song/songBySinger", {
         pageTitle: singer.fullName,
+        singer: singer,
         songs: songs
     });
 }

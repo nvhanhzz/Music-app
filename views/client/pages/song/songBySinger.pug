@@ -2,30 +2,34 @@ extends ../../layouts/default.pug
 include ../../mixins/time.pug
 
 block addCss
-    link(rel="stylesheet", href="/css/song/songs.css")
+    link(rel="stylesheet", href="/css/home/home.css")
+    link(rel="stylesheet", href="/css/song/singer.css")
 
 block main 
     .container
-        h1(style="margin-top: 20px; margin-bottom: 20px") #{pageTitle}
-        .songs
+        .inner-singer
+            .singer 
+                .inner-avatar 
+                    img(src=singer.avatar)
+                .inner-information 
+                    span.fullName #{singer.fullName}
+                    .statistics 
+                        span.song-count #{songs.length} bài hát  
+                        span.listened-count #{singer.listenedCount} lượt nghe
+
+        .songs 
             each song in songs 
-                .card.mb-3(style='max-width: 540px;')
-                    .row.no-gutters
-                        .col-md-4.outer-img
+                .song
+                    .row
+                        .col-4
                             a(href=`/songs/detail/${song.slug}`)
                                 img(src=song.avatar, alt=song.title)
-                        .col-md-8
-                            .card-body
-                                a(href=`/songs/detail/${song.slug}`)
-                                    h5.card-title #{song.title}
-                                .singer
-                                    i(class="fa-solid fa-microphone-lines") 
-                                    if song.singerId
-                                        span #{song.singerId.fullName}
-                                .like
-                                    i(class="fa-solid fa-thumbs-up") 
-                                    span #{song.like.length} thích
-                                .time
-                                    i(class="fa-regular fa-clock") 
-                                    //- fix cứng, sửa sau
-                                    +date(song.createdBy.createdAt)
+                        .col-8.information
+                            .title.mb-2
+                                a(href=`/songs/detail/${song.slug}`) #{song.title}
+                            .time.mb-2
+                                i(class="fa-regular fa-clock") 
+                                +date(song.createdBy.createdAt)
+                            .listen-count
+                                i(class="fa-solid fa-headphones")
+                                span(listen-count) #{song.listenCount || 0} lượt nghe

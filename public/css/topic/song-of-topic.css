@@ -1,0 +1,82 @@
+.inner-topic {
+    display: flex;
+    margin-top: 50px;
+}
+
+.inner-topic .cover {
+    margin-right: 30px;
+    width: 35%;
+    text-align: center;
+    position: sticky;
+    top: 0;
+}
+
+.inner-topic .cover .inner-cover {
+    width: 100%;
+}
+
+.inner-topic .cover .inner-cover img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 5px;
+}
+
+.inner-topic .cover .topic-title {
+    margin-top: 10px;
+    font-size: 25px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.inner-topic .cover .topic-description {
+    font-size: 17px;
+}
+
+.inner-topic .songs {
+    margin-top: -20px;
+    width: calc(100% - 35% - 30px);
+    height: 600px;
+    overflow-y: auto;
+}
+
+.inner-topic .songs tr:hover {
+    background-color: aliceblue;
+}
+
+.inner-topic .song {
+    height: 70px;
+    margin-bottom: 10px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.inner-topic .song .song-avatar {
+    height: 100%;
+}
+
+.inner-topic .song .song-avatar img {
+    height: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 5px;
+}
+
+.inner-topic .song .information {
+    margin-left: 10px;
+}
+
+.inner-topic .song .information a {
+    color: #111;
+}
+
+.inner-topic .song .information a:hover {
+    text-decoration: none;
+}
+
+.inner-topic .song .singer {
+    font-size: 14px;
+}
+
+.inner-topic .song .singer i {
+    margin-right: 5px;
+}
