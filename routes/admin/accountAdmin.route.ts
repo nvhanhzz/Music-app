@@ -2,39 +2,74 @@ import express, { Router } from "express";
 import * as controller from "../../controllers/admin/accountAdmin.controller";
 import { upload, uploadSingleFile } from "../../middlewares/admin/upload";
 import * as validate from "../../validate/admin/admin.validate";
+import { checkPermissionForPatchMultiple, checkRolePermission } from "../../middlewares/admin/checkRolePermission";
 
 const router: Router = express.Router();
 
-router.patch("/change-status/:status/:id", controller.patchChangeStatus);
+router.patch(
+    "/change-status/:status/:id",
+    checkRolePermission({ permission: "update-admin" }),
+    controller.patchChangeStatus
+);
 
-router.delete("/delete/:id", controller.deleteAdmin);
+router.delete(
+    "/delete/:id",
+    checkRolePermission({ permission: "delete-admin" }),
+    controller.deleteAdmin
+);
 
-router.patch("/change-multiple/:type", controller.patchMultiple);
+router.patch(
+    "/change-multiple/:type",
+    checkPermissionForPatchMultiple({ deletePermission: "delete-admin", updatePermission: "update-admin" }),
+    controller.patchMultiple
+);
 
-router.get("/detail/:id", controller.getAdminDetail);
+router.get(
+    "/detail/:id",
+    checkRolePermission({ permission: "view-admin" }),
+    controller.getAdminDetail
+);
 
-router.get("/create", controller.getCreate);
+router.get(
+    "/create",
+    checkRolePermission({ permission: "create-admin" }),
+    controller.getCreate
+);
 
 router.post(
     "/create",
+    checkRolePermission({ permission: "create-admin" }),
     upload.single("avatar"),
     uploadSingleFile,
     validate.create,
     controller.postCreate
 );
 
-router.get("/update/:id", controller.getUpdate);
+router.get(
+    "/update/:id",
+    checkRolePermission({ permission: "update-admin" }),
+    controller.getUpdate
+);
 
 router.patch(
     "/update/:id",
+    checkRolePermission({ permission: "update-admin" }),
     upload.single("avatar"),
     uploadSingleFile,
     validate.update,
     controller.patchUpdate
 );
 
-router.get("/update-history/:id", controller.getEditHistory);
+router.get(
+    "/update-history/:id",
+    checkRolePermission({ permission: "view-admin" }),
+    controller.getEditHistory
+);
 
-router.get("/", controller.index);
+router.get(
+    "/",
+    checkRolePermission({ permission: "view-admin" }),
+    controller.index
+);
 
 export default router;

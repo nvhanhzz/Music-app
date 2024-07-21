@@ -10,6 +10,9 @@ ul
     if (currentAdmin.roleId.permission.includes("view-singer"))
         li 
             a(href=`${prefixAdmin}/singers`) Quản lý ca sĩ
+    if (currentAdmin.roleId.permission.includes("view-article"))
+        li 
+            a(href=`${prefixAdmin}/articles`) Quản lý bài viết
     if (currentAdmin.roleId.permission.includes("view-admin"))
         li 
             a(href=`${prefixAdmin}/account-admin`) Tài quản admin
@@ -24,4 +27,4 @@ ul
             a(href=`${prefixAdmin}/permissions`) Phân quyền
     if (currentAdmin.roleId.permission.includes("update-setting"))
         li 
-            a(href=`${prefixAdmin}/`) Cài đặt chung
+            a(href=`${prefixAdmin}/setting/general`) Cài đặt chung

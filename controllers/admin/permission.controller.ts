@@ -4,12 +4,6 @@ const PATH_ADMIN = process.env.PATH_ADMIN
 
 // [GET] /admin/permissions
 export const index = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('update-permission')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
-
     const roles = await Role.find({ deleted: false });
     res.render("admin/pages/permission/index", {
         roles: roles,
@@ -19,11 +13,6 @@ export const index = async (req: Request, res: Response): Promise<void> => {
 
 // [PATCH] /admin/roles/update-permission
 export const updatePermission = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('update-permission')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
     try {
         const adminId = res.locals.currentAdmin._id;
         const permissions = JSON.parse(req.body.permissions);

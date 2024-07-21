@@ -10,11 +10,6 @@ const PATH_ADMIN = process.env.PATH_ADMIN;
 
 // [GET] /admin/account-user
 export const index = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('view-user')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
     const query = req.query;
 
     // filter
@@ -86,11 +81,6 @@ export const index = async (req: Request, res: Response): Promise<void> => {
 
 // [GET] /admin/account-user/detail/:id
 export const getUserDetail = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('view-user')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
     try {
         const id = req.params.id;
         const user = await User.findOne({
@@ -112,12 +102,6 @@ export const getUserDetail = async (req: Request, res: Response): Promise<void> 
 
 // [PATCH] /admin/account-user/change-status/:status/:id
 export const patchChangeStatus = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('update-user')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
-
     const status = req.params.status;
     const itemId = req.params.id;
 
@@ -159,11 +143,6 @@ export const patchChangeStatus = async (req: Request, res: Response): Promise<vo
 
 // [DELETE] /admin/account-user/delete/:id
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('delete-user')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
     const itemId = req.params.id;
 
     try {
@@ -196,12 +175,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 
 // [PATCH] /admin/account-user/change-multiple/:type
 export const patchMultiple = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
     const type = req.params.type;
-    if ((type === "delete" && !permission.includes('delete-user')) || (type !== "delete" && !permission.includes('update-user'))) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
 
     const ListItemChange = req.body.inputChangeMultiple.split(", ");
     const adminId = res.locals.currentAdmin._id;
@@ -282,11 +256,6 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
 
 // [GET] /admin/songs/edit-history/:id
 export const getEditHistory = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('view-user')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
     try {
         const id = req.params.id;
         const user = await User.findOne({

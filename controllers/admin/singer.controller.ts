@@ -11,12 +11,6 @@ const PATH_ADMIN = process.env.PATH_ADMIN;
 
 // [GET] /admin/singers
 export const index = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('view-singer')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
-
     const query = req.query;
 
     // filter
@@ -107,12 +101,6 @@ export const index = async (req: Request, res: Response): Promise<void> => {
 
 // [PATCH] /admin/singers/change-status/:status/:id
 export const patchChangeStatus = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('update-singer')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
-
     const status = req.params.status;
     const itemId = req.params.id;
 
@@ -154,12 +142,6 @@ export const patchChangeStatus = async (req: Request, res: Response): Promise<vo
 
 // [PATCH] /admin/singers/change-featured/:featured/:id
 export const patchChangeFeatured = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('update-singer')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
-
     const featured = req.params.featured === "true";
     const itemId = req.params.id;
 
@@ -196,11 +178,6 @@ export const patchChangeFeatured = async (req: Request, res: Response): Promise<
 
 // [DELETE] /admin/singers/delete/:id
 export const deleteSinger = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('delete-singer')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
     const itemId = req.params.id;
 
     try {
@@ -233,12 +210,7 @@ export const deleteSinger = async (req: Request, res: Response): Promise<void> =
 
 // [PATCH] /admin/singers/change-multiple/:type
 export const patchMultiple = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
     const type = req.params.type;
-    if ((type === "delete" && !permission.includes('delete-singer')) || (type !== "delete" && !permission.includes('update-singer'))) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
 
     const listItemChange = req.body.inputChangeMultiple.split(", ");
     const adminId = res.locals.currentAdmin._id;
@@ -368,12 +340,6 @@ export const patchMultiple = async (req: Request, res: Response): Promise<void> 
 
 // [GET] /admin/singers/:id
 export const getDetail = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('view-singer')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
-
     try {
         const id = req.params.id;
         const singer = await Singer.findOne({
@@ -409,11 +375,6 @@ export const getDetail = async (req: Request, res: Response): Promise<void> => {
 
 // [GET] /admin/singers/edit-history/:id
 export const getEditHistory = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('view-singer')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
     try {
         const id = req.params.id;
         const singer = await Singer.findOne({
@@ -438,12 +399,6 @@ export const getEditHistory = async (req: Request, res: Response): Promise<void>
 
 // [GET] /admin/singers/create
 export const getCreate = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('create-singer')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
-
     const positionDefault = await Singer.countDocuments({
         deleted: false
     }) + 1;
@@ -456,12 +411,6 @@ export const getCreate = async (req: Request, res: Response): Promise<void> => {
 
 // [POST] /admin/singers/create
 export const postCreate = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('create-singer')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
-
     try {
         req.body.position = parseInt(req.body.position);
         if (req.body.file) {
@@ -496,11 +445,6 @@ export const postCreate = async (req: Request, res: Response): Promise<void> => 
 
 // [GET] /admin/singers/update/:id
 export const getUpdate = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('update-singer')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
     try {
         const id = req.params.id;
         const singer = await Singer.findOne({
@@ -520,12 +464,6 @@ export const getUpdate = async (req: Request, res: Response): Promise<void> => {
 
 // [PATCH] /admin/singers/update/:id
 export const patchUpdate = async (req: Request, res: Response): Promise<void> => {
-    const permission = res.locals.currentAdmin.roleId.permission;
-    if (!permission.includes('update-singer')) {
-        req.flash("fail", "Bạn không đủ quyền.");
-        return res.redirect(`${PATH_ADMIN}/dashboard`);
-    }
-
     try {
         if (req.body.file) {
             req.body.avatar = req.body.file;

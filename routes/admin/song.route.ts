@@ -2,21 +2,43 @@ import express, { Router } from "express";
 import * as controller from "../../controllers/admin/song.controller";
 import { upload, uploadMultipleFile } from "../../middlewares/admin/upload";
 import { validateCreateSong, validateUpdateSong } from "../../validate/admin/song.validate";
+import { checkPermissionForPatchMultiple, checkRolePermission } from "../../middlewares/admin/checkRolePermission";
 
 const router: Router = express.Router();
 
-router.patch("/change-status/:status/:id", controller.patchChangeStatus);
+router.patch(
+    "/change-status/:status/:id",
+    checkRolePermission({ permission: "update-song" }),
+    controller.patchChangeStatus
+);
 
-router.patch("/change-featured/:featured/:id", controller.patchChangeFeatured);
+router.patch(
+    "/change-featured/:featured/:id",
+    checkRolePermission({ permission: "update-song" }),
+    controller.patchChangeFeatured
+);
 
-router.delete("/delete/:id", controller.deleteSong);
+router.delete(
+    "/delete/:id",
+    checkRolePermission({ permission: "delete-song" }),
+    controller.deleteSong
+);
 
-router.patch("/change-multiple/:type", controller.patchMultiple);
+router.patch(
+    "/change-multiple/:type",
+    checkPermissionForPatchMultiple({ deletePermission: "delete-song", updatePermission: "update-song" }),
+    controller.patchMultiple
+);
 
-router.get("/create", controller.getCreate);
+router.get(
+    "/create",
+    checkRolePermission({ permission: "create-song" }),
+    controller.getCreate
+);
 
 router.post(
     "/create",
+    checkRolePermission({ permission: "create-song" }),
     upload.fields([
         { name: "avatar", maxCount: 1 },
         { name: "audio", maxCount: 1 }
@@ -26,10 +48,15 @@ router.post(
     controller.postCreate
 );
 
-router.get("/update/:id", controller.getUpdate);
+router.get(
+    "/update/:id",
+    checkRolePermission({ permission: "update-song" }),
+    controller.getUpdate
+);
 
 router.patch(
     "/update/:id",
+    checkRolePermission({ permission: "update-song" }),
     upload.fields([
         { name: "avatar", maxCount: 1 },
         { name: "audio", maxCount: 1 }
@@ -39,10 +66,22 @@ router.patch(
     controller.patchUpdate
 );
 
-router.get("/detail/:id", controller.getSongDetail);
+router.get(
+    "/detail/:id",
+    checkRolePermission({ permission: "view-song" }),
+    controller.getSongDetail
+);
 
-router.get("/update-history/:id", controller.getEditHistory);
+router.get(
+    "/update-history/:id",
+    checkRolePermission({ permission: "view-song" }),
+    controller.getEditHistory
+);
 
-router.get("/", controller.index);
+router.get(
+    "/",
+    checkRolePermission({ permission: "view-song" }),
+    controller.index
+);
 
 export default router;
