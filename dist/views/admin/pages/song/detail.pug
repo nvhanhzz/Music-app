@@ -1,0 +1,75 @@
+extends ../../layouts/default.pug
+include ../../mixins/time.pug
+
+block addCss 
+    link(rel="stylesheet", href="/admin/css/detailPage.css")
+
+block main
+    .title
+        h2.margin= song.title 
+        a(href=`${prefixAdmin}/songs/update-history/${song.id}`, class="btn btn-secondary") Lịch sử cập nhật
+
+    if song.avatar
+        div.margin.outer-thumbnail
+            img(src=song.avatar, alt=song.title)
+    
+    if song.audio
+        div.margin.outer-thumbnail
+            audio(controls)
+                source(src=song.audio type="audio/mpeg")
+        
+    if song.singerId
+        div.margin.item-attribute
+            span Ca sĩ:
+            span= song.singerId.fullName
+        
+    if song.topicId
+        div.margin.item-attribute
+            span Chủ đề:
+            span= song.topicId.title
+
+    if song.description
+        div.margin.item-attribute
+            span Mô tả:
+            div!= song.description
+    
+    if song.lyrics
+        div.margin.item-attribute
+            span Lời bài hát:
+            div!= song.lyrics
+
+    div.margin.item-attribute
+        span Bài hát nổi bật:
+        span= song.featured ? 'Nổi bật' : 'Không'
+
+    if song.listenCount
+        div.margin.item-attribute
+            span Lượt nghe:
+            span= ' ' + song.listenCount
+    
+    if song.like
+        div.margin.item-attribute
+            span Số lượt thích:
+            span= ' ' + song.like.length
+
+    if song.position
+        div.margin.item-attribute
+            span Vị trí:
+            span= ' ' + song.position
+
+    if song.status
+        div.margin.item-attribute
+            span Trạng thái:
+            span= ' ' + song.status === "active" ? "Hoạt động" : "Dừng hoạt động"
+            
+    div.margin.item-attribute
+        span Người tạo:
+        span= ' ' + song.createdBy.adminId.fullName
+    
+    div.margin.item-attribute
+        span Thời gian tạo:
+        +dateTime(song.createdBy.createdAt)
+
+    if currentAdmin.roleId.permission.includes("update-song")
+        div
+            a(href=`${prefixAdmin}/songs/update/${song.id}`, class="margin update-button") Cập nhật

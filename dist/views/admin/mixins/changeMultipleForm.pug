@@ -1,0 +1,24 @@
+mixin change-multiple-form(action, changeMultipleOptions)
+    form(id="change-multiple-form" action=action method="POST")
+        input(
+            type="text"
+            style="display: none"
+            name="inputChangeMultiple"
+        )
+        input(
+            type="text"
+            style="display: none"
+            name="inputChangePosition"
+        )
+        .select-group 
+            select.select-change-multiple
+                option(value="" disabled selected) --Chọn hành động--
+                each opt in changeMultipleOptions
+                    option(value=opt.value) #{opt.name}
+
+            .input-group-append 
+                button(
+                    name="btn-change-multiple"
+                    class="btn btn-success btn-change-multiple"
+                    type="submit"
+                ) Cập nhật

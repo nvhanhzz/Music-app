@@ -1,0 +1,124 @@
+extends ../../layouts/default.pug
+include ../../mixins/filterStatus.pug
+include ../../mixins/searchForm.pug
+include ../../mixins/sort.pug
+include ../../mixins/pagination.pug
+include ../../mixins/changeMultipleForm.pug
+include ../../mixins/notification.pug
+include ../../mixins/time.pug
+
+block main
+    h1 Quản lý bài hát
+    .card.mb-3 
+        .card-header Bộ lọc và tìm kiếm
+        .card-body 
+            .row 
+                .col-6
+                    +filter-status(filterStatus)
+                .col-6 
+                    +search-form(keyword)
+
+    .card.mb-3 
+        .card-header
+            if currentAdmin.roleId.permission.includes("create-song") 
+                a(href=`${prefixAdmin}/songs/create` class="create") + Tạo mới
+            if currentAdmin.roleId.permission.includes("update-song")
+                +change-multiple-form(`${prefixAdmin}/songs/change-multiple`, changeMultipleOptions)
+        
+        h4.sort-title Sắp xếp
+        .card-sort
+            +sort(sortArray)
+        .card-body 
+            table.table.table-hober.table-sm
+                thead 
+                    tr 
+                        if currentAdmin.roleId.permission.includes("update-song")
+                            th 
+                                input(type="checkbox" name="checkall")
+                        th STT
+                        th Ảnh   
+                        th Tên 
+                        th Chủ đề 
+                        th Ca sĩ 
+                        th Lượt nghe
+                        th Vị trí
+                        th Người tạo
+                        th Nổi bật
+                        th Trạng thái
+                        th Hành động 
+
+                tbody 
+                    each item, index in songs
+                        tr.item 
+                            if currentAdmin.roleId.permission.includes("update-song")
+                                td
+                                    input(type="checkbox" name="checkitem" val=item._id)
+                            td #{(pagination.page - 1) * pagination.limit + index + 1}
+                            td 
+                                img(
+                                    src=item.avatar
+                                    alt=item.title
+                                    width="100px"
+                                    height="auto"
+                                )
+                            td #{item.title} 
+                            if(item.topicId && item.topicId.title)
+                                td #{item.topicId.title}
+                            else 
+                                td 
+                            if(item.singerId && item.singerId.fullName)
+                                td #{item.singerId.fullName}
+                            else 
+                                td 
+                            td #{item.listenCount}
+                            td 
+                                if currentAdmin.roleId.permission.includes("update-song")
+                                    input(type="number" value=item.position class="position")
+                                else 
+                                    span #{item.position}
+                            td 
+                                div #{item.createdBy.adminId.fullName}
+                                +date(item.createdBy.createdAt)
+                            td 
+                                if currentAdmin.roleId.permission.includes("update-song")
+                                    if(item.featured)
+                                        button(class="badge badge-success" itemId=item._id val="true" update-featured) Nổi bật
+                                    else 
+                                        button(class="badge badge-danger" itemId=item._id val="false" update-featured) Không
+                                else 
+                                    if(item.featured)
+                                        span(class="badge badge-success" itemId=item._id val="true" update-featured) Nổi bật
+                                    else 
+                                        span(class="badge badge-danger" itemId=item._id val="false" update-featured) Không
+                            td 
+                                if currentAdmin.roleId.permission.includes("update-song")
+                                    if(item.status === "active")
+                                        button(class="badge badge-success" itemId=item._id val="active" update-status) Hoạt động 
+                                    else 
+                                        button(class="badge badge-danger" itemId=item._id val="inactive" update-status) Dừng hoạt động 
+                                else
+                                    if(item.status === "active")
+                                        span(class="badge badge-success" itemId=item._id val="active") Hoạt động  
+                                    else 
+                                        span(class="badge badge-danger" itemId=item._id val="inactive") Dừng hoạt động  
+                            td 
+                                a(class="btn  btn-secondary btn-sm" detail-button href=`${prefixAdmin}/songs/detail/${item.id}`) Chi tiết
+                                if currentAdmin.roleId.permission.includes("update-song")
+                                    a(class="btn btn-warning btn-sm ml-1" update-button href=`${prefixAdmin}/songs/update/${item.id}`) Cập nhật 
+                                if currentAdmin.roleId.permission.includes("delete-song")
+                                    button(class="btn btn-danger btn-sm ml-1" delete-button item_id=item._id) Xóa
+                    
+    .pagination
+        +pagination(pagination)
+
+    form(action=`${prefixAdmin}/songs/change-status` 
+    class="change-status-form"
+    method="POST")
+
+    form(action=`${prefixAdmin}/songs/change-featured` 
+    class="change-featured-form"
+    method="POST")
+
+    form(action=`${prefixAdmin}/songs/delete` 
+    class="delete-form"
+    method="POST")

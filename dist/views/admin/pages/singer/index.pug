@@ -1,0 +1,120 @@
+extends ../../layouts/default.pug
+include ../../mixins/filterStatus.pug
+include ../../mixins/searchForm.pug
+include ../../mixins/sort.pug
+include ../../mixins/pagination.pug
+include ../../mixins/changeMultipleForm.pug
+include ../../mixins/notification.pug
+include ../../mixins/time.pug
+
+block main
+    h1= pageTitle
+    .card.mb-3 
+        .card-header Bộ lọc và tìm kiếm
+        .card-body 
+            .row 
+                .col-6
+                    +filter-status(filterStatus)
+                .col-6 
+                    +search-form(keyword)
+
+    .card.mb-3 
+        .card-header
+            if currentAdmin.roleId.permission.includes("create-singer") 
+                a(href=`${prefixAdmin}/singers/create` class="create") + Tạo mới
+            if currentAdmin.roleId.permission.includes("update-singer")
+                +change-multiple-form(`${prefixAdmin}/singers/change-multiple`, changeMultipleOptions)
+        
+        h4.sort-title Sắp xếp
+        .card-sort
+            +sort(sortArray)
+        .card-body 
+            table.table.table-hober.table-sm
+                thead 
+                    tr 
+                        if currentAdmin.roleId.permission.includes("update-singer")
+                            th 
+                                input(type="checkbox" name="checkall")
+                        th STT
+                        th Ảnh   
+                        th Tên 
+                        th Số bài hát
+                        th Tổng lượt nghe
+                        th Vị trí
+                        th Người tạo
+                        th Nổi bật
+                        th Trạng thái
+                        th Hành động 
+
+                tbody 
+                    each item, index in singers
+                        tr.item 
+                            if currentAdmin.roleId.permission.includes("update-singer")
+                                td
+                                    input(type="checkbox" name="checkitem" val=item._id)
+                            td #{(pagination.page - 1) * pagination.limit + index + 1}
+                            td 
+                                img(
+                                    src=item.avatar || "https://th.bing.com/th/id/OIP.VImWjbk4meO4actlY89hAAHaGj?w=1099&h=973&rs=1&pid=ImgDetMain"
+                                    alt=item.title
+                                    width="100px"
+                                    height="auto"
+                                )
+                            td #{item.fullName} 
+                            td #{item.songCount}
+                            td #{item.listenedCount}
+                            td 
+                                if currentAdmin.roleId.permission.includes("update-singer")
+                                    input(type="number" value=item.position class="position")
+                                else 
+                                    span #{item.position}
+                            if item.createdBy.adminId
+                                td 
+                                    div #{item.createdBy.adminId.fullName}
+                                    +date(item.createdBy.createdAt)
+                            else 
+                                td
+
+                            td 
+                                if currentAdmin.roleId.permission.includes("update-singer")
+                                    if(item.featured)
+                                        button(class="badge badge-success" itemId=item._id val="true" update-featured) Nổi bật
+                                    else 
+                                        button(class="badge badge-danger" itemId=item._id val="false" update-featured) Không
+                                else
+                                    if(item.featured)
+                                        span(class="badge badge-success" itemId=item._id val="true") Nổi bật 
+                                    else 
+                                        span(class="badge badge-danger" itemId=item._id val="false") Không 
+                            td 
+                                if currentAdmin.roleId.permission.includes("update-singer")
+                                    if(item.status === "active")
+                                        button(class="badge badge-success" itemId=item._id val="active" update-status) Hoạt động 
+                                    else 
+                                        button(class="badge badge-danger" itemId=item._id val="inactive" update-status) Dừng hoạt động 
+                                else
+                                    if(item.status === "active")
+                                        span(class="badge badge-success" itemId=item._id val="active") Hoạt động  
+                                    else 
+                                        span(class="badge badge-danger" itemId=item._id val="inactive") Dừng hoạt động  
+                            td 
+                                a(class="btn  btn-secondary btn-sm" detail-button href=`${prefixAdmin}/singers/detail/${item.id}`) Chi tiết
+                                if currentAdmin.roleId.permission.includes("update-singer")
+                                    a(class="btn btn-warning btn-sm ml-1" update-button href=`${prefixAdmin}/singers/update/${item.id}`) Cập nhật 
+                                if currentAdmin.roleId.permission.includes("delete-singer")
+                                    button(class="btn btn-danger btn-sm ml-1" delete-button item_id=item._id) Xóa
+                    
+    .pagination
+        +pagination(pagination)
+
+    form(action=`${prefixAdmin}/singers/change-status` 
+    class="change-status-form"
+    method="POST")
+
+    form(action=`${prefixAdmin}/singers/change-featured` 
+    class="change-featured-form"
+    method="POST")
+
+    form(action=`${prefixAdmin}/singers/delete` 
+    class="delete-form"
+    method="POST")

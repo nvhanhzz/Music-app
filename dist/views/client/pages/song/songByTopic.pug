@@ -1,0 +1,41 @@
+extends ../../layouts/default.pug
+include ../../mixins/time.pug
+
+block addCss
+    link(rel="stylesheet", href="/css/topic/song-of-topic.css")
+
+block main 
+    .container
+        .inner-topic
+            .cover 
+                .inner-cover
+                    img(src=topic.avatar)
+                p.topic-title #{topic.title}
+                p.topic-description #{topic.description}
+        
+            .songs 
+                .card-body 
+                    table.table.table-hober.table-sm
+                        thead 
+                            tr 
+                                th Bài hát
+                                th Lượt nghe   
+                                th Lượt thích 
+                        tbody
+                            each song in songs 
+                                tr
+                                    td
+                                        .song
+                                            .song-avatar
+                                                a(href=`/songs/detail/${song.slug}`)
+                                                    img(src=song.avatar, alt=song.title)
+                                            .information
+                                                .title.mb-2
+                                                    a(href=`/songs/detail/${song.slug}`) #{song.title}
+                                                .singer.mb-2
+                                                    i(class="fa-solid fa-microphone-lines") 
+                                                    if song.singerId
+                                                        a(href=`/songs/singer/${song.singerId.slug}`) #{song.singerId.fullName}
+                                
+                                    td #{song.listenCount}
+                                    td #{song.like.length}

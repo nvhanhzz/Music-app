@@ -1,0 +1,50 @@
+extends ../../layouts/default.pug
+include ../../mixins/notification.pug
+
+block addCss 
+    link(rel="stylesheet", href="/admin/css/createPage.css")
+
+block main
+    h2 #{pageTitle}
+
+    form(action=`${prefixAdmin}/topics/create`, enctype="multipart/form-data", method="POST")
+        .form-group
+            label(for="title") Tên:
+            input#title.form-control(type="text", name="title", placeholder="Nhập tên chủ đề")
+
+        div.form-group
+            label(for="avatar") Ảnh đại diện:
+            input#avatar.form-control.img-inp(type="file", accept="image/*", name="avatar")
+            img(id="blah" src="" alt="your image")
+
+        div.form-group
+            label(for="description") Mô tả:
+            textarea#my-expressjs-tinymce-app.form-control(name="description", rows="4", placeholder="Nhập mô tả chủ đề")
+
+        div.form-group
+            label Nổi bật:
+            div
+                input#featured(type="radio", name="featured", value="true")
+                label(for="featured") Nổi bật
+            div
+                input#no-featured(type="radio", name="featured", value="false", checked)
+                label(for="no-featured") Không
+
+        div.form-group
+            label Trạng thái:
+            div
+                input#status-active(type="radio", name="status", value="active")
+                label(for="status-active") Hoạt động
+            div
+                input#status-inactive(type="radio", name="status", value="inactive", checked)
+                label(for="status-inactive") Dừng hoạt động
+                
+        div.form-group
+            label(for="position") Vị trí:
+            input#position.form-control(type="number", name="position", placeholder=`${positionDefault} (Tự động tăng)`)
+
+        div.form-group
+            button.btn.btn-primary(type="submit") Tạo mới
+    
+    script(type="application/javascript" src= "/tinymce/tinymce.min.js")
+    script(type="application/javascript" src= "/admin/js/tinymce-config.js") 

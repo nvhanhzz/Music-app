@@ -42,11 +42,11 @@ app.use(session({
 app.use(flash());;
 
 // render view
-app.set("views", "./views");
+app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
 // public folder
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 // app local variables
 app.locals.prefixAdmin = process.env.PATH_ADMIN;

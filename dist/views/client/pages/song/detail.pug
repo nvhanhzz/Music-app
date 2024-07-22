@@ -1,0 +1,81 @@
+extends ../../layouts/default.pug
+include ../../mixins/time.pug
+
+block addCss
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css")
+    link(rel="stylesheet", href="/css/song/song-detail.css")
+
+block main 
+    .container 
+        - const hasLoggedIn = currentUser ? true : false
+        div(song-data=song class="d-none")
+        if hasLoggedIn
+            div(currentUser=currentUser.id class="d-none")
+        div(style="margin-top: 20px")
+        h1 #{song.title}
+        div(style="margin-top: 20px")
+        .row    
+            .col-3.time 
+                i(class="fa-regular fa-clock") 
+                span 
+                    +date(song.createdBy.createdAt)
+
+            .col-3.singer
+                i(class="fa-solid fa-microphone-lines") 
+                if song.singerId
+                    a(href=`/songs/singer/${song.singerId.slug}` class="singer-link")
+                        span #{song.singerId.fullName}
+
+            .col-3.topic 
+                i(class="fa-solid fa-music")
+                if song.topicId
+                    a(href=`/songs/topic/${song.topicId.slug}` class="topic-link")
+                        span #{song.topicId.title}
+
+            .col-3.listen-count 
+                i(class="fa-solid fa-headphones")
+                span(listen-count) #{song.listenCount || 0} lượt nghe
+        
+        div(style="margin-top: 5px")
+        .like
+            - const hasLiked = hasLoggedIn && song.like.includes(currentUser.id)
+
+            i(class= hasLoggedIn ? (hasLiked ? 'fa-regular fa-thumbs-up like-button liked logged-in' : 'fa-regular fa-thumbs-up like-button logged-in') : 'fa-regular fa-thumbs-up like-button')
+            span(like-count) #{song.like.length} thích
+        
+        div(style="margin-top: 15px")
+        .song-love 
+            - const hasLove = hasLoggedIn && currentUser.favoriteSong.some(item => item.songId.toString() === song.id.toString())
+
+            i(songId=song.id class= hasLoggedIn ? (hasLove ? 'fa-regular fa-heart love-button loved logged-in' : 'fa-regular fa-heart love-button logged-in') : 'fa-regular fa-heart love-button')
+            span Bài hát yêu thích
+        
+        div(style="margin-top: 20px")
+        div(id="aplayer")
+
+        div(style="margin-top: 20px")
+        .description
+            table.table.table-bordered 
+                thead 
+                    tr  
+                        th Mô tả bài hát
+                tbody 
+                    tr 
+                        td !{song.description}
+        
+        .lyric 
+            table.table.table-bordered 
+                thead 
+                    tr  
+                        th Lời bài hát
+                tbody 
+                    tr 
+                        td 
+                            pre #{song.lyrics}
+
+
+    //- play audio
+    script(src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js")
+
+    //- script
+    script(src="/js/song/detail.js")

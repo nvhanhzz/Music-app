@@ -1,0 +1,31 @@
+.songs {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.outer-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.singer,
+.like,
+.time {
+    margin-bottom: 10px;
+}
+
+.singer i,
+.like i,
+.time i {
+    margin-right: 10px;
+}
+
+.singer {
+    font-weight: 600;
+}
+
+.like {
+    color: rgb(73, 73, 255);
+}

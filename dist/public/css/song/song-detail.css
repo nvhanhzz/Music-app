@@ -1,0 +1,40 @@
+i {
+    margin-right: 10px;
+}
+
+.singer-link,
+.topic-link,
+.singer-link:hover,
+.topic-link:hover {
+    color: rgb(46, 43, 43);
+}
+
+.singer {
+    font-weight: 600;
+}
+
+.like-button {
+    color: rgb(73, 73, 255);
+}
+
+.liked {
+    font-weight: 900;
+}
+
+.logged-in {
+    cursor: pointer;
+}
+
+.love-button {
+    color: rgb(226, 53, 53);
+}
+
+.loved {
+    font-weight: 900;
+}
+
+.love,
+.singer,
+.time {
+    margin-bottom: 10px;
+}

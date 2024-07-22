@@ -1,0 +1,56 @@
+extends ../../layouts/default.pug
+include ../../mixins/time.pug
+
+block addCss 
+    link(rel="stylesheet", href="/admin/css/detailPage.css")
+
+block main
+    .title
+        h2.margin= pageTitle
+        a(href=`${prefixAdmin}/singers/update-history/${singer.id}`, class="btn btn-secondary") Lịch sử cập nhật
+
+
+    if singer.avatar
+        div.margin.outer-thumbnail
+            img(src=singer.avatar, alt=singer.fullName)
+
+    if singer.fullName
+        div.margin.item-attribute
+            span Tên:
+            span= singer.fullName
+
+    div.margin.item-attribute
+        span Ca sĩ nổi bật:
+        span= singer.featured ? 'Nổi bật' : 'Không'
+
+    if singer.songCount
+        div.margin.item-attribute
+            span Số bài hát:
+            div!= singer.songCount
+    
+    if singer.listenedCount
+        div.margin.item-attribute
+            span Tổng lượt nghe:
+            div!= singer.listenedCount
+
+    if singer.position
+        div.margin.item-attribute
+            span Vị trí:
+            span= ' ' + singer.position
+
+    if singer.status
+        div.margin.item-attribute
+            span Trạng thái:
+            span= ' ' + (singer.status === "active" ? "Hoạt động" : "Dừng hoạt động")
+            
+    div.margin.item-attribute
+        span Người tạo:
+        span= ' ' + singer.createdBy.adminId.fullName
+    
+    div.margin.item-attribute
+        span Thời gian tạo:
+        +dateTime(singer.createdBy.createdAt)
+
+    if currentAdmin.roleId.permission.includes("update-singer")
+        div
+            a(href=`${prefixAdmin}/singers/update/${singer.id}`, class="margin update-button") Cập nhật

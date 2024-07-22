@@ -1,0 +1,52 @@
+extends ../../layouts/default.pug
+include ../../mixins/time.pug
+
+block addCss 
+    link(rel="stylesheet", href="/admin/css/detailPage.css")
+
+block main
+    .title
+        h2.margin= pageTitle
+        a(href=`${prefixAdmin}/account-admin/update-history/${admin.id}`, class="btn btn-secondary") Lịch sử cập nhật
+
+    div.margin.outer-thumbnail
+        img(src=admin.avatar || "https://th.bing.com/th/id/OIP.VImWjbk4meO4actlY89hAAHaGj?w=1099&h=973&rs=1&pid=ImgDetMain", alt=admin.fullName)
+    
+    if admin.fullName
+        div.margin.item-attribute
+            span Họ và tên:
+            div!= admin.fullName
+
+    if admin.email
+        div.margin.item-attribute
+            span Email:
+            div!= admin.email
+    
+    if admin.phone
+        div.margin.item-attribute
+            span Số điện thoại:
+            div!= admin.phone
+    
+    if admin.roleId.title
+        div.margin.item-attribute
+            span Quyền:
+            div!= admin.roleId.title
+            
+    if admin.createdBy.adminId.fullName        
+        div.margin.item-attribute
+            span Người tạo:
+            span= ' ' + admin.createdBy.adminId.fullName
+    
+    if admin.createdBy.createdAt
+        div.margin.item-attribute
+            span Thời gian tạo:
+            +dateTime(admin.createdBy.createdAt)
+
+    if admin.status
+        div.margin.item-attribute
+            span Trạng thái:
+            span= ' ' + (admin.status === "active" ? "Hoạt động" : "Dừng hoạt động")
+
+    if currentAdmin.roleId.permission.includes("update-admin")
+        div
+            a(href=`${prefixAdmin}/account-admin/update/${admin.id}`, class="margin update-button") Cập nhật

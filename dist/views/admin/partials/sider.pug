@@ -1,0 +1,30 @@
+ul 
+    li 
+        a(href=`${prefixAdmin}/dashboard`) Tổng quan 
+    if (currentAdmin.roleId.permission.includes("view-song"))
+        li 
+            a(href=`${prefixAdmin}/songs`) Quản lý bài hát
+    if (currentAdmin.roleId.permission.includes("view-topic"))
+        li 
+            a(href=`${prefixAdmin}/topics`) Quản lý chủ đề 
+    if (currentAdmin.roleId.permission.includes("view-singer"))
+        li 
+            a(href=`${prefixAdmin}/singers`) Quản lý ca sĩ
+    //- if (currentAdmin.roleId.permission.includes("view-article"))
+    //-     li 
+    //-         a(href=`${prefixAdmin}/articles`) Quản lý bài viết
+    if (currentAdmin.roleId.permission.includes("view-admin"))
+        li 
+            a(href=`${prefixAdmin}/account-admin`) Tài quản admin
+    if (currentAdmin.roleId.permission.includes("view-user"))
+        li 
+            a(href=`${prefixAdmin}/account-user`) Tài khoản user
+    if (currentAdmin.roleId.permission.includes("view-role"))
+        li 
+            a(href=`${prefixAdmin}/roles`) Nhóm quyền
+    if (currentAdmin.roleId.permission.includes("update-permission"))
+        li 
+            a(href=`${prefixAdmin}/permissions`) Phân quyền
+    if (currentAdmin.roleId.permission.includes("update-general-setting"))
+        li 
+            a(href=`${prefixAdmin}/setting/general`) Cài đặt chung

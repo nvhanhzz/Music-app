@@ -1,0 +1,190 @@
+/* CSS cho luôn cao full màn */
+.content-box {
+    min-height: calc(100vh - 64px);
+    padding: 70px;
+}
+
+/* Style for the header */
+header.header {
+    background-color: #fff;
+    height: 70px;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #dbd8d8;
+}
+
+.header .inner-logo {
+    height: 70px;
+    width: 70px;
+}
+
+.header .inner-logo img {
+    height: 100%;
+}
+
+.header .menu ul {
+    margin-top: 15px;
+    list-style-type: none;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.header .menu ul li {
+    margin-left: 15px;
+}
+
+.header .menu ul li i {
+    margin-right: 5px;
+}
+
+.header a:hover {
+    text-decoration: none;
+}
+
+/* Style for the search form */
+.search-form {
+    border-radius: 5px;
+    border: 1px solid #d2d1ec;
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-input {
+    background-color: transparent;
+    border: none;
+    width: calc(100% - 40px);
+    padding-left: 10px;
+    border-right: 1px solid #d2d1ec;
+    color: rgb(60, 60, 226);
+}
+
+.search-input:focus {
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: rgb(60, 60, 226);
+}
+
+.search-button {
+    background-color: transparent;
+    border: none;
+    color: rgb(60, 60, 226);
+    text-align: center;
+}
+
+.search-button:focus {
+    outline: none;
+}
+
+/* CSS for inner-suggest section */
+.inner-suggest {
+    position: absolute;
+    width: 93%;
+    background-color: #fff;
+    border: 1px solid #d2d1ec;
+}
+
+.inner-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.inner-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #d2d1ec;
+    text-decoration: none;
+    color: #333;
+}
+
+.inner-item:hover {
+    background-color: #f0f0f0;
+}
+
+.inner-image img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.inner-info {
+    flex: 1;
+}
+
+.inner-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.inner-singer {
+    display: flex;
+    align-items: center;
+    color: #666;
+}
+
+.inner-singer i {
+    margin-right: 5px;
+}
+
+
+/* Style for the footer */
+footer.footer {
+    height: 64px;
+    background-color: #212222;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    width: 100%;
+    bottom: 0;
+}
+
+/* Style for the copyright text */
+footer.footer p {
+    margin: 0;
+    font-size: 14px;
+    color: #f3eeee;
+}
+
+
+/* Style for the notification alert */
+.notfAlert {
+    width: 300px;
+    min-height: 50px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 17px;
+    align-items: center;
+    margin-bottom: 0px;
+    position: fixed;
+    right: 10px;
+    top: 80px;
+    z-index: 1001;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 10px;
+    padding-right: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+    flex-wrap: wrap;
+    white-space: normal;
+}
+
+.close-alert-btn {
+    border: none;
+    font-size: 25px;
+    background-color: transparent;
+
+    position: absolute;
+    right: 5px;
+    top: 0px;
+}

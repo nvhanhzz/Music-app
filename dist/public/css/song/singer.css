@@ -1,0 +1,34 @@
+.inner-singer {
+    height: 200px;
+    padding-top: 50px;
+    margin-bottom: 50px;
+}
+
+.inner-singer .singer {
+    display: flex;
+    align-items: center;
+}
+
+.inner-singer .singer .inner-avatar {
+    width: 150px;
+}
+
+.inner-singer .singer .inner-avatar img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+
+.inner-singer .inner-information {
+    margin-left: 20px;
+    color: #1b1111;
+}
+
+.inner-singer .inner-information .fullName {
+    font-size: 50px;
+    font-weight: 600;
+}
+
+.inner-singer .inner-information .statistics .song-count {
+    margin-right: 70px;
+}

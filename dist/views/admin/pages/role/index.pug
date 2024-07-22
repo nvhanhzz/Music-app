@@ -1,0 +1,72 @@
+extends ../../layouts/default.pug
+include ../../mixins/filterStatus.pug
+include ../../mixins/searchForm.pug
+include ../../mixins/sort.pug
+include ../../mixins/pagination.pug
+include ../../mixins/changeMultipleForm.pug
+include ../../mixins/notification.pug
+include ../../mixins/time.pug
+
+block main
+    h1 #{pageTitle}
+    .card.mb-3 
+        .card-header Bộ lọc và tìm kiếm
+        .card-body 
+            .row 
+                .col-6
+                    +filter-status(filterStatus)
+                .col-6 
+                    +search-form(keyword)
+
+    .card.mb-3 
+        .card-header
+            if currentAdmin.roleId.permission.includes("create-role") 
+                a(href=`${prefixAdmin}/roles/create` class="create") + Tạo mới
+            if currentAdmin.roleId.permission.includes("update-role")
+                +change-multiple-form(`${prefixAdmin}/roles/change-multiple`, changeMultipleOptions)
+        
+        h4.sort-title Sắp xếp
+        .card-sort
+            +sort(sortArray)
+        .card-body 
+            table.table.table-hober.table-sm
+                thead 
+                    tr 
+                        if currentAdmin.roleId.permission.includes("update-role")
+                            th 
+                                input(type="checkbox" name="checkall")
+                        th STT
+                        th Tên 
+                        th Mô tả
+                        th Người tạo 
+                        th Hành động 
+
+                tbody 
+                    each item, index in roles
+                        tr.item 
+                            if currentAdmin.roleId.permission.includes("update-role")
+                                td
+                                    input(type="checkbox" name="checkitem" val=item._id)
+                            td #{(pagination.page - 1) * pagination.limit + index + 1}
+                            td #{item.title} 
+                            td #{item.description} 
+                            
+                            if item.createdBy
+                                td
+                                    div #{item.createdBy.adminId.fullName}
+                                    +date(item.createdBy.createdAt)
+                            else 
+                                td
+                            td 
+                                a(class="btn  btn-secondary btn-sm" detail-button href=`${prefixAdmin}/roles/detail/${item.id}`) Chi tiết
+                                if currentAdmin.roleId.permission.includes("update-role")
+                                    a(class="btn btn-warning btn-sm ml-1" update-button href=`${prefixAdmin}/roles/update/${item.id}`) Cập nhật 
+                                if currentAdmin.roleId.permission.includes("delete-role")
+                                    button(class="btn btn-danger btn-sm ml-1" delete-button item_id=item._id) Xóa
+                    
+    .pagination
+        +pagination(pagination)
+
+    form(action=`${prefixAdmin}/roles/delete` 
+    class="delete-form"
+    method="POST")

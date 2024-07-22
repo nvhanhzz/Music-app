@@ -1,0 +1,16 @@
+extends ../../layouts/default.pug
+
+block addCss
+    link(rel="stylesheet", href="/css/topic/topics.css")
+
+block main 
+    .container
+        h1(style="margin-top: 20px; margin-bottom: 20px") Chủ đề bài hát
+        .topics
+            each topic in topics 
+                .topic.card(style='width: 18rem;')
+                    img.card-img-top(src=topic.avatar || "https://img5.thuthuatphanmem.vn/uploads/2022/01/11/anh-nen-trang-tron_013900504.jpg" alt=topic.title)
+                    .card-body
+                        h5.card-title #{topic.title}
+                        p.card-text !{topic.description}
+                        a.btn.btn-primary(href=`/songs/topic/${topic.slug}`) Xem chi tiết

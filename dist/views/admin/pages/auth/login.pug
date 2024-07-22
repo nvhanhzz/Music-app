@@ -1,0 +1,28 @@
+extends ../../layouts/auth.pug
+include ../../mixins/notification.pug
+
+block addCss 
+    link(rel="stylesheet", href="/admin/css/auth.css")
+
+block main 
+    .container
+        div(style="height: 70px")
+        form(action=`${prefixAdmin}/auth/login` method="POST")
+            h2(style="text-align: center") Đăng nhập
+            .row
+                .col-3 
+                .col-6
+                    .form-group
+                        label(for='email') Email
+                        input#email.form-control(type='email' name="email" placeholder="Nhập email")
+            .row
+                .col-3 
+                .col-6
+                    .form-group
+                        label(for='password') Mật khẩu
+                        input#password.form-control(type='password' name="password" placeholder="Nhập mật khẩu")
+
+            .row
+                .col-3 
+                .col-6
+                    button.btn.btn-primary(type='submit' style="width: 100%; margin-top: 20px;") Đăng nhập

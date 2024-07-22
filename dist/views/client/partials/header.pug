@@ -1,0 +1,47 @@
+header.header 
+    .container 
+        .row.align-items-center
+            .col-2 
+                .inner-logo 
+                    a(href="/")
+                        if generalSetting && generalSetting.logo
+                            .inner-logo
+                                img(src=generalSetting.logo, alt="Logo")
+                        else 
+                            span LOGO
+            
+            .col-5
+                form(action="/search/result" class="search-form" method="GET")
+                    input(type="text" name="keyword" class="search-input" placeholder="Bạn muốn tìm kiếm gì?" value=keyword)
+                    button(class="search-button") Tìm
+                .inner-suggest.d-none 
+                    .inner-list
+
+            .col-5.menu
+                ul
+                    li 
+                        a(href="/")
+                            i(class="fa-solid fa-house") 
+                            span Trang chủ
+                    li
+                        a(href="/topics")
+                            i(class="fa-solid fa-music") 
+                            span Chủ đề
+                    
+                    if currentUser
+                        li
+                            a(href="/songs/favorite")
+                                i(class="fa-solid fa-heart") 
+                                span Yêu thích
+
+                    li
+                        if currentUser
+                            .btn-group
+                                button.btn.btn-primary.dropdown-toggle.header-color(type='button', data-toggle='dropdown', aria-expanded='false')
+                                .dropdown-menu
+                                    a.dropdown-item(href='/user/information') Thông tin cá nhân
+                                    a.dropdown-item(href='/user/password/change') Đổi mật khẩu
+                                    form(action="/user/logout" method="POST")
+                                        button(class="dropdown-item") Đăng xuất 
+                        else 
+                            a(href='/user/login') Đăng nhập

@@ -1,0 +1,51 @@
+extends ../../layouts/default.pug
+include ../../mixins/time.pug
+
+block addCss 
+    link(rel="stylesheet", href="/admin/css/detailPage.css")
+
+block main
+    .title
+        h2.margin= pageTitle
+        a(href=`${prefixAdmin}/topics/update-history/${topic.id}`, class="btn btn-secondary") Lịch sử cập nhật
+
+
+    if topic.avatar
+        div.margin.outer-thumbnail
+            img(src=topic.avatar, alt=topic.title)
+
+    if topic.title
+        div.margin.item-attribute
+            span Tên:
+            span= topic.title
+
+    if topic.description
+        div.margin.item-attribute
+            span Mô tả:
+            div!= topic.description
+
+    div.margin.item-attribute
+        span Chủ đề nổi bật:
+        span= topic.featured ? 'Nổi bật' : 'Không'
+
+    if topic.position
+        div.margin.item-attribute
+            span Vị trí:
+            span= ' ' + topic.position
+
+    if topic.status
+        div.margin.item-attribute
+            span Trạng thái:
+            span= ' ' + (topic.status === "active" ? "Hoạt động" : "Dừng hoạt động")
+            
+    div.margin.item-attribute
+        span Người tạo:
+        span= ' ' + topic.createdBy.adminId.fullName
+    
+    div.margin.item-attribute
+        span Thời gian tạo:
+        +dateTime(topic.createdBy.createdAt)
+
+    if currentAdmin.roleId.permission.includes("update-topic")
+        div
+            a(href=`${prefixAdmin}/topics/update/${topic.id}`, class="margin update-button") Cập nhật

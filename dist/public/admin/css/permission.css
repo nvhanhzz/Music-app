@@ -1,0 +1,18 @@
+.card-header {
+    position: relative;
+    height: 60px;
+}
+
+.update-permission-button {
+    background-color: rgb(117, 64, 216);
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    position: absolute;
+    right: 20px;
+}
+
+.d_none {
+    display: none;
+}

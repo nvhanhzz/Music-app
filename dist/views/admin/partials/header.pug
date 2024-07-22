@@ -1,0 +1,16 @@
+header.header 
+    .container-fluid 
+        .row.align-items-center 
+            .col-2
+                .inner-logo 
+                    a(href="/admin/dashboard") ADMIN 
+
+            .col-7
+
+            .col-3.auth-button
+                .btn-group
+                    button.btn.btn-primary.dropdown-toggle.header-color(type='button', data-toggle='dropdown', aria-expanded='false')
+                    .dropdown-menu
+                        a.dropdown-item(href=`${prefixAdmin}/my-profile`) Thông tin cá nhân
+                        form(class="logout-form" action=`${prefixAdmin}/auth/logout` method="POST")
+                            button(class="dropdown-item") Đăng xuất 

@@ -1,0 +1,11 @@
+mixin notf-success()
+    div.alert.alert-success(role="alert", class="notfAlert")
+        span= messages.success
+        button.close-alert-btn(type='button')
+            i.fa-solid.fa-xmark
+
+mixin notf-fail()
+    div.alert.alert-danger(role="alert", class="notfAlert")
+        span= messages.fail
+        button.close-alert-btn(type='button')
+            i.fa-solid.fa-xmark

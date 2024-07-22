@@ -1,0 +1,31 @@
+extends ../../layouts/default.pug
+
+block main 
+    .container
+        div(style="height: 50px")
+        .row 
+            .col-2 
+            .col-10 
+                img(src=(currentUser.avatar ? currentUser.avatar : "https://th.bing.com/th/id/OIP.NncIgJuAPc-2QzmcDe6tdAHaEy?rs=1&pid=ImgDetMain") alt=currentUser.fullName style="width: 300px; height: auto;")
+        
+        div(style="height: 20px")
+        .row 
+            .col-2
+            .col-2 Họ và tên:
+            .col-8 
+                b #{currentUser.fullName}
+        .row 
+            .col-2
+            .col-2 Email:
+            .col-8 
+                b #{currentUser.email}
+        .row 
+            .col-2
+            .col-2 Số điện thoại:
+            .col-8 
+                b #{currentUser.phone}
+        div(style="height: 20px")
+        .row 
+            .col-2 
+            .col-10 
+                a(href="/user/update-infor" class="btn btn-primary") Cập nhật

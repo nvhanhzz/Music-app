@@ -1,0 +1,35 @@
+extends ../../layouts/default.pug
+include ../../mixins/time.pug
+
+block addCss
+    link(rel="stylesheet", href="/css/home/home.css")
+    link(rel="stylesheet", href="/css/song/singer.css")
+
+block main 
+    .container
+        .inner-singer
+            .singer 
+                .inner-avatar 
+                    img(src=singer.avatar)
+                .inner-information 
+                    span.fullName #{singer.fullName}
+                    .statistics 
+                        span.song-count #{songs.length} bài hát  
+                        span.listened-count #{singer.listenedCount} lượt nghe
+
+        .songs 
+            each song in songs 
+                .song
+                    .row
+                        .col-4
+                            a(href=`/songs/detail/${song.slug}`)
+                                img(src=song.avatar, alt=song.title)
+                        .col-8.information
+                            .title.mb-2
+                                a(href=`/songs/detail/${song.slug}`) #{song.title}
+                            .time.mb-2
+                                i(class="fa-regular fa-clock") 
+                                +date(song.createdBy.createdAt)
+                            .listen-count
+                                i(class="fa-solid fa-headphones")
+                                span(listen-count) #{song.listenCount || 0} lượt nghe

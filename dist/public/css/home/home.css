@@ -1,0 +1,124 @@
+.outter-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.col-4,
+.col-8 {
+    padding: 0;
+}
+
+.songs {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.song {
+    height: 100px;
+    font-size: 15px;
+    width: 30%;
+    margin-bottom: 10px;
+    margin-right: calc(10% / 3);
+}
+
+.song:hover {
+    background-color: aliceblue;
+    border-radius: 5px;
+}
+
+.song .row {
+    align-items: center;
+}
+
+.linkSong,
+.linkSong:hover {
+    color: #2e2a2a;
+    text-decoration: none;
+}
+
+.col-4 img {
+    height: 100px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.information {
+    padding-left: 10px;
+}
+
+.information .title {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.information .title a,
+.information .singer a {
+    color: #2e2a2a;
+}
+
+.information .title a:hover {
+    text-decoration: none;
+}
+
+.singer i,
+.time i,
+.listen-count i,
+.like i {
+    margin-right: 10px;
+}
+
+.like i {
+    color: blueviolet;
+}
+
+.singer {
+    font-weight: 600;
+}
+
+.topics,
+.singers {
+    display: flex;
+    justify-content: space-between;
+}
+
+.topics .topic,
+.singers .singer {
+    width: 23%;
+}
+
+.topics .topic img,
+.singers .singer img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 7px;
+    transition: transform 0.3s ease;
+}
+
+.topics .topic:hover,
+.singers .singer:hover {
+    transform: scale(1.1);
+}
+
+.topics a:hover,
+.singers a:hover {
+    text-decoration: none;
+}
+
+.topic .topic-title {
+    color: #2e2a2a;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.singer .singer-name {
+    color: #2e2a2a;
+    font-size: 20px;
+    text-align: center;
+}
